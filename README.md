@@ -1,0 +1,420 @@
+﻿# 👋 Welcome to Claude Code Skills Repository
+
+> A comprehensive collection of skills for Claude Code, providing end-to-end Agile workflow automation integrated with Linear for modern software development teams.
+
+![Version](https://img.shields.io/badge/version-10.1.0-blue) ![Skills](https://img.shields.io/badge/skills-29-green) ![Updated](https://img.shields.io/badge/updated-Nov%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
+
+---
+
+## 📖 About
+
+This repository contains **29 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From initial documentation to story execution and quality assurance, these skills work together to create a complete Agile development workflow.
+
+**What You Get:**
+- 🎯 **Complete Agile Workflow** - From Epic decomposition to task execution and review
+- 📋 **Linear Integration** - Seamless task management and tracking
+- 🔄 **Automated Workflows** - Intelligent orchestration of development tasks
+- 📊 **Visual Documentation** - Mermaid diagrams for every skill workflow
+- 🏗️ **Best Practices Built-In** - KISS/YAGNI/DRY principles, Risk-Based Testing, Industry Standards compliance
+
+**Perfect For:**
+- Software development teams using Agile methodologies
+- Projects integrated with Linear for task management
+- Teams seeking to automate repetitive development workflows
+- Organizations wanting to standardize their development practices
+
+---
+
+## 🚀 Features
+
+### 1. Documentation System (11X, 12X)
+
+**ln-110-documents-pipeline** orchestrator manages complete documentation lifecycle with idempotent CREATE workflow and global cleanup (Phase 4).
+
+**Orchestrators:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-110-documents-pipeline](ln-110-documents-pipeline/)** | **CREATE Orchestrator** that creates complete documentation system in one command. Sequentially invokes 6 workers: ln-111 (root) → ln-112 (reference) → ln-113 (tasks) → ln-114 (project) → ln-115 (presentation) → ln-116 (test, optional). Each worker validates own output (Phase 2/3). **Phase 4**: Global cleanup (deduplication, orphaned files, consolidation, cross-links). **Idempotent**: Pre-flight check shows existing/missing files. | 6.0.0 | ✅ |
+
+**Workers (CREATE path - ln-110):**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-111-root-docs-creator](ln-111-root-docs-creator/)** | Create root documentation entry points: CLAUDE.md + docs/README.md (root hub with general standards) + documentation_standards.md (60 universal requirements). First worker in CREATE path. **Idempotent**: Preserves existing files. | 9.0.0 | ✅ |
+| **[ln-112-reference-docs-creator](ln-112-reference-docs-creator/)** | Create reference documentation structure: docs/reference/README.md + adrs/, guides/, manuals/ directories. Second worker in CREATE path. **Idempotent**: Checks 4 items. | 6.0.0 | ✅ |
+| **[ln-113-tasks-docs-creator](ln-113-tasks-docs-creator/)** | Create task management documentation: docs/tasks/README.md (task system rules) + kanban_board.md (Linear integration). Third worker in CREATE path. **Idempotent**: Critical kanban_board.md protection. | 6.0.0 | ✅ |
+| **[ln-114-project-docs-creator](ln-114-project-docs-creator/)** | Create project documentation BEFORE development: requirements.md, architecture.md, tech_stack.md + 4 optional documents (api_spec, database_schema, design_guidelines, runbook). Fourth worker in CREATE path. **Idempotent**: Tracks created files, edits only new ones. | 11.0.0 | ✅ |
+| **[ln-115-presentation-creator](ln-115-presentation-creator/)** | Build interactive HTML presentation from project documentation with 6 tabs (Overview, Requirements+ADRs, Architecture, Technical Spec, Roadmap, Guides). Fifth worker in CREATE path. **Idempotent**: User confirmation for rebuild. | 6.0.0 | ✅ |
+| **[ln-116-test-docs-creator](ln-116-test-docs-creator/)** | Create test documentation: testing-strategy.md (universal testing philosophy) + tests/README.md (organization with Story-Level Pattern). Optional sixth worker in CREATE path. **Idempotent**: Checks 4 items. | 6.0.0 | ✅ |
+
+---
+
+### 2. Planning (200-range)
+
+Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-decomposer** (TOP orchestrator) automates full decomposition (scope → Epics → Stories) by delegating to **ln-210-epic-coordinator** (CREATE/REPLAN Epics) → **ln-220-story-coordinator** (CREATE/REPLAN Stories with Phase 3 library research via **ln-221-library-researcher**).
+
+**Orchestrator:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-200-scope-decomposer](ln-200-scope-decomposer/)** | **TOP Orchestrator** for full decomposition automation (scope → Epics → Stories). Sequentially delegates: ln-210-epic-coordinator (Phase 2) → ln-220-story-coordinator loop per Epic (Phase 3). User confirmation required (Phase 1). Provides summary + next steps (Phase 4). | 1.1.0 | ✅ |
+
+**Coordinators:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-210-epic-coordinator](ln-210-epic-coordinator/)** | **Domain Coordinator** that decomposes scope into 3-7 Linear Projects (Epics) with business goals, success criteria, and phased strategy. Decompose-First Pattern: builds IDEAL plan → checks existing → CREATE/REPLAN mode (KEEP/UPDATE/OBSOLETE/CREATE). Auto-discovers team ID. | 5.0.0 | ✅ |
+| **[ln-220-story-coordinator](ln-220-story-coordinator/)** | **Domain Coordinator** for Story operations (create/replan). Discovery (load Epic, next Story number) → Phase 3: delegates library research to ln-221-library-researcher → builds IDEAL plan (5-10 Stories) → CREATE/REPLAN mode (KEEP/UPDATE/OBSOLETE/CREATE). Research Summary cached for all Stories in Epic. | 1.0.0 | ✅ |
+
+**Worker:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-221-library-researcher](ln-221-library-researcher/)** | Research libraries, versions, and industry standards via MCP Context7 (library docs) + MCP Ref (best practices). Generates Research Summary (Markdown format) for insertion in Story Technical Notes subsection. Reusable worker (called by ln-220 only). Time-boxed: 15-20 minutes. | 1.0.0 | ✅ |
+
+---
+
+### 3. Story Pipeline (00, 10-50, 1X-5X)
+
+**Top Orchestrator:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-300-story-pipeline](ln-300-story-pipeline/)** | 🔄 **Top orchestrator** for complete Story processing workflow from task planning to Done. Delegates to ln-310-story-decomposer (Phase 2), ln-320-story-validator (Phase 3 Step 1), ln-330-story-executor (Phase 3 Step 2 with To Review → To Rework → Todo priorities) and explicitly drives ln-340-story-quality-gate Pass 1 + Pass 2. Looping workflow until Story status = Done. Full pipeline automation: Todo → In Progress → To Review → Done. | 2.0.0 | ✅ |
+
+#### 3.1 Task Planning (ln-310-story-decomposer)
+
+**Coordinator:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-310-story-decomposer](ln-310-story-decomposer/)** | **Coordinator** for task operations. Analyzes Story, builds optimal task plan (1-6 tasks, Consumer-First ordered), delegates to ln-311-task-creator (CREATE) or ln-312-task-replanner (REPLAN) with `taskType: "implementation"`. Auto-discovers team ID. For implementation tasks only. | 7.2.0 | ✅ |
+
+**Workers:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-311-task-creator](ln-311-task-creator/)** | **Universal factory** for creating ALL 3 task types (implementation, refactoring, test). Generates task documents from templates, validates type-specific rules, creates in Linear. Invoked by orchestrators (ln-310-story-decomposer, ln-340-story-quality-gate, ln-350-story-test-planner). Owns all 3 templates. | 4.0.0 | ✅ |
+| **[ln-312-task-replanner](ln-312-task-replanner/)** | **Universal replanner** for updating ALL 3 task types (implementation, refactoring, test). Compares IDEAL plan vs existing, categorizes operations (KEEP/UPDATE/OBSOLETE/CREATE), applies type-specific validation, executes changes in Linear. Reads templates from ln-311-task-creator/references/. | 4.0.0 | ✅ |
+
+#### 3.2 Story Validation (ln-320-story-validator)
+
+**Coordinator:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-320-story-validator](ln-320-story-validator/)** | **Coordinator** that critically reviews Stories and Tasks against 2025 industry standards before approval (Backlog → Todo). ALWAYS auto-fixes all 16 verification criteria. Auto-creates guides/manuals/ADRs via AUTO-RESEARCH. No "Needs Work" path exists. | 11.0.0 | ✅ |
+
+**Workers:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-321-guide-creator](ln-321-guide-creator/)** | Research and create minimal project guides (6 sections, 300-500 words) documenting reusable patterns. AUTO-RESEARCH via MCP Ref/Context7. Returns guide path for linking. | 5.0.0 | ✅ |
+| **[ln-322-adr-creator](ln-322-adr-creator/)** | Create minimal Architecture Decision Records (ADRs) through 5-question dialog. Categorizes as Strategic or Technical. Nygard format with 7 sections (~300-500 words). | 6.0.0 | ✅ |
+| **[ln-323-manual-creator](ln-323-manual-creator/)** | Create minimal Package API reference manuals (~300-500 words, OpenAPI-inspired format). AUTO-RESEARCH via MCP Context7 + Ref. Neutral, factual tone. Version-specific (package-version.md). Returns manual path for linking. | 2.0.0 | ✅ |
+
+#### 3.3 Story Execution (ln-330-story-executor)
+
+**Coordinator:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-330-story-executor](ln-330-story-executor/)** | **Coordinator** that orchestrates Story execution (Todo → In Progress → To Review → Done). **Priority 0: Backlog** (auto-verify new tasks before execution) → **Priority 1: To Review** → **Priority 2: To Rework** → **Priority 3: Todo**. Auto-invokes ln-340-story-quality-gate Pass 1 + Pass 2 (full automation). Phase 4 delegates Story quality to ln-340-story-quality-gate (Orchestrator-Worker Pattern). | 7.0.0 | ✅ |
+
+**Workers:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-331-task-executor](ln-331-task-executor/)** | ⚙️ Execute implementation tasks ONLY (Todo → In Progress → To Review). Uses KISS/YAGNI principles, reads guide links, runs type checking and linting. Story status management removed (now ln-330-story-executor's responsibility). NOT for test tasks. | 10.1.0 | ✅ |
+| **[ln-332-task-reviewer](ln-332-task-reviewer/)** | 🔍 Review completed tasks for To Review → Done/Rework transition. Distinguishes test/implementation tasks. Checks architecture, docs, security, quality, and test coverage. | 7.3.0 | ✅ |
+| **[ln-333-task-rework](ln-333-task-rework/)** | Fix tasks marked To Rework. Analyzes feedback, applies fixes following KISS/YAGNI/DRY principles, runs quality gates (type checking, linting), and submits back To Review. | 5.1.0 | ✅ |
+| **[ln-334-test-executor](ln-334-test-executor/)** | ⚙️ Execute Story Finalizer test tasks (Todo → In Progress → To Review). E2E-first Risk-Based Testing (2-5 E2E, 3-8 Integration, 5-15 Unit). Includes test fixes, infrastructure, docs, and legacy cleanup. | 3.0.0 | ✅ |
+
+#### 3.4 Story Quality Gate (ln-340-story-quality-gate)
+
+**Coordinator:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-340-story-quality-gate](ln-340-story-quality-gate/)** | **Coordinator** for Story quality. Pass 1 delegates code analysis to `ln-341-code-quality-checker`, regression to `ln-342-regression-checker`, manual AC verification to `ln-343-manual-tester` (Format v1.0) with FAIL-FAST exit at each gate; auto-creates refactor/bug tasks when any gate fails. When all gates pass, automatically runs `ln-350-story-test-planner` (`autoApprove: true`) to create Story Finalizer test task. Pass 2 verifies automated tests (Priority >=15, limits 10-28) and moves Story to Done. | 7.1.0 | ✅ |
+
+**Workers:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-341-code-quality-checker](ln-341-code-quality-checker/)** | 🔎 Analyze code quality for DRY/KISS/YAGNI/Architecture violations and guide compliance. Checks git diffs of Done implementation tasks. Reports structured issues by severity (HIGH/MEDIUM/LOW). Fail Fast principle - runs FIRST in Phase 4. | 2.0.0 | ✅ |
+| **[ln-342-regression-checker](ln-342-regression-checker/)** | 🧪 Run existing test suite to verify no regressions. Auto-detects framework (pytest/jest/vitest/go test). Returns JSON verdict + Linear comment. Atomic worker - does NOT create tasks or change statuses. | 1.0.0 | ✅ |
+| **[ln-343-manual-tester](ln-343-manual-tester/)** | 🎯 Perform manual functional testing of Story AC using curl (API) or puppeteer (UI). Tests main scenarios + edge cases + error handling + integration. Creates reusable temp script `scripts/tmp_[story_id].sh`. Documents results in Linear (Format v1.0). | 2.0.0 | ✅ |
+
+#### 3.5 Test Planning (ln-350-story-test-planner)
+
+**Coordinator:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-350-story-test-planner](ln-350-story-test-planner/)** | **Coordinator** that creates test task for Story after manual testing passes. Analyzes Story, generates comprehensive test task with 11 sections. **Delegates to ln-311-task-creator (CREATE) or ln-312-task-replanner (REPLAN)** with `taskType: "test"`. Supports existing test task updates. Uses 1X workers for task creation/replanning. | 7.2.0 | ✅ |
+
+---
+
+## 📥 Installation
+
+### Choose Your Plugin
+
+Select the plugin that matches your team's needs:
+
+| Plugin | Skills | Use Case | Dependencies |
+|--------|--------|----------|--------------|
+| **complete** ⭐ | 32 | Full workflow automation (docs + planning + execution) | Linear + Context7 + Ref |
+| **docs** | 10 | Documentation automation only | None (standalone) |
+| **planning** | 4 | Epic/Story decomposition | Linear + Context7 + Ref |
+| **execution** | 18 | Story execution pipeline | Linear + Context7 + Ref |
+
+---
+
+### Installation Methods
+
+**Prerequisites:** [Claude Code CLI](https://claude.ai/code) installed
+
+Choose your installation method:
+
+**Method 1: Plugin Marketplace (Recommended)**
+```bash
+/plugin marketplace add levnikolaevich/claude-code-skills
+
+# Install complete plugin (recommended for most teams)
+/plugin install agile-linear-workflow-complete@agile-linear-workflow-marketplace
+
+# Or install specific plugin
+/plugin install agile-linear-workflow-docs@agile-linear-workflow-marketplace
+/plugin install agile-linear-workflow-planning@agile-linear-workflow-marketplace
+/plugin install agile-linear-workflow-execution@agile-linear-workflow-marketplace
+
+# Verify installation
+/skills
+```
+
+**Method 2: Direct Plugin**
+```bash
+/plugin add levnikolaevich/claude-code-skills
+/skills  # Verify installation
+```
+
+**Method 3: Git Clone**
+```bash
+# macOS/Linux
+git clone https://github.com/levnikolaevich/claude-code-skills.git ~/.claude/skills
+
+# Windows
+git clone https://github.com/levnikolaevich/claude-code-skills.git %USERPROFILE%\.claude\skills
+
+# Verify
+/skills
+```
+
+> 📖 For detailed setup, updates, and configuration, see [Advanced Setup](#-advanced-setup) section below.
+
+---
+
+## 📊 Visual Documentation
+
+Every skill includes workflow diagrams (`diagram.html`) that visualize execution flow, decision points, and state transitions. Diagrams use Mermaid format and work locally without any server setup.
+
+---
+
+## 💡 Usage
+
+### Quick Start Example
+
+**Creating Project Documentation:**
+```bash
+# In Claude Code, invoke the skill
+ln-114-project-docs-creator
+# Follow the interactive prompts to generate comprehensive documentation
+```
+
+**Decomposing Epic into Stories:**
+```bash
+# Invoke story coordinator with Epic number
+ln-220-story-coordinator
+# Skill will analyze Epic and create/replan Stories automatically
+```
+
+**Executing a Story:**
+```bash
+# Invoke story executor with Story ID
+ln-330-story-executor
+# Skill will orchestrate task execution, reviews, and rework
+```
+
+### Typical Workflow
+
+**Automated Workflow:**
+```
+1. ln-110-documents-pipeline → Create project documentation
+2. ln-210-epic-coordinator   → Decompose scope into Epics
+3. ln-220-story-coordinator  → Create Stories for an Epic (with library research)
+4. ln-300-story-pipeline     → Complete automation from task planning to Done
+   └─ Orchestrates: task decomposition → validation → execution → quality gates
+```
+
+**For manual step-by-step workflow and detailed usage, see [CLAUDE.md](CLAUDE.md).**
+
+---
+
+## 🔧 Advanced Setup
+
+### Prerequisites
+
+Before installation, ensure you have:
+
+- **Claude Code CLI** - Install from [claude.ai/code](https://claude.ai/code)
+- **Git** - Required for Method 3 (Git Clone) installation
+- **Linear Account** (optional) - For task management integration features
+  - Create API key at [linear.app/settings/api](https://linear.app/settings/api)
+  - Configure team ID in `docs/tasks/kanban_board.md` (auto-generated by ln-113-tasks-docs-creator)
+
+### Updating
+
+**For Plugin installations (Method 1 or 2):**
+```bash
+/plugin update agile-linear-workflow
+```
+
+**For Git Clone installation (Method 3):**
+```bash
+# Navigate to skills directory
+cd ~/.claude/skills                    # macOS/Linux
+cd %USERPROFILE%\.claude\skills       # Windows CMD
+cd $env:USERPROFILE\.claude\skills    # Windows PowerShell
+
+# Pull latest changes
+git pull origin master
+```
+
+### Configuration
+
+**Linear Integration (Optional):** Skills auto-discover configuration from `docs/tasks/kanban_board.md` (Team ID, Epic/Story numbers). Run `ln-113-tasks-docs-creator` to generate config file. No setup required - skills work independently.
+
+---
+
+## 🤝 Contributing
+
+**We warmly welcome contributions!** 🎉
+
+Whether you're fixing bugs, improving documentation, adding features, or creating new skills - your contributions make this project better for everyone.
+
+**How to contribute:**
+- Fork → Create feature branch → Submit PR
+- Bug fixes, documentation improvements, new skills, translations
+
+**See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.**
+
+---
+
+## 📚 Documentation
+
+### Core Documentation
+
+- **[CLAUDE.md](CLAUDE.md)** - Comprehensive guide with:
+  - Repository structure and skill organization
+  - Task hierarchy (Epic → Story → Task)
+  - Development principles (KISS/YAGNI/DRY, Standards First, Risk-Based Testing)
+  - Complete workflow documentation for all skills
+  - Template references and best practices
+  - Linear integration details
+
+### Skill Structure
+
+Each skill follows a unified structure:
+```
+x-skill-name/
+├── SKILL.md              # Metadata and full description
+├── diagram.html          # Standalone HTML with embedded Mermaid diagram
+└── references/           # Templates and guides
+    ├── template.md       # Document templates
+    └── guide.md          # Reference guides
+
+shared/
+└── css/
+    └── diagram.css       # Universal CSS for all diagrams
+```
+
+### Template Ownership Principle
+
+- Each skill owns its templates in its own `references/` directory (Single Source of Truth)
+- Templates are NOT copied to project during setup
+- Skills use templates directly from their `references/` when generating documents
+- Example: ln-322-adr-creator uses `ln-322-adr-creator/references/adr_template.md` when creating ADRs
+
+---
+
+## 🌟 Key Concepts
+
+### Task Hierarchy
+```
+Epic (Linear Project)
+  └── User Story (Linear Issue with label "user-story")
+      └── Task (Linear Issue with parentId=Story ID)
+          └── Subtask (implementation steps)
+```
+
+### Development Principles
+
+**Hierarchy of Principles (when conflicts arise):**
+1. **Industry Standards & RFCs** (OAuth 2.0, REST API design, OpenAPI, protocol standards)
+2. **Security Standards** (OWASP Top 10, NIST guidelines)
+3. **Development Principles** (KISS/YAGNI/DRY apply WITHIN standard boundaries)
+
+**Core Principles:**
+- **Standards First** - Follow industry standards before applying KISS/YAGNI
+- **YAGNI** - Do not add functionality ahead of time
+- **KISS** - Simplest solution that works (within standard boundaries)
+- **DRY** - Do not duplicate code
+- **Consumer-First** - Consumer first (API endpoint), then provider (Repository)
+- **Task Granularity** - Optimal task size 3-5 hours (max 6 tasks per Story)
+- **Value-Based Testing** - Prioritize by business risk (2-5 E2E, 3-8 Integration, 5-15 Unit per Story)
+- **No Legacy Code** - Remove backward compatibility shims and deprecated patterns
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the repository for details.
+
+Feel free to use, modify, and distribute this software in your projects!
+
+---
+
+## 🙏 Acknowledgments
+
+- **Claude Code Team** - For creating an amazing AI-powered development environment
+- **Linear Team** - For excellent task management and API
+- **Mermaid.js** - For beautiful, git-friendly diagrams
+- **Community Contributors** - Thank you for making this project better!
+
+---
+
+## 👤 Author
+
+**Lev Nikolaevich**
+- GitHub: [@levnikolaevich](https://github.com/levnikolaevich)
+- Repository: [claude-code-skills](https://github.com/levnikolaevich/claude-code-skills)
+
+---
+
+## 📬 Questions or Feedback?
+
+- 💬 **Discussions** - Share ideas and ask questions in [GitHub Discussions](https://github.com/levnikolaevich/claude-code-skills/discussions)
+- 🐛 **Issues** - Report bugs or request features via [GitHub Issues](https://github.com/levnikolaevich/claude-code-skills/issues)
+- ⭐ **Star this repo** - If you find it useful!
+
+---
+
+<div align="center">
+
+**Happy Coding! 🚀**
+
+*Built with ❤️ by the community, for the community*
+
+</div>

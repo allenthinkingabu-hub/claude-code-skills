@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ln-220-story-coordinator Workflow</title>
+    <link rel="stylesheet" href="../shared/css/diagram.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#4A90E2',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#2E5C8A',
+                lineColor: '#5C6BC0',
+                secondaryColor: '#7E57C2',
+                tertiaryColor: '#26A69A'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>ln-220-story-coordinator: Story Coordinator</h1>
+
+        <div class="diagram-section">
+            <h2>Workflow Diagram</h2>
+            <div class="mermaid">
+graph TD
+    Start([Input: Epic Number]) --> Phase1[Phase 1: Context Assembly]
+
+    Phase1 --> Step1Discovery[Step 1: Discovery<br/>Team ID, Epic, Story Number]
+    Step1Discovery --> Step2Extract[Step 2: Extract Planning Info<br/>6 questions from Epic]
+    Step2Extract --> Step3Gather{Step 3: Missing<br/>info?}
+    Step3Gather -->|Yes| AskUser[Ask user for missing info]
+    Step3Gather -->|No| Phase2[Phase 2: Library Research]
+    AskUser --> Phase2
+
+    Phase2 --> ParseLibs[Parse Epic for libraries/<br/>technology keywords]
+    ParseLibs --> SkipResearch{Libraries<br/>found?}
+    SkipResearch -->|No| EmptyResearch[Empty Research Summary]
+    SkipResearch -->|Yes| DelegateLN221[DELEGATE: ln-221-library-researcher<br/>epic_description, story_domain]
+    DelegateLN221 --> WaitResearch[Wait for Research Summary]
+    WaitResearch --> CacheResearch[Cache Research Summary<br/>for ALL Stories]
+
+    EmptyResearch --> Phase3[Phase 3: Planning]
+    CacheResearch --> Phase3
+    Phase3 --> Step1IDEAL[Step 1: Build IDEAL Plan<br/>Analyze Scope, 5-10 Stories]
+    Step1IDEAL --> Step2Check[Step 2: Check Existing<br/>Query Linear]
+    Step2Check --> CountCheck{Count = 0?}
+
+    CountCheck -->|Yes| Phase4a[Phase 4a: CREATE MODE]
+    CountCheck -->|No| Phase4b[Phase 4b: REPLAN MODE]
+
+    Phase4a --> GenerateDocs[Generate Story Documents<br/>8 sections, insert Research]
+    GenerateDocs --> ShowPreview[Show Preview to user]
+    ShowPreview --> ConfirmCreate{User<br/>confirms?}
+    ConfirmCreate -->|No| AdjustCreate[Adjust Stories]
+    AdjustCreate --> ShowPreview
+    ConfirmCreate -->|Yes| CreateLinear[Create in Linear:<br/>create_issue, label=user-story]
+    CreateLinear --> UpdateKanban1[Update kanban_board.md<br/>Add to Backlog]
+    UpdateKanban1 --> Summary1[Display Summary:<br/>URLs, Library Research, Next Steps]
+    Summary1 --> End([Done])
+
+    Phase4b --> LoadExisting[Load Existing Stories<br/>FULL descriptions ONE BY ONE]
+    LoadExisting --> Compare[Compare IDEAL vs Existing<br/>Match by goal, persona, capability]
+    Compare --> Categorize[Categorize Operations:<br/>KEEP/UPDATE/OBSOLETE/CREATE]
+    Categorize --> ShowDiff[Show Replan Summary<br/>with diffs, warnings]
+    ShowDiff --> ConfirmReplan{User<br/>confirms?}
+    ConfirmReplan -->|No| AdjustReplan[Adjust operations]
+    AdjustReplan --> ShowDiff
+    ConfirmReplan -->|Yes| ExecuteOps[Execute Operations:<br/>UPDATE/OBSOLETE/CREATE]
+    ExecuteOps --> UpdateKanban2[Update kanban_board.md<br/>Remove Canceled, add new]
+    UpdateKanban2 --> Summary2[Display Summary:<br/>Operations, Warnings, Next Steps]
+    Summary2 --> End
+
+    style Start fill:#4A90E2,stroke:#2E5C8A,color:#fff
+    style End fill:#26A69A,stroke:#1B5E20,color:#fff
+    style Phase1 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase2 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase3 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase4 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase5 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase6 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase7a fill:#26A69A,stroke:#1B5E20,color:#fff
+    style Phase7b fill:#FF9800,stroke:#E65100,color:#fff
+    style Phase8 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style CountCheck fill:#FF9800,stroke:#E65100,color:#fff
+    style SkipResearch fill:#FF9800,stroke:#E65100,color:#fff
+    style AskUser fill:#FF9800,stroke:#E65100,color:#fff
+    style DelegateLN221 fill:#FFC107,stroke:#F57C00,color:#000
+    style WaitResearch fill:#FFC107,stroke:#F57C00,color:#000
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Key Information</h2>
+            <ul>
+                <li><strong>Type:</strong> Domain Coordinator (L2)</li>
+                <li><strong>Phases:</strong> 4 major phases (Phase 1: Context Assembly → Phase 2: Library Research → Phase 3: Planning → Phase 4: Execution)</li>
+                <li><strong>Pattern:</strong> Decompose-First (build IDEAL → check existing → CREATE/REPLAN)</li>
+                <li><strong>Delegation:</strong> ln-221-library-researcher (Phase 2)</li>
+                <li><strong>Output:</strong> 5-10 Stories with Library Research in Technical Notes</li>
+                <li><strong>Modes:</strong> Phase 4a: CREATE (no existing) / Phase 4b: REPLAN (KEEP/UPDATE/OBSOLETE/CREATE)</li>
+            </ul>
+        </div>
+
+        <div class="delegation-section">
+            <h2>Delegation (Phase 2: Library Research)</h2>
+            <ul>
+                <li><strong>Delegates to:</strong> ln-221-library-researcher</li>
+                <li><strong>Input:</strong> Epic description + Story domain</li>
+                <li><strong>Output:</strong> Research Summary (libraries, versions, key APIs, constraints, standards)</li>
+                <li><strong>Caching:</strong> Research done ONCE per Epic, reused for all 5-10 Stories</li>
+                <li><strong>Time-box:</strong> 15-20 minutes (handled by worker)</li>
+            </ul>
+        </div>
+
+        <div class="notes-section">
+            <h2>Important Notes</h2>
+            <ul>
+                <li><strong>Phase 1:</strong> Context Assembly (Discovery → Extract → Gather Missing) - auto-discovers Epic details from kanban_board.md</li>
+                <li><strong>Phase 2:</strong> Library Research - delegates to ln-221, caches Research Summary for ALL Stories</li>
+                <li><strong>Phase 3:</strong> Planning - ALWAYS build IDEAL plan FIRST, then check existing (Decompose-First Pattern)</li>
+                <li><strong>Phase 4a:</strong> CREATE mode - generate all Stories, show preview, require "confirm", create in Linear</li>
+                <li><strong>Phase 4b:</strong> REPLAN mode - load existing ONE BY ONE (token efficiency), compare with IDEAL, show diffs, require "confirm"</li>
+                <li>Never auto-update Stories In Progress/To Review/Done (show warnings only)</li>
+                <li>Use state="Canceled" for obsolete Stories (preserve history, never delete)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

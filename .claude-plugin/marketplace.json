@@ -1,0 +1,53 @@
+{
+  "name": "levnikolaevich-skills-marketplace",
+
+  "owner": {
+    "name": "Lev Nikolaevich",
+    "email": "levnikolaevich.com@gmail.com",
+    "url": "https://github.com/levnikolaevich"
+  },
+
+  "metadata": {
+    "description": "Official marketplace for Agile Linear Workflow plugin - complete end-to-end automation for software development teams using Linear",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "full-development-workflow-skills",
+      "description": "Full development workflow skills: Documentation, Planning, Execution. Requires Linear + Context7 + Ref MCP servers.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./ln-110-documents-pipeline",
+        "./ln-111-root-docs-creator",
+        "./ln-112-reference-docs-creator",
+        "./ln-113-tasks-docs-creator",
+        "./ln-114-project-docs-creator",
+        "./ln-115-presentation-creator",
+        "./ln-116-test-docs-creator",
+        "./ln-200-scope-decomposer",
+        "./ln-210-epic-coordinator",
+        "./ln-220-story-coordinator",
+        "./ln-221-library-researcher",
+        "./ln-300-story-pipeline",
+        "./ln-310-story-decomposer",
+        "./ln-311-task-creator",
+        "./ln-312-task-replanner",
+        "./ln-320-story-validator",
+        "./ln-321-guide-creator",
+        "./ln-322-adr-creator",
+        "./ln-323-manual-creator",
+        "./ln-330-story-executor",
+        "./ln-331-task-executor",
+        "./ln-332-task-reviewer",
+        "./ln-333-task-rework",
+        "./ln-334-test-executor",
+        "./ln-340-story-quality-gate",
+        "./ln-341-code-quality-checker",
+        "./ln-342-regression-checker",
+        "./ln-343-manual-tester",
+        "./ln-350-story-test-planner"
+      ]
+    }
+  ]
+}

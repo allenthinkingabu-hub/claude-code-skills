@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ln-200-scope-decomposer Workflow</title>
+    <link rel="stylesheet" href="../shared/css/diagram.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'base' });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>ln-200-scope-decomposer: Scope Decomposer (Top Orchestrator)</h1>
+
+        <div class="diagram-section">
+            <h2>Workflow Diagram</h2>
+            <div class="mermaid">
+graph TD
+    Start([Input: Scope/Initiative]) --> Phase1[Phase 1: User Confirmation]
+    Phase1 --> Explain[Explain: scope → Epics → Stories]
+    Explain --> AskConfirm{User<br/>confirms?}
+    AskConfirm -->|No| End([Cancelled])
+    AskConfirm -->|Yes| Phase2[Phase 2: Epic Decomposition]
+
+    Phase2 --> DelegateLN210[Delegate: ln-210-epic-coordinator<br/>Scope → 3-7 Epics]
+    DelegateLN210 --> WaitEpics[Wait for Epics Created]
+    WaitEpics --> VerifyEpics[Verify: Epics in kanban_board.md]
+
+    VerifyEpics --> Phase3[Phase 3: Story Decomposition LOOP]
+    Phase3 --> LoopEpics[FOR EACH Epic]
+    LoopEpics --> DelegateLN220[Delegate: ln-220-story-coordinator<br/>Epic N → 5-10 Stories]
+    DelegateLN220 --> WaitStories[Wait for Stories Created]
+    WaitStories --> VerifyStories[Verify: Stories in kanban_board.md]
+    VerifyStories --> MoreEpics{More<br/>Epics?}
+    MoreEpics -->|Yes| LoopEpics
+    MoreEpics -->|No| Phase4[Phase 4: Summary]
+
+    Phase4 --> CountObjects[Count: N Epics, M Stories]
+    CountObjects --> ShowNext[Show Next Steps:<br/>ln-320-story-validator,<br/>ln-310-story-decomposer]
+    ShowNext --> Done([Done: Full Decomposition])
+
+    style Start fill:#4A90E2,stroke:#2E5C8A,color:#fff
+    style Done fill:#26A69A,stroke:#1B5E20,color:#fff
+    style End fill:#9E9E9E,stroke:#424242,color:#fff
+    style Phase1 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase2 fill:#26A69A,stroke:#1B5E20,color:#fff
+    style Phase3 fill:#FF9800,stroke:#E65100,color:#fff
+    style Phase4 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style DelegateLN210 fill:#FFC107,stroke:#F57C00,color:#000
+    style DelegateLN220 fill:#FFC107,stroke:#F57C00,color:#000
+    style AskConfirm fill:#FF9800,stroke:#E65100,color:#fff
+    style MoreEpics fill:#FF9800,stroke:#E65100,color:#fff
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Key Information</h2>
+            <ul>
+                <li><strong>Type:</strong> Top Orchestrator (L1)</li>
+                <li><strong>Phases:</strong> 4 (sequential workflow)</li>
+                <li><strong>Delegation:</strong> ln-210-epic-coordinator (Phase 2) → ln-220-story-coordinator (Phase 3 loop)</li>
+                <li><strong>Output:</strong> 3-7 Epics + 15-70 Stories (5-10 per Epic)</li>
+                <li><strong>Time:</strong> 30-45 minutes (with interactive dialog)</li>
+            </ul>
+        </div>
+
+        <div class="notes-section">
+            <h2>Important Notes</h2>
+            <ul>
+                <li>Automates full decomposition: scope → Epics (ln-210) → Stories per Epic (ln-220 loop)</li>
+                <li>Sequential processing: Epics created first, then Stories per Epic one by one</li>
+                <li>All delegation via Skill tool (orchestrator does NOT execute work directly)</li>
+                <li>User confirmation required before starting (Phase 1)</li>
+                <li>Next steps: ln-320-story-validator (validation) → ln-310-story-decomposer (task creation)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
