@@ -15,6 +15,7 @@ description: Updates ALL task types (impl/refactoring/test). Compares IDEAL vs e
 - **Implementation tasks** (from ln-310-story-decomposer): Feature development tasks when Story AC/Technical Approach changed
 - **Refactoring tasks** (from ln-340-story-quality-gate): Code quality improvement tasks when new issues found
 - **Test tasks** (from ln-350-story-test-planner): E2E/Integration/Unit test tasks when manual test results changed
+- **Non-Functional Requirements are out of scope**: if NFR items appear in source data, drop them instead of creating or modifying tasks
 
 **Workflow:**
 - Receives IDEAL task plan from orchestrator (1-6 tasks for implementation, 1-3 issues for refactoring, test plan for test tasks)

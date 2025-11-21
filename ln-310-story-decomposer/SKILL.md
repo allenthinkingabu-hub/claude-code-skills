@@ -17,6 +17,7 @@ Coordinates task creation and replanning for User Stories:
 - Analyzes Story complexity (simple/medium/complex)
 - Builds OPTIMAL task plan (1-6 tasks, Consumer-First ordered)
 - Extracts guide links from Story Technical Notes
+- Ignores and strips any Non-Functional Requirements (NFRs) – do not create tasks to formalize them
 - Checks existing tasks in Linear
 - **Delegates to workers**:
   - No tasks (count = 0) → Invokes **ln-311-task-creator** (CREATE MODE)

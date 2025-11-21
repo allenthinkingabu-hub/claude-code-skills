@@ -14,7 +14,7 @@ x-html-builder/references/
 ├── build-presentation.js          # Node.js build script for inlining
 └── tabs/
     ├── tab_overview_template.html          # Landing page
-    ├── tab_requirements_template.html      # FRs + NFRs + ADRs
+    ├── tab_requirements_template.html      # FRs + ADRs (Non-Functional Requirements are forbidden)
     ├── tab_architecture_template.html      # C4 diagrams
     ├── tab_technical_spec_template.html    # API + Data + Deployment
     ├── tab_roadmap_template.html           # Kanban-style
@@ -59,7 +59,7 @@ x-html-builder/references/
 
 **SCOPE:**
 - INCLUDES: Business goals, FRs (collapsible), ADRs (Strategic/Technical groups), constraints, success criteria
-- EXCLUDES: Implementation details → Technical Spec, Diagrams → Architecture, Code → Guides, NFRs → Quality Goals in architecture.md
+- EXCLUDES: Implementation details → Technical Spec, Diagrams → Architecture, Code → Guides, Non-Functional Requirements (explicitly banned from this tab)
 
 **Content Elements:**
 - **Business Goals:** Project objectives with key targets (h2 + list)
@@ -81,7 +81,7 @@ x-html-builder/references/
 - requirements.md (business goals, FRs, constraints, success criteria)
 - adrs/*.md (all ADR files with Category field for grouping)
 
-**Note:** Non-functional requirements (performance, security, scalability) are captured as Quality Goals in architecture.md (Section 1.2), NOT as separate NFR-XXX-001 requirements per project policy.
+**Note:** Do not add Non-Functional Requirements (performance, security, scalability, etc.). If quality topics need coverage, describe them as architecture quality goals in narrative form only—never as NFR-XXX-001 style requirements.
 
 **Placeholders:**
 - None (all content directly from MD files)

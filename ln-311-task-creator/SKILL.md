@@ -15,6 +15,7 @@ description: Creates ALL task types (implementation, refactoring, test). Generat
 - **Implementation tasks** (from ln-310-story-decomposer): Feature development with Technical Approach
 - **Refactoring tasks** (from ln-340-story-quality-gate): Code quality improvements with Regression Testing
 - **Test tasks** (from ln-350-story-test-planner): E2E/Integration/Unit tests with Risk Priority Matrix
+- **Never** generates tasks that formalize Non-Functional Requirements (drop NFR bullets if supplied; only functional scope is allowed)
 
 **Common workflow** for all types:
 - Receives task plan/data from orchestrator

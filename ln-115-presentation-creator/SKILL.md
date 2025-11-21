@@ -413,6 +413,7 @@ Replace placeholders in copied template files with parsed content from project d
 - `{{ADR_STRATEGIC}}` — Strategic ADRs grouped section with accordion
 - `{{ADR_TECHNICAL}}` — Technical ADRs grouped section with accordion
 - `{{SUCCESS_CRITERIA}}` — Project success metrics
+- **Non-Functional Requirements are banned**: Drop any NFR content found in source docs instead of converting it into tables or IDs
 
 **Architecture Tab** (`tab_architecture.html`):
 - `{{C4_CONTEXT}}` — System Context diagram (C4 Level 1)
@@ -616,7 +617,7 @@ docs/
 - **Single Source of Truth**: No information duplication - each piece lives in exactly ONE tab
 - **Landing Page (Overview)**: Problem/Solution/Business Value, Stakeholders, Documentation Guide, Quick Facts, Tech Stack badges
 - **Interactive Navigation**: 6 tabs with SCOPE tags, state persistence (localStorage), smooth transitions
-- **Table-Based Layout**: FRs table, NFRs table, Architecture highlights table
+- **Table-Based Layout**: FRs table only (Non-Functional Requirements are forbidden), Architecture highlights table
 - **Roadmap Simplified**: Vertical Epic list with In/Out Scope sections, status badges, Dependencies/Success Criteria
 - **ADR Organization**: Grouped by category (Strategic/Technical) with accordion, full content inline
 - **Diagram Visualization**: Mermaid.js with tab-switch rerender (C4, ER, Sequence, Deployment)

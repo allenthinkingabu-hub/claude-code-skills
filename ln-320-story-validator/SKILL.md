@@ -14,6 +14,7 @@ Critically review and auto-fix Stories and Tasks against 2025 industry standards
 - Auto-fixes ALL detected issues (structure, solution, workflow, quality)
 - ALWAYS approves Story after fixes (Backlog → Todo transition)
 - Auto-creates missing guides and links them in Story Technical Notes
+- Strips or rejects any Non-Functional Requirements (NFRs) in Stories/Tasks; keep only functional scope and push quality topics to architecture notes if needed
 
 **What it doesn't do:**
 - Does NOT reject Stories (no "Needs Work" path exists)

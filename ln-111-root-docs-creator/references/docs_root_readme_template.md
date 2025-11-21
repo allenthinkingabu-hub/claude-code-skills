@@ -47,7 +47,7 @@ All documents contain a **Maintenance** section with:
 
 | Field | Description | Example |
 |-------|-------------|---------|
-| **Update Triggers** | When to update the document | "When adding new NFR category, When changing acceptance criteria" |
+| **Update Triggers** | When to update the document | "When changing acceptance criteria (Non-Functional Requirements are forbidden here)" |
 | **Verification** | How to verify document is current | "Check all FR-XXX IDs referenced in tests exist" |
 | **Last Updated** | Date of last modification | "2025-11-15" |
 

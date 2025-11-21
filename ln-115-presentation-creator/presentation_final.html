@@ -898,7 +898,7 @@ blockquote {
     <div class="guide-grid">
         <div class="guide-card">
             <h3>📋 Requirements</h3>
-            <p>What we're building and why - functional requirements, non-functional constraints, and architecture decisions (ADRs)</p>
+            <p>What we're building and why - functional requirements only and architecture decisions (ADRs); Non-Functional Requirements are not produced</p>
             <p class="audience"><strong>For:</strong> Product Owners, Business Analysts, Architects</p>
         </div>
         <div class="guide-card">
@@ -927,9 +927,9 @@ blockquote {
             </div>
 
             <div id="requirements-tab" class="tab-content">
-                <!-- SCOPE: Functional/Non-Functional Requirements & Architecture Decisions -->
-<!-- INCLUDES: FRs (what we build), NFRs (constraints), ADRs (why we decided), Success criteria -->
-<!-- EXCLUDES: Business context → Overview, System structure → Architecture, API contracts → Technical Spec, Implementation steps → Guides -->
+                <!-- SCOPE: Functional Requirements & Architecture Decisions (Non-Functional Requirements are forbidden) -->
+<!-- INCLUDES: FRs (what we build), ADRs (why we decided), Success criteria -->
+<!-- EXCLUDES: Non-Functional Requirements (forbidden), Business context → Overview, System structure → Architecture, API contracts → Technical Spec, Implementation steps → Guides -->
 
 <h2>Requirements</h2>
 
@@ -991,74 +991,9 @@ blockquote {
 </section>
 
 <section class="non-functional-requirements">
-    <h3>Non-Functional Requirements</h3>
+    <h3>Non-Functional Requirements (forbidden)</h3>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Category</th>
-                <th>ID</th>
-                <th>Requirement</th>
-                <th>Target</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td rowspan="3">Performance</td>
-                <td>NFR-PERF-001</td>
-                <td>Page load time</td>
-                <td>< 2 seconds (95th percentile)</td>
-            </tr>
-            <tr>
-                <td>NFR-PERF-002</td>
-                <td>API response time</td>
-                <td>< 200ms (average)</td>
-            </tr>
-            <tr>
-                <td>NFR-PERF-003</td>
-                <td>Concurrent users</td>
-                <td>10,000+ concurrent users</td>
-            </tr>
-            <tr>
-                <td rowspan="3">Security</td>
-                <td>NFR-SEC-001</td>
-                <td>Traffic encryption</td>
-                <td>HTTPS (TLS 1.3+)</td>
-            </tr>
-            <tr>
-                <td>NFR-SEC-002</td>
-                <td>JWT tokens</td>
-                <td>15min expiry + refresh tokens</td>
-            </tr>
-            <tr>
-                <td>NFR-SEC-003</td>
-                <td>Input validation</td>
-                <td>Prevent XSS, SQL injection</td>
-            </tr>
-            <tr>
-                <td rowspan="2">Scalability</td>
-                <td>NFR-SCALE-001</td>
-                <td>Horizontal scaling</td>
-                <td>Docker + Kubernetes</td>
-            </tr>
-            <tr>
-                <td>NFR-SCALE-002</td>
-                <td>Database connection pooling</td>
-                <td>Max 100 connections</td>
-            </tr>
-            <tr>
-                <td rowspan="2">Reliability</td>
-                <td>NFR-REL-001</td>
-                <td>Uptime SLA</td>
-                <td>99.9% (< 8.76 hours downtime/year)</td>
-            </tr>
-            <tr>
-                <td>NFR-REL-002</td>
-                <td>Automated health checks</td>
-                <td>Every 30 seconds</td>
-            </tr>
-        </tbody>
-    </table>
+    <p>Not generated: project policy forbids formal Non-Functional Requirements. Capture quality-related decisions only in architecture narratives, not as requirement tables.</p>
 </section>
 
 <section class="adr-section">
@@ -1202,7 +1137,7 @@ blockquote {
             <div id="architecture-tab" class="tab-content">
                 <!-- SCOPE: System Structure Visualization (Diagrams Only) -->
 <!-- INCLUDES: C4 diagrams (Context/Container/Component), Deployment diagram, brief captions -->
-<!-- EXCLUDES: Decision rationale → ADRs, Requirements → Requirements tab, API details → Technical Spec, Quality metrics → NFRs -->
+<!-- EXCLUDES: Decision rationale → ADRs, Requirements → Requirements tab, API details → Technical Spec, Non-Functional Requirements (forbidden; keep quality topics as architecture narrative only) -->
 
 <h2>Architecture</h2>
 
@@ -1360,7 +1295,7 @@ graph TD
         </tbody>
     </table>
 
-    <p><em>For detailed quality attributes (Performance, Security, Scalability, Maintainability), see Non-Functional Requirements in the Requirements tab.</em></p>
+    <p><em>Quality attributes (Performance, Security, Scalability, Maintainability) are described in architecture narratives; formal Non-Functional Requirements are intentionally excluded.</em></p>
 </section>
 
             </div>
