@@ -1,6 +1,6 @@
 ---
 name: ln-210-epic-coordinator
-description: CREATE/REPLAN Epics from scope (3-7 Epics). Sequential Loop + Interactive Dialog. Decompose-First Pattern. Auto-discovers team ID.
+description: CREATE/REPLAN Epics from scope (3-7 Epics). Batch Preview + Auto-extraction. Decompose-First Pattern. Auto-discovers team ID.
 ---
 
 # Epic Coordinator
@@ -20,7 +20,9 @@ This skill should be used when:
 
 **Output:** 3-7 Linear Projects (logical domains/modules)
 
-## Core Pattern: Decompose-First
+## Core Concepts
+
+### Decompose-First Pattern
 
 **Key principle:** ALWAYS analyze scope and build IDEAL Epic plan FIRST, THEN check existing Epics to determine mode:
 - **No existing Epics** → CREATE MODE (generate and create all Epics)
@@ -28,9 +30,37 @@ This skill should be used when:
 
 **Rationale:** Ensures consistent Epic decomposition based on current scope requirements, independent of existing Epic structure (which may be outdated or suboptimal).
 
-## How It Works
+### Epic 0 Reserved for Infrastructure
 
-### Phase 1: Discovery (Automated)
+**Rule:** Epic 0 is a reserved index for Infrastructure Epic within an initiative.
+
+**When to use Epic 0:**
+- New project requiring infrastructure setup
+- Multi-stack project (Frontend + Backend on different stacks)
+- Project with security/monitoring/deployment requirements
+
+**Epic indexes within initiative:**
+- **Epic 0:** Infrastructure & Operations (if needed)
+- **Epic 1, 2, 3, ... N:** Business domains
+
+**Linear Project Titles:**
+- Use Next Epic Number from kanban_board.md for sequential numbering
+- Example: Next Epic Number = 11
+  - Epic 0 → Linear title: "Epic 11: Infrastructure & Operations"
+  - Epic 1 → Linear title: "Epic 12: User Management"
+  - Epic 2 → Linear title: "Epic 13: Product Catalog"
+
+**Important:** Epic 0/1/2 are initiative-internal indexes for organizing domains. Linear uses global Next Epic Number for project titles.
+
+---
+
+## Workflow
+
+### Phase 1: Discovery & Research
+
+**Objective:** Gather all necessary context before Epic decomposition.
+
+**Step 1: Load Configuration**
 
 Auto-discovers Team ID and Next Epic Number from `docs/tasks/kanban_board.md`:
 - **Team ID:** Reads Linear Configuration table → Fallback: Ask user directly
@@ -38,55 +68,144 @@ Auto-discovers Team ID and Next Epic Number from `docs/tasks/kanban_board.md`:
 
 **Details:** See CLAUDE.md sections "Configuration Auto-Discovery" and "Linear Integration".
 
-### Phase 2: Scope Analysis (Interactive)
+**Step 2: Project Research**
 
-Analyzes architectural requirement and identifies logical domains:
+**Objective:** Research project documentation AND frontend code to understand context BEFORE asking user questions.
 
-1. **Scope understanding:**
-   - What is the high-level architectural requirement/scope?
-   - What is the main business objective?
-   - What are the major functional areas?
+**Process:**
 
-2. **Domain identification:**
-   - Automatically identifies 3-7 logical domains/modules
-   - Each domain becomes separate Epic
-   - Examples: "User Management", "Payment Processing", "Reporting"
+1. **Document Scan:**
+   - Use `Glob` to find: `docs/requirements.md`, `docs/architecture.md`, `docs/tech_stack.md`
+   - Use `Read` to load found documents
 
-3. **Confirmation:**
-   - Shows identified domains to user
-   - User can adjust/refine domain list
+2. **Frontend Code Scan (if applicable):**
+   - Use `Glob` to find: `**/*.html`, `src/**/*.html`, `public/**/*.html`, `templates/**/*.html`
+   - Use `Read` to load HTML files
+   - Extract functional domains from:
+     - **Navigation menus:** `<nav>`, `<a href>` links reveal feature areas
+     - **Forms:** Input fields reveal data models (user registration, login, checkout)
+     - **Page titles:** `<h1>`, `<title>` tags reveal feature names
+     - **Route patterns:** URL structures reveal domain boundaries
 
-### Phase 3: Build IDEAL Epic Plan (Automated)
+   **Example HTML extraction:**
+   ```html
+   <nav>
+     <a href="/products">Products</a>
+     <a href="/cart">Shopping Cart</a>
+     <a href="/checkout">Checkout</a>
+   </nav>
+   <!-- Reveals domains: Product Catalog, Shopping Cart, Payment -->
+   ```
 
-**This phase ALWAYS runs, regardless of whether Epics exist.**
+3. **Extract key information from docs + HTML:**
+   - **Business objectives:** What is the project trying to achieve? (from requirements.md)
+   - **User personas:** Who will use the system? (from requirements.md)
+   - **Major functional domains:** What are the main modules/areas? (from requirements.md, architecture.md, HTML navigation)
+   - **Technical stack:** What technologies mentioned? (from tech_stack.md, architecture.md, HTML meta/script tags)
+   - **Infrastructure requirements:** Any mention of logging, monitoring, deployment, CI/CD, security, performance optimization?
 
-1. **Analyze Scope:**
-   - Review all domains from Phase 2
-   - Identify distinct Epic boundaries
-   - Group related functionality
+4. **Combine findings:**
+   - Merge domains from docs + HTML (deduplicate, consolidate similar)
+   - Example: "User Auth" (from docs) + "Login" (from HTML) → "User Management"
 
-2. **Determine Optimal Epic Count:**
-   - **Simple Initiative** (1-3 domains): 3-4 Epics
-   - **Medium Initiative** (4-6 domains): 5-7 Epics
-   - **Complex Initiative** (7+ domains): 7-10 Epics (rare)
-   - **Max 10 Epics per Initiative** (enforced)
+**Fallback:** If docs AND HTML missing → Skip to Phase 2, will ask user basic questions
 
-3. **Build IDEAL Plan** "in mind":
-   - Each Epic focuses on one domain/module
-   - Each Epic has clear goal + scope boundaries + success criteria
-   - Epics ordered by dependency (foundational modules first)
+**Step 3: Infrastructure Epic Decision**
 
-**Output:** IDEAL Epic plan (3-7 Epics) with:
-- Epic titles (domain names)
-- Epic goals (business objectives)
-- Core features for each
-- Epic ordering (dependency-aware)
+**Objective:** Determine if Infrastructure Epic (Epic 0) should be proposed.
 
-> [!NOTE]
+**Criteria for Infrastructure Epic:**
 
-> This plan exists "in mind" before checking existing Epics.
+✅ **PROPOSE Infrastructure Epic (Epic 0)** if ANY of:
+1. **New project** (no `docs/infrastructure.md` found, no Epic "Infrastructure" in kanban_board.md Epic Story Counters)
+2. **Multi-stack** (requirements.md or tech_stack.md mentions frontend AND backend on different stacks - e.g., React + Python)
+3. **Infrastructure requirements mentioned** in requirements.md, architecture.md:
+   - Logging, Error Handling
+   - Monitoring, Alerting
+   - Hosting, Deployment, CI/CD
+   - Security (authentication, authorization, encryption, secrets management)
+   - Performance optimization (caching, rate limiting, database optimization)
 
-### Phase 4: Check Existing Epics
+❌ **DO NOT propose** if:
+1. Existing project (found `docs/infrastructure.md`)
+2. Epic Story Counters shows existing Epic with "Infrastructure" in title
+3. User explicitly declined in previous interaction
+
+**Decision:** Store YES/NO decision for use in Phase 2
+
+**Output from Phase 1:**
+- Team ID, Next Epic Number
+- Project context (business goals, domains from docs + HTML, tech stack, infrastructure needs) - if found
+- Infrastructure Epic decision (YES/NO)
+
+---
+
+### Phase 2: Scope Analysis & Epic Planning
+
+**Objective:** Identify logical domains and build Epic structure inline.
+
+**Process:**
+
+**Step 1: Auto-identify Domains**
+
+Use research context from Phase 1 Step 2:
+- If project docs found → Extract domains from requirements.md, architecture.md (module names, feature areas)
+- If HTML found → Extract domains from navigation, forms, page structures
+- Combine and deduplicate domains
+- Example: "User Auth" + "Profile Management" → "User Management"
+
+**Fallback:** If no docs/HTML → Ask user basic questions (scope, objectives, functional areas)
+
+**Step 2: Build Epic List (inline)**
+
+**IF Infrastructure needed (from Phase 1 Step 3):**
+- **Epic 0: Infrastructure & Operations**
+  - Goal: Establish foundational infrastructure, deployment pipeline, operational capabilities
+  - Scope: Logging, error handling, monitoring, CI/CD, security baseline, performance
+  - **Multi-stack projects:** Each Story doubles (Frontend Story + Backend Story for same functionality)
+- **Epic 1-N:** Business domains (from Step 1)
+
+**ELSE:**
+- **Epic 1-N:** Business domains only
+
+**Step 3: Determine Epic Count**
+
+- Infrastructure Epic (if applicable): +1 Epic
+- Simple Initiative (1-3 domains): 3-4 Epics total
+- Medium Initiative (4-6 domains): 5-7 Epics total
+- Complex Initiative (7+ domains): 7-10 Epics total (rare)
+- **Max 10 Epics per Initiative** (enforced)
+
+**Step 4: Show Proposed Epic Structure (USER CONTROL POINT 1)**
+
+Display identified Epics with initiative-internal indexes:
+
+```
+📋 Proposed Epic Structure:
+
+Epic 0: Infrastructure & Operations
+Epic 1: User Management
+Epic 2: Product Catalog
+Epic 3: Shopping Cart
+Epic 4: Payment Processing
+Epic 5: Order Management
+
+Total: 6 Epics
+Type "confirm" to proceed, or modify the list
+```
+
+**Step 5: User Confirmation**
+
+- User types "confirm" → Proceed to Phase 3
+- User modifies → Update domain list, show again
+
+**Output:** Approved Epic list (Epic 0-N or Epic 1-N) ready for next phase
+
+---
+
+### Phase 3: Check Existing Epics
+
+**Objective:** Determine CREATE vs REPLAN mode.
 
 Query kanban_board.md and Linear for existing Epics:
 
@@ -94,49 +213,191 @@ Query kanban_board.md and Linear for existing Epics:
 2. **Count existing Epic rows** (excludes header row)
 
 **Decision Point:**
-- **Count = 0** → No existing Epics → **Proceed to Phase 5a (CREATE MODE)**
+- **Count = 0** → No existing Epics → **Proceed to Phase 4+5a (CREATE MODE)**
 - **Count ≥ 1** → Existing Epics found → **Proceed to Phase 5b (REPLAN MODE)**
 
-### Phase 5a: Create Mode - Sequential Processing (Loop)
+---
 
-**For EACH domain** (one at a time, sequential loop):
+### Phase 4: Epic Preparation (CREATE mode only)
 
-1. **Ask 5 key questions for current domain:**
-   - **"What is the business goal?"** - Why this Epic/domain matters
-   - **"Key features in scope?"** - 3-5 bullet points of capabilities
-   - **"What is OUT of scope?"** - Prevent scope creep
-   - **"Success criteria?"** - Measurable outcomes
-   - **"Known risks?"** (Optional) - Blockers, dependencies
+**Trigger:** Phase 3 determined Count = 0 (CREATE MODE)
 
-2. **Generate Epic document:**
-   - Goal, Scope (in/out), Success Criteria
-   - Dependencies, Risks & Mitigations
-   - Show Epic numbering (e.g., Epic 7)
+**Objective:** Prepare all Epic documents before batch preview.
 
-3. **Show Epic preview:**
-   - Display generated Epic document for review
+**Step 1: Auto-extract Information for ALL Domains**
 
-4. **User confirmation:**
-   - User types "confirm" to create this Epic in Linear
-   - OR user can edit/refine the Epic document
+For EACH domain (from Phase 2), extract answers to 5 key questions from project documentation:
 
-5. **Create Linear Project:**
-   - Create Linear Project with Epic number
-   - Update kanban_board.md:
-     * Increment Next Epic Number by 1 in Linear Configuration table
-     * Add new row to Epic Story Counters: `Epic N+ | - | US001 | - | EPN_01`
-     * Add to "Epics Overview" → Active: `- [Epic N: Title](link) - Backlog`
-   - Return Project URL
+1. **Q1: Business goal** - Why this Epic/domain matters
+   - **Source:** requirements.md (domain objectives section)
+   - **Extraction:** "The [domain] module aims to..." or "Goal: [objective]"
+   - **Fallback:** architecture.md (module purpose)
 
-6. **Move to next domain:**
-   - Repeat steps 1-5 for next domain
-   - Continue until all domains processed
+2. **Q2: Key features in scope** - 3-5 bullet points of capabilities
+   - **Source:** requirements.md (functional requirements for this domain)
+   - **Extraction:** Bulleted lists under domain heading, feature descriptions
+   - **Fallback:** architecture.md (component responsibilities)
 
-**Output:** 3-7 Linear Projects created sequentially (one by one)
+3. **Q3: Out of scope** - Prevent scope creep
+   - **Source:** requirements.md (explicitly excluded features section)
+   - **Extraction:** "Not in scope:", "Future versions:", "Out of scope for [domain]:"
+   - **Fallback:** Infer from requirements.md (features NOT mentioned in domain)
+
+4. **Q4: Success criteria** - Measurable outcomes
+   - **Source:** requirements.md (acceptance criteria, metrics, KPIs for domain)
+   - **Extraction:** Performance targets, user metrics, quality gates
+   - **Fallback:** Generic criteria based on domain type (e.g., "<200ms API response" for backend)
+
+5. **Q5: Known risks** (Optional) - Blockers, dependencies
+   - **Source:** architecture.md (technical constraints, dependencies section)
+   - **Extraction:** "Risks:", "Dependencies:", "Constraints:"
+   - **Fallback:** User input if critical, otherwise leave as "To be determined during Story planning"
+
+**If extraction incomplete:**
+- Show extracted information to user
+- Ask ONCE for ALL missing information across ALL domains (batch question, not per-domain)
+- Example: "For Epic 1 (User Management), I couldn't find success criteria. For Epic 2 (Payment), I couldn't find risks. Please provide..."
+
+**Step 2: Generate ALL Epic Documents**
+
+For EACH domain, generate complete Epic document using epic_template_universal.md:
+
+**Epic indexing:**
+- IF Infrastructure Epic exists (from Phase 1 Step 3) → Epic 0 (Infrastructure), Epic 1-N (business domains)
+- ELSE → Epic 1-N (business domains only)
+
+**Linear Title (will be created in Phase 5a):**
+- Use Next Epic Number from kanban_board.md for sequential numbering
+- Format: "Epic {Next Epic Number}: {Domain Title}"
+- Example: Next = 11 → "Epic 11: Infrastructure & Operations"
+
+**Sections:** Goal, Scope In/Out, Success Criteria, Dependencies, Risks & Mitigations, Architecture Impact, Phases
+
+**Use extracted information** from Step 1 for all sections
+
+**Output:** All Epic documents ready (Epic 0-N), indexed within initiative
+
+---
+
+### Phase 5a: Epic Creation (CREATE mode)
+
+**Trigger:** Phase 4 completed preparation
+
+**Objective:** Show preview, get confirmation, create all Epics in Linear.
+
+**Step 1: Show Batch Preview (USER CONTROL POINT 2)**
+
+Display ALL generated Epics with initiative-internal indexes:
+
+```
+📋 Epic Batch Preview (6 Epics to create)
+
+═══════════════════════════════════════════════
+Epic 0: Infrastructure & Operations
+═══════════════════════════════════════════════
+Goal: Establish foundational infrastructure, deployment pipeline, and operational capabilities to support all business Epics
+
+Scope In:
+- Logging and error handling framework
+- Monitoring and alerting system
+- CI/CD pipeline (GitHub Actions)
+- Security baseline (secrets management, encryption)
+- Performance optimization (caching, rate limiting)
+
+Scope Out:
+- Application-specific business logic
+- User-facing features
+- Domain-specific integrations
+
+Success Criteria:
+- All deployments automated via CI/CD (<10 min deployment time)
+- System uptime ≥99.9%
+- API response time <200ms (p95)
+- Security audit passed
+
+═══════════════════════════════════════════════
+Epic 1: User Management
+═══════════════════════════════════════════════
+Goal: Enable users to register, authenticate, and manage their accounts securely
+
+Scope In:
+- User registration with email verification
+- Login/logout with JWT authentication
+- Password reset flow
+- Profile management
+
+Scope Out:
+- Social login (OAuth) - planned for Epic 5
+- Multi-factor authentication - future version
+- User roles and permissions - part of Epic 3
+
+Success Criteria:
+- User registration <2 seconds
+- Login success rate >98%
+- Password reset completion rate >90%
+
+[... all other Epics ...]
+
+───────────────────────────────────────────────
+Total: 6 Epics (Epic 0: Infrastructure, Epic 1-5: Business domains)
+Type "confirm" to create all Epics in Linear
+```
+
+**Step 2: User Confirmation**
+
+- User types "confirm" → Proceed to Step 3
+- User provides feedback → Adjust documents in Phase 4, regenerate preview, repeat
+
+**Step 3: Create All Epics in Linear**
+
+For EACH Epic (in sequential order for numbering consistency):
+
+1. **Get Next Epic Number:**
+   - Read current Next Epic Number from kanban_board.md
+   - Example: 11
+
+2. **Create Linear Project:**
+   - Title: "Epic {Next Epic Number}: {Domain Title}"
+     - Example: "Epic 11: Infrastructure & Operations" (for Epic 0)
+     - Example: "Epic 12: User Management" (for Epic 1)
+   - Description: Complete Epic markdown (from Phase 4 Step 2)
+   - Team: Team ID from Phase 1
+   - State: "planned"
+
+3. **Update kanban_board.md:**
+   - Increment Next Epic Number by 1 in Linear Configuration table
+   - Add new row to Epic Story Counters: `Epic {N} | - | US001 | - | EPN_01`
+   - Add to "Epics Overview" → Active: `- [Epic {N}: Title](link) - Backlog`
+
+4. **Collect URL**
+
+**Step 4: Display Summary**
+
+```
+✅ Created 6 Epics for initiative
+
+Epics created:
+- Epic 11: Infrastructure & Operations (Epic 0 index) [link]
+- Epic 12: User Management (Epic 1 index) [link]
+- Epic 13: Product Catalog (Epic 2 index) [link]
+- Epic 14: Shopping Cart (Epic 3 index) [link]
+- Epic 15: Payment Processing (Epic 4 index) [link]
+- Epic 16: Order Management (Epic 5 index) [link]
+
+Next Epic Number updated to: 17
+
+Next Steps:
+1. Use ln-220-story-coordinator to create Stories for each Epic (run 6 times)
+2. OR use ln-200-scope-decomposer to automate Epic + Story creation
+```
+
+**Output:** Created Epic URLs + summary
+
+---
 
 ### Phase 5b: Replan Mode (Existing Epics Found)
 
-**Trigger:** Initiative already has Epics (requirements changed, need to replan)
+**Trigger:** Phase 3 determined Count ≥ 1 (REPLAN MODE)
 
 **Process:**
 
@@ -147,7 +408,7 @@ Query kanban_board.md and Linear for existing Epics:
    - Note Epic status (active/archived)
    - **Total:** N existing Epics
 
-2. **Compare IDEAL Plan vs Existing:**
+2. **Compare IDEAL Plan (from Phase 2) vs Existing:**
    - **Match by goal:** Fuzzy match Epic goals + domain names
    - **Identify operations needed:**
      - **KEEP:** Epic in IDEAL + existing, goals unchanged → No action
@@ -169,7 +430,7 @@ Query kanban_board.md and Linear for existing Epics:
    - Epic 9: Legacy Data Migration (removed from scope)
 
    ➕ CREATE (L Epics): New domains added
-   - Epic 10: Analytics Engine (new initiative requirement)
+   - Epic 17: Analytics Engine (new initiative requirement)
    ```
 
 4. **Show Replan Summary:**
@@ -187,7 +448,7 @@ Query kanban_board.md and Linear for existing Epics:
    - **KEEP:** Skip (no Linear API calls)
    - **UPDATE:** Call `update_project(id, description=new_description)` (if no Stories In Progress)
    - **OBSOLETE:** Call `update_project(id, state="archived")` (if no Stories In Progress)
-   - **CREATE:** Call `create_project()` (same as Phase 5a) + update kanban_board.md
+   - **CREATE:** Call `create_project()` (same as Phase 5a Step 3) + update kanban_board.md
 
 7. **Update kanban_board.md:**
    - Remove OBSOLETE Epics from Epic Story Counters table
@@ -208,28 +469,48 @@ Query kanban_board.md and Linear for existing Epics:
 
 Before completing work, verify ALL checkpoints:
 
-**✅ Objects Created in Linear:**
-- [ ] Each Epic Linear Project created successfully (3-7 Projects total)
-- [ ] All required fields populated (title, description, team)
-- [ ] Epic numbers sequential (no gaps in numbering)
+**✅ Discovery Complete (Phase 1):**
+- [ ] Team ID loaded from kanban_board.md
+- [ ] Next Epic Number loaded from kanban_board.md
+- [ ] Documentation scanned (requirements.md, architecture.md, tech_stack.md)
+- [ ] HTML files scanned (if frontend exists)
+- [ ] Infrastructure Epic decision made (YES/NO based on project conditions)
 
-**✅ Description Complete:**
-- [ ] All template sections filled (Goal, Scope In/Out, Success Criteria, Risks, Phases)
-- [ ] No placeholders remaining ({{PLACEHOLDER}} removed)
-- [ ] Scope boundaries clear (what IS and IS NOT in Epic)
+**✅ Scope Analysis Complete (Phase 2):**
+- [ ] Domains auto-identified from docs + HTML
+- [ ] Infrastructure Epic (Epic 0) included if applicable
+- [ ] Epic list built (Epic 0-N or Epic 1-N)
+- [ ] User confirmed Epic structure (CONTROL POINT 1)
 
-**✅ Tracking Updated:**
-- [ ] kanban_board.md updated after EACH Epic creation:
-  - Next Epic Number incremented by 1 in Linear Configuration table
-  - New row added to Epic Story Counters: `Epic N+ | - | US001 | - | EPN_01`
-  - Epic added to "Epics Overview" → Active: `- [Epic N: Title](link) - Backlog`
-- [ ] Each Linear Project URL returned to user immediately after creation
+**✅ Existing Epics Checked (Phase 3):**
+- [ ] Epic Story Counters read from kanban_board.md
+- [ ] Existing Epic count determined (0 → CREATE, ≥1 → REPLAN)
 
-**✅ User Confirmation:**
-- [ ] User reviewed EACH Epic before creation
-- [ ] User typed "confirm" for EACH Epic to proceed with creation
+**✅ Epic Preparation Complete (Phase 4 - CREATE only):**
+- [ ] Q1-Q5 auto-extracted for ALL domains
+- [ ] User provided missing information if needed (batch question)
+- [ ] ALL Epic documents generated (Epic 0-N indexes)
 
-**Output:** List of Linear Project URLs (one after each Epic creation) + final summary ("Created N Epics: Epic X through Epic Y")
+**✅ Epic Creation Complete (Phase 5a - CREATE only):**
+- [ ] Batch preview shown with Epic 0-N indexes
+- [ ] User confirmed preview (CONTROL POINT 2)
+- [ ] ALL Epics created in Linear with "Epic {N}: {Title}" format (N = Next Epic Number)
+- [ ] kanban_board.md updated after EACH Epic:
+  - Next Epic Number incremented by 1
+  - Epic Story Counters row added
+  - Epics Overview updated
+- [ ] Summary displayed with all Epic URLs
+
+**✅ Epic Replan Complete (Phase 5b - REPLAN only):**
+- [ ] Existing Epics loaded from Linear
+- [ ] IDEAL plan compared against existing
+- [ ] Operations categorized (KEEP/UPDATE/OBSOLETE/CREATE)
+- [ ] User confirmed operations (CONTROL POINT 2)
+- [ ] Operations executed in Linear
+- [ ] kanban_board.md updated (removed OBSOLETE, added CREATE)
+- [ ] Summary displayed with affected Epic URLs
+
+**Output:** List of Linear Project URLs (Epic {N}: {Title}) + Next Epic Number value
 
 ---
 
@@ -241,34 +522,73 @@ Before completing work, verify ALL checkpoints:
 ```
 
 **Process:**
-1. **Discovery** → Team "Product", Last Epic = 10 → Next: Epic 11
-2. **Scope Analysis** → Identifies 5 domains: "User Management", "Product Catalog", "Shopping Cart", "Payment Processing", "Order Management"
-3. **Sequential Processing (Loop):**
-   - **Epic 11 "User Management":**
-     - Ask 5 questions → Generate Epic 11 → Show preview → User confirms → Create in Linear → Update kanban (Next = 12) → Return URL
-   - **Epic 12 "Product Catalog":**
-     - Ask 5 questions → Generate Epic 12 → Show preview → User confirms → Create in Linear → Update kanban (Next = 13) → Return URL
-   - **Epic 13 "Shopping Cart":**
-     - Ask 5 questions → Generate Epic 13 → Show preview → User confirms → Create in Linear → Update kanban (Next = 14) → Return URL
-   - **Epic 14 "Payment Processing":**
-     - Ask 5 questions → Generate Epic 14 → Show preview → User confirms → Create in Linear → Update kanban (Next = 15) → Return URL
-   - **Epic 15 "Order Management":**
-     - Ask 5 questions → Generate Epic 15 → Show preview → User confirms → Create in Linear → Update kanban (Next = 16) → Return URL
 
-**Result:** 5 Epics created sequentially (Epic 11-15)
+1. **Phase 1: Discovery & Research**
+   - Team "Product", Next Epic Number = 11
+   - Scan requirements.md, architecture.md, tech_stack.md
+   - Scan HTML files: Found navigation with Products, Cart, Checkout
+   - Infrastructure Epic decision: YES (new project, multi-stack: React + Python)
+
+2. **Phase 2: Scope Analysis**
+   - Auto-identify 6 domains from docs + HTML: "Infrastructure", "User Management", "Product Catalog", "Shopping Cart", "Payment Processing", "Order Management"
+   - Build Epic list: Epic 0 (Infrastructure) + Epic 1-5 (business)
+   - Show proposed Epic structure → User confirms
+
+3. **Phase 3: Check Existing**
+   - Epic Story Counters: 0 rows → CREATE MODE
+
+4. **Phase 4: Epic Preparation**
+   - Auto-extract Q1-Q5 for all 6 domains from requirements.md, architecture.md, HTML
+   - Generate 6 Epic documents (Epic 0-5 indexes)
+
+5. **Phase 5a: Epic Creation**
+   - Show batch preview with Epic 0-5 indexes
+   - User types "confirm"
+   - Create in Linear sequentially:
+     - Epic 0 → Linear: "Epic 11: Infrastructure & Operations"
+     - Epic 1 → Linear: "Epic 12: User Management"
+     - Epic 2 → Linear: "Epic 13: Product Catalog"
+     - Epic 3 → Linear: "Epic 14: Shopping Cart"
+     - Epic 4 → Linear: "Epic 15: Payment Processing"
+     - Epic 5 → Linear: "Epic 16: Order Management"
+   - Next Epic Number updated to 17
+   - Display summary with all 6 URLs
+
+**Result:** 6 Epics created (Epic 0-5 internal indexes, Epic 11-16 Linear titles)
+
+---
 
 ## Reference Files
 
 - **linear_integration.md:** Discovery patterns + Linear API reference
 - **epic_template_universal.md:** Epic template structure
 
+---
+
 ## Best Practices
 
-- Make success criteria measurable: "<200ms" not "fast"
-- Define clear OUT of scope to prevent scope creep
+- **Research project docs first:** Always scan requirements.md, architecture.md, tech_stack.md in Phase 1 Step 2 BEFORE asking user
+- **Scan HTML files:** Extract functional domains from navigation, forms, page titles (Phase 1 Step 2) - complements documentation
+- **Propose Infrastructure Epic:** For new projects, multi-stack, or projects with security/monitoring/deployment requirements (Phase 1 Step 3)
+- **Epic 0 for Infrastructure:** Use Epic 0 as reserved index for Infrastructure Epic within initiative, business domains start from Epic 1 (Phase 2 Step 2)
+- **Business Epic grouping:** Group domains by complete business process OR HTML screen
+  - ✅ BY BUSINESS PROCESS: "User Authentication" (login + register + password reset + profile)
+  - ✅ BY HTML SCREEN: "Product Catalog" (products list page + product details page + search)
+  - ❌ AVOID: "Login Screen", "Register Screen" as separate Epics (too granular, merge into "User Authentication")
+  - ❌ AVOID: "User Table", "Login Service" (technical components, not business domains)
+  - **Guideline:** 1 Epic = 5-10 User Stories = 1 complete business capability or major UI screen group
+- **Batch Epic preview:** Generate ALL Epics before showing preview - allows user to see complete Epic plan with Epic 0-N indexes (Phase 5a Step 1)
+- **Auto-extraction:** Extract Q1-Q5 from requirements.md, architecture.md, HTML BEFORE asking user (Phase 4 Step 1) - ask only for missing information
+- **Linear Title format:** "Epic {Next Epic Number}: {Domain}" where Next Epic Number from kanban_board.md (Phase 5a Step 3)
+- **Business-focused Scope:** Epic Scope In lists USER CAPABILITIES, not technical tasks
+  - ✅ GOOD: "Users can register, login, logout, reset password"
+  - ❌ BAD: "Create user table, JWT middleware, password hashing service"
+  - Technical architecture → Epic "Architecture Impact" section, NOT Scope In
+- **Measurable success criteria:** "<200ms" not "fast", ">98% login rate" not "reliable"
+- **Define OUT of scope:** Prevent scope creep with explicit exclusions
 - **No code snippets:** Never include actual code in Epic descriptions - only high-level features and goals
 
 ---
 
-**Version:** 5.0.0 (BREAKING: Added REPLAN mode with Decompose-First Pattern, renamed to ln-210-epic-coordinator)
-**Last Updated:** 2025-11-17
+**Version:** 7.0.0 (BREAKING: Epic 0 clarified as initiative-internal index. HTML research added to Phase 1 Step 2 for frontend domain extraction. Phase structure simplified - removed old Phase 3 "Build IDEAL Plan" (merged into Phase 2 inline). Phase 4 extracted from Phase 5a for Epic Preparation. Phase numbering updated: Phase 3=Check Existing, Phase 4=Preparation, Phase 5a/5b=Creation/Replan. Linear titles use Next Epic Number consistently. Removed confusing "conceptual numbering" explanations.)
+**Last Updated:** 2025-11-20

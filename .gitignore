@@ -92,3 +92,4 @@ wheels/
 *.swo
 *.swn
 .*.sw*
+NUL

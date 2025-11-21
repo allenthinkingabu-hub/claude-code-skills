@@ -1,19 +1,19 @@
 ---
-name: ln-221-library-researcher
-description: Research libraries/standards via MCP Context7 + Ref. Generates Research Summary for Story Technical Notes subsection. Reusable worker.
+name: ln-221-standards-researcher
+description: Research standards/patterns via MCP Ref. Generates Standards Research for Story Technical Notes subsection. Reusable worker.
 ---
 
-# Library Researcher (Worker)
+# Standards Researcher (Worker)
 
-This skill researches libraries, API specifications, and industry standards using MCP Context7 and Ref to generate Research Summary for Story Technical Notes.
+This skill researches industry standards and architectural patterns using MCP Ref to generate Standards Research for Story Technical Notes.
 
 ## When to Use This Skill
 
 This skill should be used when:
-- Need to research libraries/frameworks BEFORE Story generation (ensures tasks have concrete API methods, versions, best practices)
-- Epic Technical Notes mention specific libraries requiring latest documentation
-- Prevent situations where tasks lack specific API methods or use outdated patterns
-- Reusable for ANY skill requiring library research (ln-220-story-coordinator, ln-310-story-decomposer, ln-350-story-test-planner)
+- Need to research standards and patterns BEFORE Story generation (ensures tasks follow industry best practices)
+- Epic Technical Notes mention specific standards requiring documentation (OAuth, OpenAPI, WebSocket)
+- Prevent situations where tasks use outdated patterns or violate RFC compliance
+- Reusable for ANY skill requiring standards research (ln-220-story-coordinator, ln-310-story-decomposer, ln-350-story-test-planner)
 
 **Who calls this skill:**
 - **ln-220-story-coordinator** (Phase 3) - research for Story creation
@@ -23,7 +23,9 @@ This skill should be used when:
 
 ## How It Works
 
-The skill follows a 5-phase workflow: Identify → Context7 Research → Ref Research → Existing Guides → Research Summary.
+The skill follows a 5-phase workflow focused on standards and architectural patterns.
+
+Phases: Identify → Ref Research → Existing Guides → Standards Research
 
 ### Phase 1: Identify Libraries
 
@@ -53,28 +55,20 @@ The skill follows a 5-phase workflow: Identify → Context7 Research → Ref Res
 
 ---
 
-### Phase 2: MCP Context7 Research
+### Phase 2: MCP Ref Research
 
-**Objective**: Get latest API documentation for each library.
+**Objective**: Get industry standards and architectural patterns.
 
-**Process**:
-1. **FOR EACH library** in library list (parallel calls when possible):
-   - Call `mcp__context7__resolve-library-id(libraryName="[library]")` → Get Context7-compatible library ID
-   - Call `mcp__context7__get-library-docs(context7CompatibleLibraryID="[id]", topic="[Story domain]", tokens=3000)` → Get latest documentation
+**Process:**
+1. **Focus on standards/RFCs:**
+   - Call `mcp__Ref__ref_search_documentation(query="[story_domain] RFC standard specification")`
+   - Extract: RFC/spec references (OAuth 2.0 RFC 6749, OpenAPI 3.0, WebSocket RFC 6455)
 
-2. **Extract from documentation**:
-   - **Latest stable version** (prefer LTS, avoid beta/RC/bleeding edge)
-   - **Key API methods** (2-5 most relevant for Story domain) - method names and signatures
-   - **Configuration parameters** (initialization, setup requirements)
-   - **Known limitations** (async support, storage backends, multi-process caveats)
-   - **Deprecations** (deprecated methods to avoid)
-   - **Official docs URL** (link to source)
+2. **Focus on architectural patterns:**
+   - Call `mcp__Ref__ref_search_documentation(query="[story_domain] architectural patterns best practices")`
+   - Extract: Middleware, Dependency Injection, Decorator pattern
 
-3. **Store results** for Research Summary compilation
-
-**Fallback**: If library NOT found in Context7 → Use `WebSearch` as fallback (search "[library] latest version API documentation 2025")
-
-**Output**: Library documentation table (library name, version, purpose, docs URL) + Key APIs list
+**Output:** Standards compliance table + Architectural patterns list
 
 ---
 
@@ -119,66 +113,59 @@ The skill follows a 5-phase workflow: Identify → Context7 Research → Ref Res
 
 ---
 
-### Phase 5: Generate Research Summary
+### Phase 5: Generate Standards Research
 
-**Objective**: Compile all research results into Research Summary for Story Technical Notes subsection.
+**Objective**: Compile research results into Standards Research for Story Technical Notes subsection.
 
-**Process**:
-1. **Generate Research Summary** in Markdown format:
+**Process:**
 
-   ```markdown
-   ## Library Research
-   **Primary libraries:**
-   | Library | Version | Purpose | Docs |
-   |---------|---------|---------|------|
-   | [name] | v[X.Y.Z] | [use case for Story domain] | [official docs URL] |
+Generate Standards Research in Markdown format:
 
-   **Key APIs:**
-   - `[method_signature]` - [purpose and when to use]
-   - `[method_signature]` - [purpose and when to use]
+```markdown
+## Standards Research
 
-   **Key constraints:**
-   - [Limitation 1: e.g., no async support in v0.1.9] - [workaround if any]
-   - [Limitation 2: e.g., in-memory storage doesn't persist] - [solution: Redis backend]
+**Standards compliance:**
+- [Standard/RFC name]: [how Story should comply - brief description]
+  - Example: "OAuth 2.0 (RFC 6749): Use authorization code flow with PKCE for public clients"
 
-   **Standards compliance:**
-   - [Standard/RFC name]: [how Story should comply - brief description]
+**Architectural patterns:**
+- [Pattern name]: [when to use, why relevant for Story domain]
+  - Example: "Middleware pattern: Intercept requests for authentication before reaching endpoints"
 
-   **Existing guides:**
-   - [guide_path.md](guide_path.md) - [brief guide description]
-   ```
+**Existing guides:**
+- [guide_path.md](guide_path.md) - [brief guide description]
+```
 
-2. **Return Research Summary** to calling skill (ln-220, ln-310, ln-350)
+**Return Standards Research** to calling skill (ln-220, ln-310, ln-350)
 
-**Output**: Research Summary (Markdown string) for insertion into Story Technical Notes subsection
+**Output:** Standards Research (Markdown string) for insertion into Story Technical Notes subsection
 
 **Important notes:**
-- Focus on KEY APIs only (2-5 methods), not exhaustive documentation
+- Focus on STANDARDS and PATTERNS only (no library details - libraries researched at Task level)
 - Prefer official docs and RFC standards over blog posts
-- If Research Summary is empty (no libraries) → Return "No library research needed"
-- Research Summary will be inserted in EVERY Story's Technical Notes (Library Research subsection)
+- If Standards Research is empty (no standards/patterns) → Return "No standards research needed"
+- Standards Research will be inserted in EVERY Story's Technical Notes (Standards Research subsection)
 
 ---
 
 ## Integration with Ecosystem
 
 **Called by:**
-- **ln-220-story-coordinator** (Phase 3) - research for ALL Stories in Epic (5-10 Stories reuse single research)
+- **ln-220-story-coordinator** (Phase 2) - research for ALL Stories in Epic
 - **ln-310-story-decomposer** (optional) - research for complex technical Stories
-- **ln-350-story-test-planner** (optional) - research for test infrastructure libraries
+- **ln-350-story-test-planner** (optional) - research for test infrastructure
 
 **Dependencies:**
-- MCP Context7 (resolve-library-id, get-library-docs)
-- MCP Ref (ref_search_documentation)
+- MCP Ref (ref_search_documentation) - industry standards and patterns
 - Glob (scan docs/guides/)
-- WebSearch (fallback for libraries not in Context7)
 
 **Input parameters (from calling skill):**
 - `epic_description` (string) - Epic Technical Notes + Scope In + Goal
 - `story_domain` (string, optional) - Story domain (e.g., "rate limiting")
 
 **Output format:**
-- Markdown string (Research Summary for Technical Notes subsection)
+- Markdown string (Standards Research for Technical Notes subsection)
+- Format: Standards + Patterns (libraries researched at Task level)
 
 ---
 
@@ -200,16 +187,13 @@ The skill follows a 5-phase workflow: Identify → Context7 Research → Ref Res
 ## References
 
 **Tools:**
-- `mcp__context7__resolve-library-id()` - Get library ID from name
-- `mcp__context7__get-library-docs()` - Get latest API documentation
 - `mcp__Ref__ref_search_documentation()` - Search best practices and standards
 - `Glob` - Scan docs/guides/ directory
-- `WebSearch` - Fallback for libraries not in Context7
 
 **Templates:**
 - [research_guidelines.md](references/research_guidelines.md) - Research quality guidelines (official docs > blog posts, prefer LTS versions)
 
 ---
 
-**Version:** 1.0.0
-**Last Updated:** 2025-11-17
+**Version:** 2.0.0 (BREAKING: Renamed to ln-221-standards-researcher, removed research_level parameter, simplified to standards/patterns only)
+**Last Updated:** 2025-11-20

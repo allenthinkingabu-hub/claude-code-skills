@@ -51,6 +51,12 @@ Centralized validation refactor + file naming standardization. ln-110-documents-
 
 ---
 
+## 2025-11-21
+
+Decomposed ln-220-story-coordinator v3.0.0 → v4.0.0 (BREAKING: Orchestrator-Worker pattern, 831→409 lines, -51%). Extracted CREATE/REPLAN logic to NEW workers: ln-222-story-creator v1.0.0 (generates 8-section Story documents with Standards Research insertion, validates INVEST criteria, creates in Linear with Epic Grouping Algorithm) and ln-223-story-replanner v1.0.0 (Progressive Loading ONE BY ONE for token efficiency, compares IDEAL vs existing, categorizes KEEP/UPDATE/OBSOLETE/CREATE operations with Story Split/Merge detection, shows diffs for AC/Standards Research/Technical Notes). Coordinator now handles: Context Assembly (Phase 1: Epic extraction + frontend HTML research + fallback search chain), Standards Research delegation to ln-221 (Phase 2), IDEAL planning with vertical slicing + INVEST validation (Phase 3), mode determination via existing Story count (Phase 4), worker delegation to ln-222 or ln-223 (Phase 5a/5b). Token efficiency: 100x reduction in coordinator memory (metadata-only loading: ID/title/status ~50 tokens per Story vs full descriptions ~5,000 tokens loaded by workers when needed, example: 10 Stories = 500 tokens coordinator vs 50,000 tokens workers). story_template_universal.md moved: ln-220/references/ → ln-222/references/ (Template Ownership Principle - Single Source of Truth). ln-200-scope-decomposer v2.0.0 updated references to ln-220 v4.0.0 workflow (Phase 3 sequential Story loop now delegates to ln-220 which routes to ln-222 CREATE or ln-223 REPLAN). Applied same Orchestrator-Worker pattern as ln-310/ln-311/ln-312 (L2 coordinator + L3 CREATE worker + L3 REPLAN worker). Renamed ln-221-library-researcher v1.0.0 → ln-221-standards-researcher v2.0.0 (terminology alignment: focus on RFCs, industry standards, architectural patterns - libraries researched at Task level by ln-310).
+
+---
+
 ## Future Releases
 
 ### Planned

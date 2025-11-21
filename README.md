@@ -52,26 +52,33 @@ This repository contains **29 production-ready skills** for [Claude Code](https:
 
 ### 2. Planning (200-range)
 
-Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-decomposer** (TOP orchestrator) automates full decomposition (scope → Epics → Stories) by delegating to **ln-210-epic-coordinator** (CREATE/REPLAN Epics) → **ln-220-story-coordinator** (CREATE/REPLAN Stories with Phase 3 library research via **ln-221-library-researcher**).
+Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-decomposer** (TOP orchestrator) automates full decomposition (scope → Epics → Stories) by delegating to **ln-210-epic-coordinator** (CREATE/REPLAN Epics) → **ln-220-story-coordinator** (CREATE/REPLAN Stories with Phase 2 standards research via **ln-221-standards-researcher**).
 
 **Orchestrator:**
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-200-scope-decomposer](ln-200-scope-decomposer/)** | **TOP Orchestrator** for full decomposition automation (scope → Epics → Stories). Sequentially delegates: ln-210-epic-coordinator (Phase 2) → ln-220-story-coordinator loop per Epic (Phase 3). User confirmation required (Phase 1). Provides summary + next steps (Phase 4). | 1.1.0 | ✅ |
+| **[ln-200-scope-decomposer](ln-200-scope-decomposer/)** | **TOP Orchestrator** for full decomposition automation (scope → Epics → Stories). Sequentially delegates: ln-210-epic-coordinator (Phase 2) → ln-220-story-coordinator loop per Epic (Phase 3). User confirmation required (Phase 1). Provides summary + next steps (Phase 4). | 2.0.0 | ✅ |
 
 **Coordinators:**
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
 | **[ln-210-epic-coordinator](ln-210-epic-coordinator/)** | **Domain Coordinator** that decomposes scope into 3-7 Linear Projects (Epics) with business goals, success criteria, and phased strategy. Decompose-First Pattern: builds IDEAL plan → checks existing → CREATE/REPLAN mode (KEEP/UPDATE/OBSOLETE/CREATE). Auto-discovers team ID. | 5.0.0 | ✅ |
-| **[ln-220-story-coordinator](ln-220-story-coordinator/)** | **Domain Coordinator** for Story operations (create/replan). Discovery (load Epic, next Story number) → Phase 3: delegates library research to ln-221-library-researcher → builds IDEAL plan (5-10 Stories) → CREATE/REPLAN mode (KEEP/UPDATE/OBSOLETE/CREATE). Research Summary cached for all Stories in Epic. | 1.0.0 | ✅ |
+| **[ln-220-story-coordinator](ln-220-story-coordinator/)** | **Orchestrator** for Story operations. Context Assembly (Phase 1: Epic extraction, frontend research, fallback search) → Standards Research (Phase 2: delegates **ln-221-standards-researcher**) → IDEAL Planning (Phase 3: 5-10 Stories, INVEST validation) → Mode Determination (Phase 4: count existing) → Delegates CREATE (**ln-222-story-creator**) or REPLAN (**ln-223-story-replanner**). Token efficiency: metadata-only loading (ID/title/status ~50 tokens/Story), workers load full descriptions (~5,000 tokens) when needed. | 4.0.0 | ✅ |
 
-**Worker:**
+**Worker (Standards Research - ln-220):**
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-221-library-researcher](ln-221-library-researcher/)** | Research libraries, versions, and industry standards via MCP Context7 (library docs) + MCP Ref (best practices). Generates Research Summary (Markdown format) for insertion in Story Technical Notes subsection. Reusable worker (called by ln-220 only). Time-boxed: 15-20 minutes. | 1.0.0 | ✅ |
+| **[ln-221-standards-researcher](ln-221-standards-researcher/)** | Research industry standards, RFCs, and architectural patterns via MCP Context7 + MCP Ref. Generates Standards Research (Markdown format) for insertion in Story Technical Notes → Library Research subsection. Reusable worker (called by ln-220 Phase 2). Libraries researched at Task level by ln-310. Time-boxed: 15-20 minutes. | 2.0.0 | ✅ |
+
+**Workers (CREATE/REPLAN path - ln-220):**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-222-story-creator](ln-222-story-creator/)** | Creates Stories from IDEAL plan (ln-220 Phase 5a). Generates 8-section documents with Standards Research insertion (Technical Notes), validates INVEST criteria, shows preview, creates in Linear (project=Epic, labels=user-story, state=Backlog), updates kanban_board.md via Epic Grouping Algorithm. First-time Epic decomposition. Owns story_template_universal.md. | 1.0.0 | ✅ |
+| **[ln-223-story-replanner](ln-223-story-replanner/)** | Replans Stories when Epic requirements change (ln-220 Phase 5b). Progressive Loading (ONE BY ONE for token efficiency: ~5,000 tokens/Story), compares IDEAL vs existing, categorizes operations (KEEP/UPDATE/OBSOLETE/CREATE), shows diffs (AC, Standards Research, Technical Notes), user confirmation, executes updates (respects status constraints: Backlog/Todo only), updates kanban_board.md. Story Split/Merge detection. | 1.0.0 | ✅ |
 
 ---
 
