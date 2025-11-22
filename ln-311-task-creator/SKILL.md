@@ -89,7 +89,48 @@ description: Creates ALL task types (implementation, refactoring, test). Generat
 
 ## Workflow
 
-### Phase 1: Generate Task Documents
+### Phase 1: Context Research (MANDATORY)
+
+**Verify plan against actual project state before generating documents.**
+
+> [!WARNING]
+> Do NOT generate tasks that propose creating components/columns/endpoints that already exist.
+> Modify plan to reference existing implementations or extend them.
+
+**Step 1: Search Codebase for Existing Implementations**
+- Grep for components mentioned in Technical Approach (services, repositories, controllers)
+- Check if proposed files/classes already exist
+- Identify patterns that should be reused (base classes, utilities, middleware)
+- **If business logic changes:** Check if class exists → read methods/interfaces where changes will occur
+- **If frontend changes:** Read affected screens/components, understand existing UI elements and state
+
+**Step 2: Verify Database Schema**
+- Read migrations/ or entity files to check existing columns/tables
+- Confirm proposed schema changes don't duplicate existing structure
+- Flag: "Column X already exists in Entity Y"
+
+**Step 3: Check Dependencies**
+- Parse package.json for existing library versions
+- Verify no version conflicts with proposed dependencies
+- Flag: "Library X already at version Y, plan proposes Z"
+
+**Step 4: Review Related Documentation**
+- Read relevant ADRs from docs/adrs/
+- Check guides/ for established patterns to follow
+- Review manuals/ for library-specific constraints
+
+**Output:**
+- Context Report with findings:
+  - "✅ Reuse existing: [component]" → Update task to extend, not create
+  - "⚠️ Conflict found: [issue]" → Flag for user attention
+  - "❌ Already exists: [skip or modify task]" → Remove from plan or rewrite
+- **Story Correction Proposal** (if reality differs from Story description):
+  - If Story says "create X" but X exists → Propose Story update: "extend X" or "modify X"
+  - Return proposal to orchestrator for Story description update via `mcp__linear-server__update_issue`
+
+---
+
+### Phase 2: Generate Task Documents
 
 **Step 1: Select Template Based on taskType**
 
@@ -110,7 +151,7 @@ Read template from `references/` directory:
 
 **Details:** Each template in `references/` directory (owned by ln-311-task-creator). See template files for complete section descriptions.
 
-### Phase 2: Type-Specific Validation
+### Phase 3: Type-Specific Validation
 
 **Validates based on taskType parameter. Stops execution if validation fails.**
 
@@ -122,7 +163,7 @@ Read template from `references/` directory:
 
 **Same validation logic as ln-312-task-replanner Phase 5.**
 
-### Phase 3: Show Preview
+### Phase 4: Show Preview
 
 Display task creation preview:
 
@@ -152,7 +193,7 @@ Guide links included: X guide(s)
 Type "confirm" to create all tasks in Linear.
 ```
 
-### Phase 4: User Confirmation
+### Phase 5: User Confirmation
 
 **Check invocation context:**
 
@@ -162,10 +203,10 @@ Type "confirm" to create all tasks in Linear.
 
 **If invoked by user directly OR autoApprove not provided:**
 - Wait for user input:
-  - **"confirm"** → Continue to Phase 5
+  - **"confirm"** → Continue to Phase 6
   - **Any other input** → Abort, return to orchestrator
 
-### Phase 5: Create in Linear + Update Kanban
+### Phase 6: Create in Linear + Update Kanban
 
 **Step 1: Create Linear Issues**
 
@@ -308,7 +349,16 @@ Task descriptions contain approach and structure ONLY:
 
 Before completing work, verify ALL checkpoints:
 
-**✅ Task Documents Generated (Phase 1):**
+**✅ Context Research Completed (Phase 1):**
+- [ ] Codebase searched for existing implementations (services, repositories, controllers)
+- [ ] Database schema verified (no duplicate columns/tables proposed)
+- [ ] Dependencies checked (no version conflicts)
+- [ ] Related ADRs/guides/manuals reviewed
+- [ ] Frontend screens read (if UI changes)
+- [ ] Business logic classes inspected (if logic changes)
+- [ ] Story Correction Proposal generated (if reality differs from description)
+
+**✅ Task Documents Generated (Phase 2):**
 - [ ] All N tasks have complete 7-section documents
 - [ ] Context: Current/Desired state clear
 - [ ] Implementation Plan: 3 phases with checkboxes
@@ -318,35 +368,35 @@ Before completing work, verify ALL checkpoints:
 - [ ] Existing Code Impact: Refactoring + Tests to update + Docs to update
 - [ ] Definition of Done: Standard checklist
 
-**✅ NO Test Creation Validated (Phase 2):**
+**✅ NO Test Creation Validated (Phase 3):**
 - [ ] All task descriptions scanned for test phrases
 - [ ] NO "write tests", "create tests", "add unit tests" found
 - [ ] Tests to Update section ONLY lists existing tests (if any)
 - [ ] No test creation detected → Validation passed
 
-**✅ Preview Shown (Phase 3):**
+**✅ Preview Shown (Phase 4):**
 - [ ] Task summaries displayed (title, goal, estimate, AC, components)
 - [ ] Total count and hours shown
 - [ ] Consumer-First ordering confirmed
 - [ ] Guide links count displayed
 
-**✅ User Confirmed (Phase 4):**
+**✅ User Confirmed (Phase 5):**
 - [ ] User typed "confirm"
 - [ ] Ready to create in Linear
 
-**✅ Linear Issues Created (Phase 5):**
+**✅ Linear Issues Created (Phase 6):**
 - [ ] All N tasks created in Linear
 - [ ] parentId set to Story ID (hierarchy preserved)
 - [ ] team, state fields set correctly
 - [ ] Linear URLs captured
 
-**✅ kanban_board.md Updated (Phase 5):**
+**✅ kanban_board.md Updated (Phase 6):**
 - [ ] Tasks added under Story in Backlog section
 - [ ] Epic header preserved (not duplicated)
 - [ ] Indentation correct (2-space Story, 4-space Tasks)
 - [ ] Existing items preserved
 
-**✅ Summary Returned (Phase 5):**
+**✅ Summary Returned (Phase 6):**
 - [ ] Created tasks list with Linear URLs
 - [ ] kanban_board.md update confirmed
 - [ ] Total count and hours displayed

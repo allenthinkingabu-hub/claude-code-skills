@@ -103,6 +103,28 @@ This skill should be used when:
    - Verify implementation approaches align with Story architecture
    - Ensure tasks reference appropriate documentation
 
+**Step 2b: Verify Against Project Codebase**
+
+> [!WARNING]
+> Story description may be outdated or based on assumptions. Verify against actual project state.
+
+- **Search for existing implementations:**
+  - Grep for components mentioned in Tasks (services, repositories, controllers)
+  - Check if proposed files/classes already exist
+  - **If exists:** Flag task to extend/modify instead of create
+- **Verify database schema:**
+  - Read entity files/migrations to check existing columns
+  - If Story says "add column X" but X exists → Flag for Story correction
+- **Check frontend components:**
+  - If UI changes proposed → Read affected screens, verify elements exist
+  - Understand current state before proposing modifications
+- **Review business logic classes:**
+  - If logic changes → Read existing methods/interfaces
+  - Identify actual integration points
+- **Output:**
+  - If reality differs from Story description → Auto-fix Story via `mcp__linear-server__update_issue`
+  - Update Technical Notes: "Column X already exists, task modified to extend"
+
 **Decision Outcomes:**
 - ✅ Better solution found → Rewrite Story/Tasks
 - ✅ Pattern missing → Auto-create guide and link
@@ -568,6 +590,12 @@ This skill should be used when:
 - [ ] Missing guides auto-created via ln-321-guide-creator
 - [ ] Guide paths saved for linking
 - [ ] Task approaches validated against Story architecture
+- [ ] **Codebase verified (Step 2b):**
+  - Existing implementations searched (services, repositories)
+  - Database schema checked (no duplicate columns)
+  - Frontend screens read (if UI changes)
+  - Business logic classes inspected (if logic changes)
+  - Story auto-corrected if reality differs from description
 
 **Phase 3: Comprehensive Auto-Fix**
 - [ ] **Structural Fixes (1-4):**
