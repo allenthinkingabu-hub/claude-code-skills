@@ -14,7 +14,7 @@
 | **2** | **YAGNI (You Aren't Gonna Need It)** | code+docs | Don't build features "just in case". Build what's needed NOW | **Avoid:** Generic frameworks for one use case, caching without bottleneck, extensibility points without requirements |
 | **3** | **KISS (Keep It Simple)** | code+docs | Simplest solution that solves the problem. No unnecessary complexity | **Approach:** Start with naive solution → Add complexity ONLY when proven necessary → Each abstraction layer must justify existence |
 | **4** | **DRY (Don't Repeat Yourself)** | code+docs | Each piece of knowledge exists in ONE place. Link, don't duplicate | **Code:** Extract repeated logic, constants defined once. **Docs:** Single Source of Truth, reference via links, update immediately |
-| **5** | **Consumer-First Development** | code | Design APIs/functions/workflows from consumer's perspective | **Order:** 1. Define interface/API FIRST (what consumers need) → 2. Implement internals SECOND (how it works) → 3. Never expose internal complexity to consumers |
+| **5** | **Consumer-First Design** | code | Design APIs/functions/workflows from consumer's perspective | **Design:** 1. Define interface/API FIRST (what consumers need) → 2. Implement internals SECOND (how it works) → 3. Never expose internal complexity to consumers. **Note:** This is for API/interface DESIGN, not task execution order (see Foundation-First Execution in workflow) |
 | **6** | **No Legacy Code** | code | Remove backward compatibility shims immediately after migration | **Rules:** Deprecated features deleted in NEXT release (not "someday"), NO commented-out code (use git history), NO `if legacy_mode:` branches |
 | **7** | **Documentation-as-Code** | docs | Documentation lives WITH code, updated WITH code changes | **Rules:** Documentation in same commit as code, NO separate "docs update" tasks, Outdated docs = bug (same severity as code bug) |
 | **8** | **Security by Design** | code | Security integrated from design phase, not bolted on later | **Practices:** Never commit secrets → env vars/secret managers, Validate at boundaries → Pydantic models, Least Privilege → minimum permissions, Fail Securely → don't leak info in errors, Defense in Depth → multiple security layers |
@@ -77,7 +77,7 @@ Before submitting code, verify compliance with principles:
 - [ ] **YAGNI:** Only building what's needed now (no speculative features)
 - [ ] **KISS:** Solution is as simple as possible, not simpler
 - [ ] **DRY:** No duplicated logic or documentation
-- [ ] **Consumer-First:** API/interface designed from consumer perspective
+- [ ] **Consumer-First Design:** API/interface designed from consumer perspective
 - [ ] **No Legacy Code:** No deprecated code, no commented-out code
 - [ ] **Documentation-as-Code:** Docs updated in same commit as code
 - [ ] **Security by Design:** No secrets committed, input validated, least privilege

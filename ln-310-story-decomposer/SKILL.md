@@ -15,7 +15,7 @@ Coordinates task creation and replanning for User Stories:
 - Auto-discovers Team ID from kanban_board.md
 - Loads Story from Linear (AC, Technical Notes, Context)
 - Analyzes Story complexity (simple/medium/complex)
-- Builds OPTIMAL task plan (1-6 tasks, Consumer-First ordered)
+- Builds OPTIMAL task plan (1-6 tasks, Foundation-First execution order)
 - Extracts guide links from Story Technical Notes
 - Ignores and strips any Non-Functional Requirements (NFRs) – do not create tasks to formalize them
 - Checks existing tasks in Linear
@@ -75,13 +75,19 @@ This ensures consistent decomposition logic regardless of whether tasks exist or
 3. THEN query Linear for existing tasks
 4. Delegate: count = 0 → ln-311-task-creator, count ≥ 1 → ln-312-task-replanner
 
-### Consumer-First Ordering
+### Task Order Strategy
 
-**Principle**: Consumers developed before providers. Outer layers before inner layers.
+**Two separate concerns:**
 
-**Order**: API endpoint → Service → Repository → Database
+1. **Analysis (Consumer-First)**: Start from consumer perspective to understand WHAT is needed (YAGNI)
+   - Think: API endpoint → Service → Repository → Database
+   - Purpose: Avoid building unnecessary components
 
-Applied automatically in Phase 2 when building IDEAL task plan.
+2. **Execution (Foundation-First)**: Build from foundation up for testability
+   - Order: Database → Repository → Service → API → Frontend
+   - Purpose: Each layer is testable when built (can't test API without DB)
+
+**Applied in Phase 2**: Tasks created in **Foundation-First** order (execution order).
 
 ### Task Structure (7 Sections)
 
@@ -142,9 +148,9 @@ Parses request for:
    - **Complex Story** (5+ AC, multiple integrations): 3-6 tasks (12-30 hours)
    - **Max 6 tasks per Story** (enforced)
 
-4. **Apply Consumer-First Ordering**:
-   - API endpoint → Service → Repository → Database
-   - Consumers developed before providers
+4. **Apply Foundation-First Ordering** (for execution):
+   - Database → Repository → Service → API → Frontend
+   - Each layer testable when built (foundation before consumers)
 
 5. **Extract Guide Links**:
    - Read Story Technical Notes "Related Guides:" section
@@ -157,7 +163,7 @@ Parses request for:
    2. Task Title (AC#, AC#) - Xh
    3. Task Title (AC#) - Xh
 
-   Consumer-First order: ✓
+   Foundation-First order: ✓
    Total estimate: Xh
    Guide links: [path/to/guide.md, ...]
    ```
@@ -293,7 +299,7 @@ Before completing work, verify ALL checkpoints:
 - [ ] Story loaded from Linear (AC, Technical Notes)
 - [ ] Complexity analyzed (simple/medium/complex)
 - [ ] Optimal task count determined (1-6)
-- [ ] Consumer-First ordering applied
+- [ ] Foundation-First execution order applied
 - [ ] Guide links extracted from Story
 
 **✅ Mode Detected (Phase 3):**
@@ -325,14 +331,14 @@ Before completing work, verify ALL checkpoints:
 | **Story Technical Notes** | Identify technical approach, libraries, patterns | "Use PostgreSQL connection pooling" → add Repository task |
 | **Story Context** | Understand business requirements, domain rules | "User authentication system" → JWT token + refresh logic tasks |
 | **Complexity Analysis** | Determine optimal task count (1-6) | Simple (1-2 tasks), Medium (3-4), Complex (5-6) |
-| **Consumer-First Principle** | Order tasks logically (API → Service → Repository → DB) | Always start with API endpoint, end with database |
+| **Foundation-First Execution** | Order tasks for execution (DB → Repository → Service → API) | Start with database, end with API (each layer testable when built) |
 | **Guide Links** | Extract implementation patterns to pass to workers | "Related Guides: Database Access Pattern" → pass link to ln-311-task-creator |
 
 **IDEAL Plan Building Process (Phase 2):**
 1. Load Story from Linear (AC, Technical Notes, Context)
 2. Analyze complexity (simple/medium/complex)
 3. Determine task count (1-6) based on AC coverage
-4. Apply Consumer-First ordering (API → Service → Repository)
+4. Apply Foundation-First ordering (DB → Repository → Service → API)
 5. Extract guide links from Technical Notes
 6. Build IDEAL task structure with titles, AC mapping, time estimates
 
@@ -376,7 +382,7 @@ Before completing work, verify ALL checkpoints:
 - Complex (5+ AC) → 3-6 tasks (12-30h)
 - **Max 6 tasks per Story** (12-30 hours total)
 
-**Consumer-First Ordering**: API → Service → Repository → Database (applied in Phase 2)
+**Foundation-First Execution**: Database → Repository → Service → API (applied in Phase 2)
 
 **Task Size**: Optimal 3-5 hours (fits in 1-2 work sessions)
 
@@ -446,7 +452,7 @@ After ln-310-story-decomposer completes:
 
 **Execution**:
 - Phase 1: Team ID discovered, Story ID = US001
-- Phase 2: Story loaded (5 AC scenarios), Complexity = Medium-Complex, IDEAL Plan = 3 tasks (Token generation 4h, Validation middleware 3h, Refresh logic 5h), Consumer-First ✓
+- Phase 2: Story loaded (5 AC scenarios), Complexity = Medium-Complex, IDEAL Plan = 3 tasks (Token generation 4h, Validation middleware 3h, Refresh logic 5h), Foundation-First ✓
 - Phase 3: Query Linear → Count = 0 → CREATE MODE
 - Phase 4a: Invoke ln-311-task-creator (IDEAL plan + Story data)
   - ln-311-task-creator: Generate 3 tasks, validate NO tests, show preview, user confirms, create in Linear, update kanban

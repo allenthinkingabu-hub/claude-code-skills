@@ -357,7 +357,7 @@
 
 **Rules for this document:**
 - Must have SCOPE tag in first 10 lines
-- 8 core principles (Standards First, YAGNI, KISS, DRY, Consumer-First, No Legacy Code, Documentation-as-Code, Security by Design)
+- 8 core principles (Standards First, YAGNI, KISS, DRY, Consumer-First Design, No Legacy Code, Documentation-as-Code, Security by Design)
 - Decision-Making Framework (7 steps)
 - Verification Checklist (8 items)
 
@@ -370,7 +370,7 @@
 **Target Section:** ## Core Principles
 
 **Validation Heuristics:**
-- ✅ Has section "## Core Principles" with 8-row table (Name, Type, Principle, Approach/Rules): Standards First, YAGNI, KISS, DRY, Consumer-First, No Legacy Code, Documentation-as-Code, Security by Design, no subsections
+- ✅ Has section "## Core Principles" with 8-row table (Name, Type, Principle, Approach/Rules): Standards First, YAGNI, KISS, DRY, Consumer-First Design, No Legacy Code, Documentation-as-Code, Security by Design, no subsections
 
 **Auto-Discovery:**
 - None needed (universal principles)
@@ -461,7 +461,7 @@
 **Overall File Validation:**
 - ✅ Has SCOPE tag in first 10 lines
 - ✅ File size > 100 lines (reduced from 300+ due to table format + removed domain-specific principles)
-- ✅ All 8 core principles present (Standards First, YAGNI, KISS, DRY, Consumer-First, No Legacy Code, Documentation-as-Code, Security by Design)
+- ✅ All 8 core principles present (Standards First, YAGNI, KISS, DRY, Consumer-First Design, No Legacy Code, Documentation-as-Code, Security by Design)
 
 **MCP Ref Hints:**
 - Research: "YAGNI principle examples" (if user wants deeper explanation)

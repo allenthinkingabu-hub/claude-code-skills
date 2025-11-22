@@ -386,14 +386,14 @@ Action: CREATE "EP7_04: Migrate token generation to OAuth2"
 - Creating new tasks preserves existing work
 - Easier to merge tasks later than to recover lost work
 
-### 7. Consumer-First Preserved
+### 7. Foundation-First Execution Order Preserved
 
-**This skill does NOT reorder tasks** - IDEAL plan from orchestrator already has Consumer-First ordering applied.
+**This skill does NOT reorder tasks** - IDEAL plan from orchestrator already has Foundation-First execution order applied.
 
 Replan operations preserve order:
 - KEEP tasks → stay in same position
 - UPDATE tasks → stay in same position
-- CREATE tasks → added at end (in Consumer-First order from IDEAL)
+- CREATE tasks → added at end (in Foundation-First order from IDEAL)
 - OBSOLETE tasks → removed (canceled)
 
 ---

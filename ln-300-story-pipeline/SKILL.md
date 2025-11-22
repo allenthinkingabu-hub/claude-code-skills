@@ -132,7 +132,7 @@ Skill(skill: "ln-310-story-decomposer", context: {
 
 **ln-310-story-decomposer will**:
 - Analyze Story (AC, Technical Notes)
-- Build IDEAL task plan (1-6 tasks, Consumer-First ordered)
+- Build IDEAL task plan (1-6 tasks, Foundation-First execution order)
 - Create or replan tasks in Linear
 - Update kanban_board.md
 - Return: Task URLs + summary

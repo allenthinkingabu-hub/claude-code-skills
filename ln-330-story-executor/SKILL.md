@@ -148,6 +148,11 @@ Auto-discovers Team ID and project configuration from `docs/tasks/kanban_board.m
   5. After completion: Loop back to Phase 2 (reload from Linear - AUTOMATIC, no user input)
 
 **Priority 2: Execute Next Task (Todo → In Progress → To Review)**
+
+> [!NOTE]
+> Tasks are executed in **Foundation-First order** (Database → Repository → Service → API → Frontend).
+> This order ensures each layer is testable when built. Tasks are already ordered correctly by ln-310-story-decomposer.
+
 - If no To Review AND no To Rework tasks, but Todo tasks exist (from Linear metadata loaded in Phase 2):
   1. Filter tasks by status "Todo" from Linear metadata
   2. Extract first "Todo" task ID and its labels (already loaded in Phase 2)

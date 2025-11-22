@@ -356,7 +356,7 @@ project_root/
 
 **Development Principles Template**:
 - `references/principles_template.md` (v1.0.0) - Development principles with:
-  - 11 Core Principles (Standards First, YAGNI, KISS, DRY, Consumer-First, Task Granularity, Value-Based Testing, No Legacy Code, Token Efficiency, Documentation-as-Code, Security by Design)
+  - 11 Core Principles (Standards First, YAGNI, KISS, DRY, Consumer-First Design, Task Granularity, Value-Based Testing, No Legacy Code, Token Efficiency, Documentation-as-Code, Security by Design)
   - Decision-Making Framework (7 steps: Security → Standards → Correctness → Simplicity → Necessity → Maintainability → Performance)
   - Trade-offs (when principles conflict)
   - Anti-Patterns to Avoid

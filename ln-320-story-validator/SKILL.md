@@ -158,7 +158,7 @@ This skill should be used when:
 9. **Test Strategy (#7)** - Add Risk-Based Testing (2-5 E2E, 3-8 Integration, 5-15 Unit, 10-28 total, Priority ≥15)
 10. **Test Task Cleanup (#10)** - Remove premature test tasks (created later by ln-350-story-test-planner)
 11. **Documentation Integration (#8)** - Remove standalone doc tasks, integrate into implementation
-12. **Consumer-First Principle (#14)** - Reorder tasks: Consumer → Service → Repository
+12. **Foundation-First Execution (#14)** - Reorder tasks: Database → Repository → Service → API
 
 **D. Scope & Quality (Final Polish):**
 
@@ -348,7 +348,7 @@ This skill should be used when:
 **Auto-fix actions:**
 - **If < 3 tasks:**
   - Analyze Story Context and Technical Notes
-  - Check Consumer-First gaps (Consumer → Service → Repository)
+  - Check Foundation-First gaps (Database → Repository → Service → API)
   - Invoke ln-310-story-decomposer via Skill tool: `Skill(skill: "ln-310-story-decomposer")`
   - Wait for completion (new tasks created in Linear with status = Backlog)
   - Reload task metadata to include new tasks
@@ -424,18 +424,18 @@ This skill should be used when:
 
 **Purpose:** ln-331-task-executor reads these links when implementing.
 
-### #14: Consumer-First Principle
+### #14: Foundation-First Execution Order
 
 **What it checks:**
-- Tasks are ordered: Consumer (API/UI) → Service → Repository (provider)
-- Consumer needs drive implementation order
+- Tasks are ordered: Database → Repository → Service → API → Frontend
+- Each layer is testable when built (foundation before consumers)
 
 **Auto-fix actions:**
-- Reorder Tasks: Consumer first, then Service, then Repository
+- Reorder Tasks: Database first, then Repository, then Service, then API
 - Update Story "Implementation Tasks" section
-- Add note in Technical Notes about consumer-first approach
+- Add note in Technical Notes about foundation-first execution order
 - Update Linear issue
-- Add comment: "Task order corrected per Consumer-First principle"
+- Add comment: "Task order corrected per Foundation-First execution order"
 
 ### #15: Code Quality Fundamentals
 
@@ -529,7 +529,7 @@ This skill should be used when:
 - Phase 2: Check existing guides for architecture patterns
 - Phase 3 (#9): Detect < 3 tasks violation
   - Analyze Story Context: requires API endpoint, business logic, database access
-  - Identify Consumer-First gaps: Service and Repository missing
+  - Identify Foundation-First gaps: Service and Repository missing
   - Invoke ln-310-story-decomposer: `Skill(skill: "ln-310-story-decomposer")`
   - ln-310-story-decomposer creates 2 missing tasks (Service, Repository)
   - Reload task metadata (now 4 tasks total)
@@ -538,8 +538,8 @@ This skill should be used when:
 - Phase 4: Approve Story → Todo
 
 **Output:**
-- Story approved with 4 tasks (Consumer → Service → Repository + Test)
-- Tasks in correct Consumer-First order
+- Story approved with 4 tasks (Database → Repository → Service → API)
+- Tasks in correct Foundation-First execution order
 - Comment explaining task creation
 
 ## Reference Files
@@ -612,7 +612,7 @@ This skill should be used when:
   - Test Strategy added (Risk-Based Testing: 2-5 E2E, 3-8 Integration, 5-15 Unit, Priority ≥15) (#7)
   - Test tasks removed (created later by ln-350-story-test-planner) (#10)
   - Documentation integrated into implementation tasks (#8)
-  - Tasks reordered per Consumer-First principle (#14)
+  - Tasks reordered per Foundation-First execution order (#14)
 - [ ] **Scope & Quality (13-16):**
   - Story size validated (3-8 tasks, ln-310-story-decomposer invoked if < 3) (#9)
   - YAGNI violations removed (#11)

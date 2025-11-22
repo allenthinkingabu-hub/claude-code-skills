@@ -230,17 +230,17 @@ For each Task with structure violations:
 ✅ "Create new guide: Multi-Tenant Authentication Strategy"
 ❌ No guide references in Story Technical Notes (architectural pattern not documented)
 
-### 13. Consumer-First Principle (Story Level)
-**Check:** Story implements consumer before provider
+### 13. Foundation-First Execution Order (Story Level)
+**Check:** Story implements foundation before consumers (for testability)
 
-✅ Task order: 1. API endpoint (consumer) → 2. Auth Service → 3. Token Repository (provider)
-✅ Consumer Tasks use mocks until provider Tasks complete
-❌ Task order: 1. Token Repository → 2. Auth Service → 3. API endpoint (backwards)
+✅ Task order: 1. Token Repository (database) → 2. Auth Service → 3. API endpoint (consumer)
+✅ Each layer is testable when built (no mocks needed for lower layers)
+❌ Task order: 1. API endpoint → 2. Auth Service → 3. Token Repository (can't test without DB)
 
 **Detection Keywords:**
-- Consumer: endpoint, route, controller, API, UI component
+- Database/Foundation: repository, database, schema, migration, entity
 - Service: service, business logic, use case
-- Provider: repository, database, schema, migration
+- Consumer: endpoint, route, controller, API, UI component
 
 **Exceptions:** Foundation layer, standard infrastructure, generic utilities
 

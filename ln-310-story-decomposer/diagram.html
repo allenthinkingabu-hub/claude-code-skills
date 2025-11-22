@@ -20,7 +20,7 @@
                 <li><strong>Pattern:</strong> Orchestrator v6.1.0 - Delegates to workers (ln-311-task-creator, ln-312-task-replanner) via Skill tool</li>
                 <li><strong>Decompose-First:</strong> Build IDEAL plan ALWAYS (1-6 tasks), then check existing and delegate to workers</li>
                 <li><strong>Modes:</strong> CREATE (no tasks → ln-311-task-creator) or REPLAN (has tasks → ln-312-task-replanner)</li>
-                <li><strong>Ordering:</strong> Consumer-First ordering applied automatically (API → Service → Repository → Database)</li>
+                <li><strong>Ordering:</strong> Foundation-First execution order (Database → Repository → Service → API)</li>
                 <li><strong>Next Step:</strong> ln-320-story-validator ONLY (обязательная верификация перед выполнением)</li>
             </ul>
         </div>
@@ -33,7 +33,7 @@
 graph TD
     Start([Start: x-task-manager<br/>ORCHESTRATOR]) --> Phase1[Phase 1: Discovery<br/>Auto-discover Team ID<br/>Parse Story ID from request]
 
-    Phase1 --> Phase2[Phase 2: Analyze & Decompose ALWAYS<br/>Load Story from Linear<br/>Build IDEAL task plan 1-6<br/>Extract guide links<br/>Consumer-First ordering]
+    Phase1 --> Phase2[Phase 2: Analyze & Decompose ALWAYS<br/>Load Story from Linear<br/>Build IDEAL task plan 1-6<br/>Extract guide links<br/>Foundation-First ordering]
 
     Phase2 --> Phase3{Phase 3: Check<br/>Existing Tasks?<br/>Query Linear}
 

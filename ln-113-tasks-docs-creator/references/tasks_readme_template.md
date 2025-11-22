@@ -57,26 +57,30 @@ Backlog/Postponed → Todo → In Progress → To Review → Done
 **User Story Format:** "As a... I want... So that..." + Given-When-Then acceptance criteria
 **Task Format:** Context, requirements, acceptance criteria, implementation notes
 
-### Consumer-First Development
+### Foundation-First Execution Order
 
-**Critical Rule**: Consumer tasks are created BEFORE provider tasks.
+**Critical Rule**: Foundation tasks are executed BEFORE consumer tasks (for testability).
 
 **Definitions**:
-- **Consumer** = Uses a service (e.g., API client calling endpoint)
-- **Provider** = Provides a service (e.g., API endpoint implementation)
+- **Foundation** = Database, Repository, core services
+- **Consumer** = API endpoints, Frontend components that USE foundation
 
-**Rationale**: Natural YAGNI enforcement - only build what consumers need.
+**Rationale**: Each layer is testable when built (can't test API without working DB).
 
 **Example**:
 ```
-✅ CORRECT:
-  Task 1: Frontend dashboard calls /api/users (consumer)
-  Task 2: Implement /api/users endpoint (provider)
+✅ CORRECT EXECUTION ORDER:
+  Task 1: Database schema + Repository (foundation)
+  Task 2: Service layer with business logic
+  Task 3: API endpoint (consumer)
+  Task 4: Frontend dashboard (consumer)
 
-❌ WRONG:
-  Task 1: Implement /api/users endpoint (provider)
-  Task 2: Frontend dashboard calls /api/users (consumer)
+❌ WRONG (can't test):
+  Task 1: Frontend dashboard calls /api/users
+  Task 2: API endpoint (no DB to test against)
 ```
+
+> **Note:** Consumer-First is for API/interface DESIGN (think from consumer perspective), Foundation-First is for EXECUTION ORDER (build testable foundation first).
 
 ---
 

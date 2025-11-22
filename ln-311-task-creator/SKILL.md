@@ -32,7 +32,7 @@ description: Creates ALL task types (implementation, refactoring, test). Generat
 
 1. **ln-310-story-decomposer** (CREATE MODE):
    - Story has NO existing tasks (Linear count = 0)
-   - IDEAL plan generated (1-6 implementation tasks, Consumer-First ordered)
+   - IDEAL plan generated (1-6 implementation tasks, Foundation-First execution order)
    - Parameter: `taskType: "implementation"`
 
 2. **ln-340-story-quality-gate** (Path B - Issues Found):
@@ -187,7 +187,7 @@ Will create N tasks:
 ...
 
 Total: N tasks, X hours estimated
-Consumer-First ordering: ✓
+Foundation-First ordering: ✓
 Guide links included: X guide(s)
 
 Type "confirm" to create all tasks in Linear.
@@ -324,11 +324,11 @@ else:
 - Documentation REQUIRED in section 10 (Documentation Updates)
 - tests/README.md (test commands), README.md (testing section), CHANGELOG.md (tested features)
 
-### 4. Consumer-First Ordering (Implementation Tasks Only)
+### 4. Foundation-First Execution Order (Implementation Tasks Only)
 
 **For implementation tasks:**
-- Task order received from orchestrator already has Consumer-First applied
-- API endpoint → Service → Repository → Database
+- Task order received from orchestrator already has Foundation-First applied
+- Database → Repository → Service → API → Frontend
 - **This skill preserves order** - does NOT reorder
 
 **For refactoring/test tasks:**
@@ -377,7 +377,7 @@ Before completing work, verify ALL checkpoints:
 **✅ Preview Shown (Phase 4):**
 - [ ] Task summaries displayed (title, goal, estimate, AC, components)
 - [ ] Total count and hours shown
-- [ ] Consumer-First ordering confirmed
+- [ ] Foundation-First ordering confirmed
 - [ ] Guide links count displayed
 
 **✅ User Confirmed (Phase 5):**

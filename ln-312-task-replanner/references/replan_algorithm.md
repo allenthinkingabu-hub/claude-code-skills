@@ -18,7 +18,7 @@ Result from Story analysis (runs BEFORE checking existing tasks):
 - Task count: 1-4 (based on Story complexity)
 - Task titles: Descriptive names (e.g., "Implement token generation endpoint")
 - Task goals: Derived from Story AC
-- Consumer-First ordering: API → Service → Repository → Database
+- Foundation-First ordering: Database → Repository → Service → API
 - Estimate per task: 3-5 hours
 - Guide links: From Story Technical Notes
 
@@ -40,7 +40,7 @@ IDEAL TASK PLAN (3 tasks, 12h total):
    - AC: AC5 (refresh with valid refresh token)
    - Estimate: 5h
 
-Consumer-First order: ✓
+Foundation-First order: ✓
 Guide links: [JWT Best Practices](../../docs/guides/jwt-best-practices.md)
 ```
 
@@ -609,11 +609,11 @@ EP10_03: "Refactor pagination from results to API"
 - If updating task with code changes → warning
 - If Done task conflicts with new requirements → create follow-up task
 
-### 7. Consumer-First Validation
+### 7. Foundation-First Validation
 
-- Ensure IDEAL plan respects Consumer-First order
+- Ensure IDEAL plan respects Foundation-First execution order
 - If replan changes order → warning
-- Dependencies should flow correctly (API before Service before Repository)
+- Dependencies should flow correctly (Database before Repository before Service before API)
 
 ## Output Format
 

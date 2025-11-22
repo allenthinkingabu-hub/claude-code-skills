@@ -96,7 +96,7 @@ Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-de
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-310-story-decomposer](ln-310-story-decomposer/)** | **Coordinator** for task operations. Analyzes Story, builds optimal task plan (1-6 tasks, Consumer-First ordered), delegates to ln-311-task-creator (CREATE) or ln-312-task-replanner (REPLAN) with `taskType: "implementation"`. Auto-discovers team ID. For implementation tasks only. | 7.2.0 | ✅ |
+| **[ln-310-story-decomposer](ln-310-story-decomposer/)** | **Coordinator** for task operations. Analyzes Story, builds optimal task plan (1-6 tasks, Foundation-First execution order), delegates to ln-311-task-creator (CREATE) or ln-312-task-replanner (REPLAN) with `taskType: "implementation"`. Auto-discovers team ID. For implementation tasks only. | 7.2.0 | ✅ |
 
 **Workers:**
 
@@ -378,7 +378,8 @@ Epic (Linear Project)
 - **YAGNI** - Do not add functionality ahead of time
 - **KISS** - Simplest solution that works (within standard boundaries)
 - **DRY** - Do not duplicate code
-- **Consumer-First** - Consumer first (API endpoint), then provider (Repository)
+- **Consumer-First Design** - Design APIs/interfaces from consumer perspective (what they need first)
+- **Foundation-First Execution** - Build from foundation up (Database → Repository → Service → API) for testability
 - **Task Granularity** - Optimal task size 3-5 hours (max 6 tasks per Story)
 - **Value-Based Testing** - Prioritize by business risk (2-5 E2E, 3-8 Integration, 5-15 Unit per Story)
 - **No Legacy Code** - Remove backward compatibility shims and deprecated patterns
