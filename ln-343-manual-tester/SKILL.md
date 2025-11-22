@@ -51,6 +51,9 @@ Setup test environment and load Story Acceptance Criteria.
 
 Execute comprehensive testing: Acceptance Criteria, Edge Cases, Error Handling, Integration Points.
 
+> [!NOTE]
+> **Research before concluding FAIL**: On unexpected behavior, use mcp__Ref__ref_search_documentation to verify expected API/framework behavior before marking test as failed (behavior may be correct per spec).
+
 **Sub-steps:**
 
 **2.1 Test Acceptance Criteria**

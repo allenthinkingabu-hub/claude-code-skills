@@ -257,6 +257,7 @@ Before completing work, verify ALL checkpoints:
 5. **Re-run quality gates after fixes** - Ensure nothing broke
 6. **For test tasks** - Verify test limits (2-5 E2E, 3-8 Integration, 5-15 Unit, 10-28 total) and Priority ≥15 scenarios tested
 7. **Chat output prefix** - Always start chat messages with 🔍 [REVIEWER] prefix for user visibility when multiple skills are orchestrated
+8. **Verify research was done** - If implementation diverged from approach due to errors, check that MCP Ref was consulted for best practice (not just workaround applied)
 
 ### Review Examples
 

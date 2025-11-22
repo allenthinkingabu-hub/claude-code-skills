@@ -156,6 +156,7 @@ Rework task API-42 based on review feedback
 2. **Request clarification early** - If unclear, ask before coding
 3. **Run quality gates continuously** - Don't wait until end
 4. **Document all changes** - Clear summary for re-review
+5. **Research before fixing** - On unclear rework items, use mcp__Ref__ref_search_documentation to understand best practice before applying fixes
 
 ---
 

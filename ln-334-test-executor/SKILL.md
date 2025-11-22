@@ -279,6 +279,7 @@ Implement tests for Story US001
 11. **Safe cleanup (Step 3.3):** Verify all tests still pass after removing legacy code
 12. **No flaky tests:** All tests deterministic and stable
 13. **Chat output prefix:** Always use ⚙️ [EXECUTOR] prefix for user visibility when orchestrated
+14. **Research before fixing** - On unexpected test failures, use mcp__Ref__ref_search_documentation to find framework-specific solutions before custom workarounds
 
 ---
 

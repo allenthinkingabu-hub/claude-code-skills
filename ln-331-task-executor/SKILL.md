@@ -191,6 +191,7 @@ Execute task API-42
 4. **Document during implementation** - Never defer to "later" (update STRUCTURE.md, ARCHITECTURE.md, tests/README.md)
 5. **Run quality gates continuously** - Don't wait until end (type checking, linting)
 6. **Chat output prefix** - Always start chat messages with ⚙️ [EXECUTOR] prefix for user visibility when multiple skills are orchestrated
+7. **Research before fixing** - On unexpected errors, use mcp__Ref__ref_search_documentation to find best practice before attempting fixes (avoid reinventing solutions)
 
 > [!NOTE]
 
