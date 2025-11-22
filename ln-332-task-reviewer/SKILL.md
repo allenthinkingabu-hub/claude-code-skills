@@ -68,6 +68,7 @@ Auto-discovers project configuration:
 #### 3.1 Universal Checks (All Tasks)
 
 **Architecture & Design:**
+- **Approach deviations justified**: If implementation differs from Task Technical Approach, verify rationale is documented and represents best practice (not a workaround)
 - Layered boundaries respected (no direct DB or cross-layer calls)
 - Async/await and error handling consistent
 - No hardcoded values:

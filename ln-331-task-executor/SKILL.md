@@ -121,6 +121,10 @@ Auto-discovers project configuration:
    - Find Task in parent Story section under "### In Progress"
    - Remove task line: `    - [LINEAR_ID: EP#_## Task Title](link)`
    - Add task line to same Story section under "### To Review"
+5. **If implementation deviated from documented approach:**
+   - Update task description with actual approach taken and rationale
+   - Create/update relevant guide via ln-321-guide-creator (if new pattern discovered)
+   - Create ADR via ln-322-adr-creator (if architectural decision changed)
 
 > [!NOTE]
 
