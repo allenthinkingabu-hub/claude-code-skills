@@ -109,6 +109,14 @@ Skill(skill: "ln-340-story-quality-gate", storyId: "US004", pass: 2)
 
 ## Pass 1 Workflow
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
+> - **Start:** Read `docs/tasks/checkpoints/[story_id].md` → verify Pass 1 not completed
+> - **Ownership Log (Baton Passing):**
+>   - **Before delegating to worker:** Record `| timestamp | ln-340 | Acquired | worker-name |`
+>   - **After worker returns:** Verify worker recorded `Released` entry, update `Current Owner: ln-340`
+> - **End:** Record `| timestamp | ln-340 | Released | ln-330 |`, mark Pass 1 completed with verdict (PASS/FAIL) and created task type
+
 ### Phase 1: Discovery
 
 Auto-discovers project configuration:
@@ -334,6 +342,14 @@ If we reached Phase 6, it means all quality gates passed. Phase 6 only creates t
 ---
 
 ## Pass 2 Workflow
+
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
+> - **Start:** Read `docs/tasks/checkpoints/[story_id].md` → verify Pass 2 not completed
+> - **Ownership Log (Baton Passing):**
+>   - **Before delegating to worker:** Record `| timestamp | ln-340 | Acquired | worker-name |`
+>   - **After worker returns:** Verify worker recorded `Released` entry, update `Current Owner: ln-340`
+> - **End:** Record `| timestamp | ln-340 | Released | ln-330 |`, mark Pass 2 completed with test verification results
 
 ### Phase 1: Prerequisites Check
 

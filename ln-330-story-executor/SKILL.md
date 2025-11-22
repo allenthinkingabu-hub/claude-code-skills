@@ -96,6 +96,13 @@ This skill should be used when:
 
 ## Workflow
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
+> - **Start:** Read checkpoint → find current task progress
+> - **Before delegating to worker:** Record `| timestamp | ln-330 | Acquired | worker-name |`
+> - **After worker returns:** Verify `Released` entry, update `Current Owner: ln-330`, mark task in matrix
+> - **End:** Record `| timestamp | ln-330 | Released | ln-300 |`, mark Phase 3.2 completed
+
 ### Phase 1: Discovery
 
 Auto-discovers Team ID and project configuration from `docs/tasks/kanban_board.md` and `CLAUDE.md`.

@@ -86,6 +86,30 @@ Phase 3: Loop (Verify → Execute → Review Pass 1 + explicit Pass 2 delegation
 
 ## Workflow
 
+### Phase 0: Checkpoint Setup
+
+> [!NOTE]
+> **Checkpoint enables context recovery** after interruption or context loss. File persists execution state.
+
+**Create or Load checkpoint:**
+- Check if `docs/tasks/checkpoints/[story_id].md` exists
+- **If NOT exists:**
+  1. Read `references/checkpoint_format.md` template COMPLETELY
+  2. Copy template to `docs/tasks/checkpoints/[story_id].md`
+  3. Replace `[Story ID]` placeholder with actual Story ID
+  4. Fill Story metadata (Pipeline, Started timestamp)
+- **If EXISTS:** Read checkpoint, find last completed step, resume from there
+
+**Resume logic:**
+- Phase 2 completed -> Skip ln-310-story-decomposer
+- Phase 3.1 completed -> Skip ln-320-story-validator (for this iteration)
+- Phase 3.2 in progress -> Resume ln-330-story-executor from last task
+- Pass 1/2 completed -> Skip to next step
+
+**Ownership Log (Baton Passing):**
+- **Before delegating to worker:** Record in Ownership Log: `| timestamp | ln-300-story-pipeline | Acquired | worker-name |`
+- **After worker returns:** Verify worker recorded `Released` entry, update `Current Owner: ln-300-story-pipeline`
+
 ### Phase 1: Discovery (Automated)
 
 Auto-discovers Team ID from `docs/tasks/kanban_board.md`.
@@ -108,6 +132,8 @@ Story {
 ```
 
 **NO full description loaded** - token efficiency.
+
+**Update checkpoint:** Mark Phase 1 completed with Team ID and Story status.
 
 ### Phase 2: Task Planning
 
@@ -139,6 +165,8 @@ Skill(skill: "ln-310-story-decomposer", context: {
 
 **After completion**: Reload Story + Tasks metadata.
 
+**Update checkpoint:** Mark Phase 2 completed with mode (CREATE/REPLAN) and task count.
+
 ### Phase 3: Story Verification & Execution Loop
 
 This phase loops until Story status = "To Review".
@@ -166,6 +194,8 @@ Skill(skill: "ln-320-story-validator", context: {
 
 **After completion**: Reload Story + Tasks metadata.
 
+**Update checkpoint:** Mark Step 1 completed with auto-fix count and status transition.
+
 #### Step 2: Story Execution
 
 **Trigger**: Story status = "Todo" OR "In Progress"
@@ -190,6 +220,8 @@ Skill(skill: "ln-330-story-executor", context: {
 
 **After completion**: Reload Story + Tasks metadata.
 
+**Update checkpoint:** Mark Step 2 progress with tasks completed count.
+
 #### Step 3: Story Review Pass 1 + Pass 2 (Explicitly Delegated by ln-330-story-executor)
 
 **Trigger**: ln-330-story-executor explicitly delegates to ln-340-story-quality-gate Pass 1 when all implementation tasks Done
@@ -209,6 +241,8 @@ Skill(skill: "ln-330-story-executor", context: {
 **Loop Condition**: If new task created (fix/refactoring/test), Phase 3 restarts from ln-320-story-validator to approve Backlog → Todo before ln-330-story-executor executes again.
 
 **Exit Condition**: Story status = "Done" (all tasks Done, test task Done, Pass 2 passed)
+
+**Update checkpoint:** Mark Pass 1/Pass 2 completed with verdict.
 
 ### Phase 4: Completion Report
 
@@ -230,6 +264,8 @@ Story successfully processed from planning to Done without manual intervention.
 ```
 
 **Result**: Story fully automated from task planning to Done status.
+
+**Delete checkpoint:** Remove `docs/tasks/checkpoints/[story_id].md` (Story completed, no recovery needed).
 
 ---
 
@@ -306,6 +342,10 @@ ln-330-story-executor completes → Reload metadata → Check Story status
 
 Before completing work, verify ALL checkpoints:
 
+**✅ Checkpoint Setup (Phase 0):**
+- [ ] Checkpoint file created/loaded: `docs/tasks/checkpoints/[story_id].md`
+- [ ] Resume point identified (if checkpoint existed)
+
 **✅ Team ID Discovered (Phase 1):**
 - [ ] Team ID loaded from kanban_board.md OR requested from user
 - [ ] Story ID parsed from request
@@ -333,6 +373,7 @@ Before completing work, verify ALL checkpoints:
 - [ ] All tasks Done
 - [ ] Full pipeline automation confirmed: Todo → In Progress → To Review → Done
 - [ ] Reported to user: "Story successfully processed from planning to Done without manual intervention"
+- [ ] Checkpoint file deleted: `docs/tasks/checkpoints/[story_id].md`
 
 **Output**: Story fully automated from task planning to Done status (no manual intervention).
 
@@ -454,6 +495,13 @@ After ln-300-story-pipeline completes:
 - Phase 4: Report "Story successfully processed from planning to Done without manual intervention"
 
 **Result**: Story fully automated from Todo to Done (no manual intervention).
+
+---
+
+## Reference Files
+
+**Checkpoint Format:**
+- `references/checkpoint_format.md` - Execution checkpoint file structure for context recovery
 
 ---
 

@@ -28,6 +28,10 @@ Creates minimal Package API reference manuals (300-500 words, OpenAPI-inspired f
 
 ## Workflow
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
+> - **End:** Record `| timestamp | ln-323 | Released | ln-320 |` in Ownership Log before returning to orchestrator
+
 ### Phase 0: Research & Discovery (Automated, 10-15 min)
 
 **Automated research through MCP tools:**

@@ -267,7 +267,7 @@ This template defines the standardized format for Linear comments created by ln-
    - ✅ **Status:** PASS
 
 3. **Unicode characters in password**
-   - **Input:** Password: `Test🔒Пароль123`
+   - **Input:** Password: `Test🔒Pass123`
    - **Expected:** Works correctly
    - **Actual:** Login successful, password stored and validated with UTF-8 encoding
    - ✅ **Status:** PASS

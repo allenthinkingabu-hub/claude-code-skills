@@ -1,23 +1,32 @@
 ---
 name: ln-222-story-creator
-description: Creates Stories from IDEAL plan. Generates 8-section documents, validates INVEST, creates in Linear. Invoked by ln-220 (CREATE MODE).
+description: Creates Stories from IDEAL plan (CREATE) or appends user-requested Stories (ADD). Generates 8-section documents, validates INVEST, creates in Linear. Invoked by ln-220.
 ---
 
 # Story Creator
 
-Universal factory worker for creating Stories from IDEAL plan when Epic has no existing Stories. Invoked by ln-220-story-coordinator (count = 0).
+Universal factory worker for creating Stories. Supports two modes:
+- **CREATE MODE**: Epic has no Stories → create from IDEAL plan (5-10 Stories)
+- **ADD MODE**: Epic has Stories → append new Story(s) from user request
+
+Invoked by ln-220-story-coordinator (Phase 5a for CREATE, Phase 5c for ADD).
 
 ## When Invoked
 
-**ln-220-story-coordinator CREATE MODE (Phase 5a):**
+**1. ln-220-story-coordinator CREATE MODE (Phase 5a):**
 - Epic has NO existing Stories (Linear query count = 0)
 - IDEAL plan generated (Phase 3)
 - Standards Research completed by ln-221 (Phase 2)
 - Parameters: `epicData`, `idealPlan`, `standardsResearch`, `teamId`, `autoApprove`
 
+**2. ln-220-story-coordinator ADD MODE (Phase 5c):**
+- Epic HAS existing Stories, user wants to ADD more (not replan)
+- Single Story or few Stories from user request
+- Parameters: `epicData`, `appendMode: true`, `newStoryDescription`, `standardsResearch`, `teamId`
+
 ## Input Parameters
 
-**From ln-220-story-coordinator:**
+**For CREATE MODE (from ln-220-story-coordinator Phase 5a):**
 
 ```javascript
 {
@@ -39,7 +48,31 @@ Universal factory worker for creating Stories from IDEAL plan when Epic has no e
 }
 ```
 
+**For ADD MODE (from ln-220-story-coordinator Phase 5c with appendMode):**
+
+```javascript
+{
+  epicData: {id, title, description},
+  appendMode: true,                    // Signals ADD MODE - append to existing
+  newStoryDescription: "User's request for new Story",
+  standardsResearch: "Focused research for new Story only",
+  teamId: "team-id",
+  autoApprove: false                   // User confirmation recommended
+}
+```
+
+- **appendMode**: `true` signals ADD MODE - append to existing Stories
+- **newStoryDescription**: User's request for new Story(s) to add
+- **NO idealPlan** - creates only what user requested (single Story or few)
+
 ## Workflow
+
+> [!NOTE]
+> **ADD MODE (appendMode: true)**: When adding Stories to existing Epic, workflow is simplified:
+> - Phase 1: Generate only requested Story(s) from `newStoryDescription`
+> - Skip full IDEAL plan comparison
+> - Standards Research is focused only on new Story topics
+> - Other phases proceed normally (INVEST, Preview, Create)
 
 ### Phase 1: Generate Story Documents
 
@@ -207,7 +240,9 @@ NEXT STEPS:
 
 ## Integration
 
-**Called by:** ln-220-story-coordinator (Phase 5a, count = 0)
+**Called by:** ln-220-story-coordinator
+- Phase 5a (CREATE MODE, count = 0) - full IDEAL plan
+- Phase 5c (ADD MODE, count ≥ 1, appendMode) - user-requested Story(s)
 
 **Returns:**
 - Success: Story URLs + summary + next steps

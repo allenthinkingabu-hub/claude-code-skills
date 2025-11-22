@@ -26,6 +26,10 @@ No "technical debt", "can improve later", "this is minor, skip it" - everything 
 
 ## How It Works
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
+> - **End:** Record `| timestamp | ln-332 | Released | ln-330 |` in Ownership Log before returning to orchestrator
+
 ### Phase 1: Discovery (Automated)
 
 Auto-discovers project configuration:

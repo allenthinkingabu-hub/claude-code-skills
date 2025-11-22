@@ -32,6 +32,10 @@ Do NOT use if:
 
 ## How It Works
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
+> - **End:** Record `| timestamp | ln-350 | Released | ln-340 |` in Ownership Log before returning to orchestrator
+
 ### Phase 1: Discovery (Automated)
 
 Auto-discovers Team ID from `docs/tasks/kanban_board.md` (see CLAUDE.md "Configuration Auto-Discovery").
@@ -196,7 +200,7 @@ Before completing work, verify ALL checkpoints:
 - [ ] Section 8 - Existing Tests to Fix/Update: Affected tests + reasons + required fixes
 - [ ] Section 9 - Infrastructure Changes: Packages, Docker, configs to update
 - [ ] Section 10 - Documentation Updates: tests/README, README, CHANGELOG, other docs
-- [ ] Section 11 - Legacy Code Cleanup: Костыли, backward compat, deprecated patterns, dead code
+- [ ] Section 11 - Legacy Code Cleanup: Workarounds, backward compat, deprecated patterns, dead code
 
 **✅ Worker Delegation Executed:**
 - [ ] Checked for existing test task in Linear (labels=["tests"])

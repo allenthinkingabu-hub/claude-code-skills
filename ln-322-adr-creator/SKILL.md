@@ -24,6 +24,10 @@ This skill should be used when:
 
 ## How It Works
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
+> - **End:** Record `| timestamp | ln-322 | Released | orchestrator-name |` in Ownership Log before returning to orchestrator
+
 The skill follows a 4-phase workflow with streamlined interactive dialog:
 
 ### Phase 1: Discovery & Dialog

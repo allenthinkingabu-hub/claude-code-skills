@@ -21,6 +21,10 @@ This skill should be used when:
 
 ## Workflow
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
+> - **End:** Record `| timestamp | ln-343 | Released | ln-340 |` in Ownership Log before returning to orchestrator
+
 ### Phase 1: Setup & Load
 
 Setup test environment and load Story Acceptance Criteria.

@@ -28,14 +28,19 @@ description: Creates ALL task types (implementation, refactoring, test). Generat
 
 ### When This Skill Is Invoked
 
-**Invoked by 3 orchestrators:**
+**Invoked by 3 orchestrators in 4 modes:**
 
 1. **ln-310-story-decomposer** (CREATE MODE):
    - Story has NO existing tasks (Linear count = 0)
    - IDEAL plan generated (1-6 implementation tasks, Foundation-First execution order)
    - Parameter: `taskType: "implementation"`
 
-2. **ln-340-story-quality-gate** (Path B - Issues Found):
+2. **ln-310-story-decomposer** (ADD MODE):
+   - Story HAS existing tasks, user wants to ADD more (not replan)
+   - Single task or few tasks from user request
+   - Parameters: `taskType: "implementation"`, `appendMode: true`, `newTaskDescription: "..."`
+
+3. **ln-340-story-quality-gate** (Path B - Issues Found):
    - Code quality issues detected (DRY/KISS/YAGNI/Architecture violations)
    - Need ONE refactoring task with all issues consolidated
    - Parameter: `taskType: "refactoring"`
@@ -56,7 +61,7 @@ description: Creates ALL task types (implementation, refactoring, test). Generat
 
 **Type-specific parameters**:
 
-**For implementation (from ln-310-story-decomposer):**
+**For implementation CREATE (from ln-310-story-decomposer):**
 - **IDEAL Plan**: Array of 1-6 task specifications:
   ```
   [
@@ -72,6 +77,12 @@ description: Creates ALL task types (implementation, refactoring, test). Generat
   ]
   ```
 - **Guide Links**: Extracted from Story Technical Notes "Related Guides:" section
+
+**For implementation ADD (from ln-310-story-decomposer with appendMode):**
+- **appendMode**: `true` (signals ADD MODE - append to existing tasks)
+- **newTaskDescription**: User's request for new task(s) (e.g., "add validation task")
+- **Guide Links**: Extracted from Story Technical Notes "Related Guides:" section
+- NO IDEAL Plan required - creates only what user requested
 
 **For refactoring (from ln-340-story-quality-gate):**
 - **Code Quality Issues**: Array of DRY/KISS/YAGNI/Architecture violations with severity, files affected, before/after examples
@@ -89,9 +100,22 @@ description: Creates ALL task types (implementation, refactoring, test). Generat
 
 ## Workflow
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
+> - **End:** Record `| timestamp | ln-311 | Released | orchestrator-name |` in Ownership Log before returning to orchestrator
+
+> [!NOTE]
+> **ADD MODE (appendMode: true)**: When adding tasks to existing Story, Phase 1 is simplified:
+> - Research only for the NEW task(s) being added
+> - Skip full IDEAL plan comparison
+> - Phase 2 generates only requested task(s)
+> - Phase 4 preview shows only new task(s)
+
 ### Phase 1: Context Research (MANDATORY)
 
 **Verify plan against actual project state before generating documents.**
+
+**For ADD MODE:** Research only the specific task being added (from `newTaskDescription`).
 
 > [!WARNING]
 > Do NOT generate tasks that propose creating components/columns/endpoints that already exist.
@@ -193,18 +217,16 @@ Guide links included: X guide(s)
 Type "confirm" to create all tasks in Linear.
 ```
 
-### Phase 5: User Confirmation
+### Phase 5: User Confirmation (MANDATORY)
 
-**Check invocation context:**
+**ALWAYS wait for user confirmation before creating tasks in Linear.**
 
-**If invoked by orchestrator with `autoApprove: true` parameter:**
-- ✅ **Skip user confirmation** → Proceed directly to Phase 5
-- Rationale: Full pipeline automation mode (ln-300-story-pipeline)
+Wait for user input:
+- **"confirm"** → Continue to Phase 6 (Create in Linear)
+- **Any other input** → Abort, return to orchestrator with summary of proposed tasks
 
-**If invoked by user directly OR autoApprove not provided:**
-- Wait for user input:
-  - **"confirm"** → Continue to Phase 6
-  - **Any other input** → Abort, return to orchestrator
+> [!NOTE]
+> This is a mandatory checkpoint. Even in pipeline automation mode, user must approve task creation.
 
 ### Phase 6: Create in Linear + Update Kanban
 
@@ -380,8 +402,9 @@ Before completing work, verify ALL checkpoints:
 - [ ] Foundation-First ordering confirmed
 - [ ] Guide links count displayed
 
-**✅ User Confirmed (Phase 5):**
-- [ ] User typed "confirm"
+**✅ User Confirmed (Phase 5 - MANDATORY):**
+- [ ] Preview shown to user with task summaries
+- [ ] User typed "confirm" (no bypass allowed)
 - [ ] Ready to create in Linear
 
 **✅ Linear Issues Created (Phase 6):**

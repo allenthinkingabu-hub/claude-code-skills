@@ -202,9 +202,9 @@ Each Story = ONE vertical slice of user capability (end-to-end: UI → API → S
 
 ---
 
-### Phase 4: Check Existing
+### Phase 4: Check Existing & Detect Mode
 
-**Objective:** Determine execution mode
+**Objective:** Determine execution mode based on existing Stories AND user intent
 
 **Process:**
 
@@ -214,9 +214,20 @@ Query Linear for existing Stories in Epic:
 list_issues(project=Epic.id, label="user-story")
 ```
 
-**Decision:**
-- **Count = 0** → No existing Stories → **Phase 5a: Delegate CREATE**
-- **Count ≥ 1** → Existing Stories found → **Phase 5b: Delegate REPLAN**
+**Mode Detection:**
+
+1. **Analyze user request** for keywords:
+   - ADD keywords: "add story", "one more story", "additional story", "append"
+   - REPLAN keywords: "update plan", "revise", "requirements changed", "replan stories"
+
+2. **Decision matrix:**
+
+| Condition | Mode | Delegate To |
+|-----------|------|-------------|
+| Count = 0 | **CREATE** | Phase 5a: ln-222-story-creator |
+| Count ≥ 1 AND ADD keywords | **ADD** | Phase 5c: ln-222-story-creator (appendMode) |
+| Count ≥ 1 AND REPLAN keywords | **REPLAN** | Phase 5b: ln-223-story-replanner |
+| Count ≥ 1 AND ambiguous | **ASK USER** | "Add new Story or revise the plan?" |
 
 **Important:** Orchestrator loads metadata ONLY (ID, title, status). Workers load FULL descriptions (token efficiency).
 
@@ -287,11 +298,48 @@ Skill(
 
 ---
 
+### Phase 5c: Delegate ADD (Append to Existing Stories)
+
+**Trigger:** Epic has Stories, user wants to ADD more (not replan existing)
+
+**Delegation:**
+
+Call ln-222-story-creator via Skill tool with appendMode:
+
+```javascript
+Skill(
+  skill: "ln-222-story-creator",
+  appendMode: true,  // ADD to existing, don't replace
+  epicData: {id, title, description},
+  newStoryDescription: userRequestedStory,  // Single Story from user request
+  standardsResearch: "Standards Research from Phase 2",
+  teamId: "team-id",
+  autoApprove: false
+)
+```
+
+**Key differences from CREATE MODE:**
+- `appendMode: true` → Skip full IDEAL plan, create only requested Story
+- `newStoryDescription` → User's specific request (e.g., "add authorization Story")
+- Does NOT require Phase 3 IDEAL plan for all Stories
+- Preserves existing Stories without comparison
+
+**Worker handles:**
+- Research standards for NEW Story only
+- Generate Story document (8 sections)
+- Validate INVEST criteria
+- Create in Linear (append to existing)
+- Update kanban_board.md
+
+**Output:** Created Story URL + summary from worker
+
+---
+
 ## Integration with Ecosystem
 
 **Calls:**
 - **ln-221-standards-researcher** (Phase 2) - research standards/patterns for Epic
-- **ln-222-story-creator** (Phase 5a) - CREATE worker
+- **ln-222-story-creator** (Phase 5a, 5c) - CREATE and ADD worker
 - **ln-223-story-replanner** (Phase 5b) - REPLAN worker
 
 **Called by:**

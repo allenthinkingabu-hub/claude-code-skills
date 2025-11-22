@@ -18,6 +18,10 @@ This skill should be used when fixing issues in task (status = To Rework) after 
 
 ## How It Works
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
+> - **End:** Record `| timestamp | ln-333 | Released | ln-330 |` in Ownership Log before returning to orchestrator
+
 ### Phase 1: Discovery (Automated)
 
 Auto-discovers Team ID and project configuration from `docs/tasks/kanban_board.md` and `CLAUDE.md`.

@@ -25,6 +25,10 @@ This skill should be used when executing approved implementation task (status = 
 
 ## How It Works
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
+> - **End:** Record `| timestamp | ln-331 | Released | ln-330 |` in Ownership Log before returning to orchestrator
+
 ### Phase 1: Read Referenced Guides (Automated)
 
 **Objective**: Study architectural patterns before implementation.

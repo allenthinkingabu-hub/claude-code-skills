@@ -115,6 +115,13 @@ See [task_template_implementation.md](../ln-311-task-creator/references/task_tem
 
 ## Workflow
 
+> [!NOTE]
+> **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
+> - **Start:** Read checkpoint → verify Phase 2 not completed
+> - **Before delegating to worker:** Record `| timestamp | ln-310 | Acquired | worker-name |`
+> - **After worker returns:** Verify `Released` entry, update `Current Owner: ln-310`
+> - **End:** Record `| timestamp | ln-310 | Released | ln-300 |`, mark Phase 2 completed
+
 ### Phase 1: Discovery (Automated)
 
 Auto-discovers Team ID from `docs/tasks/kanban_board.md`.
@@ -168,13 +175,24 @@ Parses request for:
    Guide links: [path/to/guide.md, ...]
    ```
 
-### Phase 3: Check Existing Tasks
+### Phase 3: Check Existing Tasks & Detect Mode
 
 Query Linear: `list_issues(parentId=Story.id)`
 
-**Decision**:
-- **Count = 0** → **CREATE MODE** (Phase 4a: Delegate to ln-311-task-creator)
-- **Count ≥ 1** → **REPLAN MODE** (Phase 4b: Delegate to ln-312-task-replanner)
+**Mode Detection:**
+
+1. **Analyze user request** for keywords:
+   - ADD keywords: "add task", "one more", "additional task", "append"
+   - REPLAN keywords: "update plan", "revise", "AC changed", "requirements changed", "replan"
+
+2. **Decision matrix:**
+
+| Condition | Mode | Delegate To |
+|-----------|------|-------------|
+| Count = 0 | **CREATE** | Phase 4a: ln-311-task-creator |
+| Count ≥ 1 AND ADD keywords | **ADD** | Phase 4c: ln-311-task-creator (appendMode) |
+| Count ≥ 1 AND REPLAN keywords | **REPLAN** | Phase 4b: ln-312-task-replanner |
+| Count ≥ 1 AND ambiguous | **ASK USER** | "Add new task or revise the plan?" |
 
 ### Phase 4a: Delegate to ln-311-task-creator (if Count = 0)
 
@@ -233,14 +251,51 @@ Skill(skill: "ln-312-task-replanner", {
 - Output: Operations summary + URLs + warnings
 - Details: See [ln-312-task-replanner/SKILL.md](../ln-312-task-replanner/SKILL.md)
 
+### Phase 4c: Delegate to ln-311-task-creator (ADD MODE - append to existing)
+
+User wants to add task(s) to Story that already has tasks, WITHOUT replanning existing ones.
+
+**Invocation**:
+```
+Skill(skill: "ln-311-task-creator", {
+  taskType: "implementation",
+  appendMode: true,  // ADD to existing, don't replace
+  teamId: teamId,
+  storyData: {
+    id: Story.id,
+    title: Story.title,
+    description: Story.description,
+    ac: Story.acceptanceCriteria,
+    technicalNotes: Story.technicalNotes,
+    context: Story.context
+  },
+  newTaskDescription: userRequestedTask,  // Single task from user request
+  guideLinks: extractedGuideLinks,
+  autoApprove: true
+})
+```
+
+**Key differences from CREATE MODE:**
+- `appendMode: true` → Skip full IDEAL plan, create only requested task(s)
+- `newTaskDescription` → User's specific request (e.g., "add validation task")
+- Does NOT require Phase 2 IDEAL plan for all tasks
+- Preserves existing tasks without comparison
+
+**Worker responsibilities**:
+- Input: appendMode + storyData + newTaskDescription + guideLinks
+- Output: Created task URL + summary
+- Details: See [ln-311-task-creator/SKILL.md](../ln-311-task-creator/SKILL.md)
+
 ### Phase 5: Post-Execution
 
 **Verify worker completed successfully**:
-- ln-311-task-creator: Tasks created in Linear + kanban_board.md updated
-- ln-312-task-replanner: Operations executed + kanban_board.md updated
+- ln-311-task-creator (CREATE): Tasks created in Linear + kanban_board.md updated
+- ln-311-task-creator (ADD): New task(s) appended + kanban_board.md updated
+- ln-312-task-replanner (REPLAN): Operations executed + kanban_board.md updated
 
 **Return to user**:
 - CREATE MODE: "N tasks created. Linear URLs: [...]"
+- ADD MODE: "Task added to existing. Linear URL: [...]"
 - REPLAN MODE: "Operations executed. X kept, X updated, X canceled, X created."
 
 **Next Steps**:
