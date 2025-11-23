@@ -57,25 +57,25 @@ Auto-discovers Team ID and project configuration from `docs/tasks/kanban_board.m
 
 ### Phase 3: Implementation
 
-**Process:**
-1. **Address each Must-fix item** from review feedback
-2. **Follow principles:** KISS / YAGNI / DRY
-3. **Apply fixes:** Code changes, test updates, documentation corrections
-4. **Complete Existing Code Impact:**
+**Documentation-First process:**
+1. **Update documentation FIRST:**
+   - If feedback mentions doc issues → fix docs first
+   - If code changes affect architecture → update ARCHITECTURE.md first
+   - Use updated docs as specification for code fixes
+2. **Address each Must-fix item** from review feedback
+3. **Follow principles:** KISS / YAGNI / DRY
+4. **Apply fixes:** Code changes, test updates
+5. **Complete Existing Code Impact:**
    - Finish all refactoring from task's "Existing Code Impact" section
    - Update all existing tests (maintain passing status)
    - Update all affected documentation
-5. **Request clarification:** If new or unclear issues appear, document and ask before proceeding
+6. **Request clarification:** If new or unclear issues appear, document and ask before proceeding
 
 **Quality validation:**
 - Run quality gates (types, lint)
 - **For test tasks only:** Run all tests, verify Priority ≥15 scenarios covered, check test limits (10-28 total)
 - Re-run specific tests mentioned in review (if applicable)
 - Fix all newly surfaced issues immediately
-
-**Documentation updates:**
-- Update affected docs (STRUCTURE.md, ARCHITECTURE.md, guides/, tests/README.md)
-- Keep concise, link instead of duplicate
 
 ### Phase 4: Submit for Re-Review
 
@@ -96,6 +96,12 @@ Auto-discovers Team ID and project configuration from `docs/tasks/kanban_board.m
 - Do NOT commit changes (commits happen after final approval)
 - Do NOT close task
 - Focus solely on fixes and updates
+
+> [!CAUTION]
+> **⛔ STOP HERE. DO NOT proceed to Done status.**
+> - Task status MUST remain "To Review" (NOT Done)
+> - Only **ln-332-task-reviewer** can set status to Done after re-review
+> - Return control to orchestrator (ln-330-story-executor) or user
 
 ---
 
@@ -156,11 +162,12 @@ Rework task API-42 based on review feedback
 
 ## Best Practices
 
-1. **Address all Must-fix items** - Check each item in review feedback
-2. **Request clarification early** - If unclear, ask before coding
-3. **Run quality gates continuously** - Don't wait until end
-4. **Document all changes** - Clear summary for re-review
-5. **Research before fixing** - On unclear rework items, use mcp__Ref__ref_search_documentation to understand best practice before applying fixes
+1. **Documentation FIRST** - Fix doc issues BEFORE code fixes (docs as specification)
+2. **Address all Must-fix items** - Check each item in review feedback
+3. **Request clarification early** - If unclear, ask before coding
+4. **Run quality gates continuously** - Don't wait until end
+5. **Document all changes** - Clear summary for re-review
+6. **Research before fixing** - On unclear rework items, use mcp__Ref__ref_search_documentation to understand best practice before applying fixes
 
 ---
 

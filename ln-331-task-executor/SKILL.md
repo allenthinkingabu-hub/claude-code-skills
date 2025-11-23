@@ -86,20 +86,24 @@ Auto-discovers project configuration:
 
 ### Phase 4: Implementation
 
-**KISS/YAGNI implementation:**
-1. **Follow task checkboxes:** Task description contains checkboxes - follow sequentially and verify completion
-2. **Follow task details:** Goal, Technical Approach, Acceptance Criteria
-3. **Implement code:** Simplest solution that meets requirements
-4. **Code comments (15-20% ratio):**
+**Documentation-First + KISS/YAGNI implementation:**
+1. **Update documentation FIRST:**
+   - Update STRUCTURE.md (if new components planned)
+   - Update ARCHITECTURE.md (if architectural changes planned)
+   - Update tests/README.md (for new test patterns)
+   - Documentation acts as specification for implementation
+2. **Follow task checkboxes:** Task description contains checkboxes - follow sequentially and verify completion
+3. **Follow task details:** Goal, Technical Approach, Acceptance Criteria
+4. **Implement code:** Simplest solution that meets requirements
+5. **Code comments (15-20% ratio):**
    - Explain WHY (non-obvious logic), not WHAT (obvious from code)
    - NO Epic/task IDs, NO historical notes, NO code examples
    - Only critical technical details (database query optimizations, API quirks, constraints)
-5. **Avoid hardcoded values:**
+6. **Avoid hardcoded values:**
    - Extract magic numbers to named constants with WHY explanations
    - Move configuration to config files or environment variables
    - Never hardcode: paths, URLs, API endpoints, credentials, API keys
    - Example: Replace `setTimeout(5000)` with `setTimeout(config.timeoutMs) // 5000ms optimal for slow networks`
-6. **Document during implementation** (STRUCTURE.md, ARCHITECTURE.md, tests/README.md) following guides
 7. **Address Existing Code Impact:**
    - Complete all refactoring from task's "Existing Code Impact" section
    - Update all existing tests (maintain passing status)
@@ -130,8 +134,13 @@ Auto-discovers project configuration:
    - Create/update relevant guide via ln-321-guide-creator (if new pattern discovered)
    - Create ADR via ln-322-adr-creator (if architectural decision changed)
 
-> [!NOTE]
+> [!CAUTION]
+> **⛔ STOP HERE. DO NOT proceed to Done status.**
+> - Task status MUST remain "To Review" (NOT Done)
+> - Only **ln-332-task-reviewer** can set status to Done after code review
+> - Return control to orchestrator (ln-330-story-executor) or user
 
+> [!NOTE]
 > Story status management is handled by ln-330-story-executor (orchestrator), not by ln-331-task-executor (worker). See Separation of Concerns principle.
 
 ---
@@ -176,6 +185,11 @@ Before completing work, verify ALL checkpoints:
 - [ ] Chat output prefix used: ⚙️ [EXECUTOR] for all messages
 - [ ] Final message: "⚙️ [EXECUTOR] Implementation complete. Quality gates passed. Ready for review."
 
+**⛔ FORBIDDEN (workflow violation):**
+- [ ] Task status is "To Review" (NOT "Done" - only ln-332-task-reviewer can set Done)
+- [ ] Did NOT attempt to review own code (not executor's responsibility)
+- [ ] Returned control to orchestrator/user after To Review
+
 **Output:** Implementation task ready for ln-332-task-reviewer (status "To Review")
 
 ---
@@ -192,7 +206,7 @@ Execute task API-42
 1. **Follow task description** - All details are in task (checkboxes, Technical Approach, AC)
 2. **KISS and YAGNI** - Simplest solution that meets requirements
 3. **Address Existing Code Impact** - Complete all refactoring, test updates, doc updates from task
-4. **Document during implementation** - Never defer to "later" (update STRUCTURE.md, ARCHITECTURE.md, tests/README.md)
+4. **Documentation FIRST** - Update docs BEFORE coding (STRUCTURE.md, ARCHITECTURE.md as specification for implementation)
 5. **Run quality gates continuously** - Don't wait until end (type checking, linting)
 6. **Chat output prefix** - Always start chat messages with ⚙️ [EXECUTOR] prefix for user visibility when multiple skills are orchestrated
 7. **Research before fixing** - On unexpected errors, use mcp__Ref__ref_search_documentation to find best practice before attempting fixes (avoid reinventing solutions)

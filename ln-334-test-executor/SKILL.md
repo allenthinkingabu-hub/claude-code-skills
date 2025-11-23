@@ -177,6 +177,12 @@ Auto-discovers project configuration:
 3. Move task: "In Progress" → "To Review"
 4. Update kanban_board.md (In Progress → To Review)
 
+> [!CAUTION]
+> **⛔ STOP HERE. DO NOT proceed to Done status.**
+> - Task status MUST remain "To Review" (NOT Done)
+> - Only **ln-332-task-reviewer** can set status to Done after code review
+> - Return control to orchestrator (ln-330-story-executor) or user
+
 ---
 
 ## Definition of Done
@@ -251,6 +257,11 @@ Before completing work, verify ALL checkpoints:
 **✅ Handoff Ready:**
 - [ ] Chat output prefix used: ⚙️ [EXECUTOR] for all messages
 - [ ] Final message: "Story Finalizer task complete. 6 steps executed (Fix Tests + New Tests + Infrastructure + Documentation + Legacy Cleanup + Verification). All quality gates passed. Ready for review."
+
+**⛔ FORBIDDEN (workflow violation):**
+- [ ] Task status is "To Review" (NOT "Done" - only ln-332-task-reviewer can set Done)
+- [ ] Did NOT attempt to review own tests (not executor's responsibility)
+- [ ] Returned control to orchestrator/user after To Review
 
 **Output:** Story Finalizer test task ready for ln-332-task-reviewer (status "To Review")
 
