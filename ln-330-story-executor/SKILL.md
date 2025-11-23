@@ -1,6 +1,6 @@
 ---
 name: ln-330-story-executor
-description: Executes Story by orchestrating child tasks. Prioritizes To Review (→ ln-332-task-reviewer), then Todo (→ ln-331-task-executor/test). Manages transitions (Todo → In Progress → Done). Auto-discovers team/config.
+description: Orchestrates Story child tasks. Priority: To Review → Todo. Delegates to ln-331/ln-332/ln-334. Auto-discovers team/config.
 ---
 
 # Story Execution Skill
@@ -189,7 +189,7 @@ Exit when no tasks in these statuses → Phase 4 → Invoke ln-340-story-quality
 
 **Architecture:** Orchestrator-Worker Pattern - ln-330-story-executor (task orchestrator) delegates story quality to ln-340-story-quality-gate (story worker)
 
-#### Actions
+**Actions**
 
 **1. Verify all implementation tasks Done:**
 - Query tasks: `parentId = Story ID AND labels contains "implementation"`
@@ -263,7 +263,7 @@ Skill(skill: "ln-340-story-quality-gate")
    - **If Pass:** Story Done, workflow complete
    - **If Fail:** Fix tasks created in Backlog → GOTO Phase 3 (auto-verify and execute fixes)
 
-#### Result
+**Result**
 
 **When ln-340-story-quality-gate Pass 2 passes:**
 - Story status: Done

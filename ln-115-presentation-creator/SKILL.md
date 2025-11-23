@@ -724,111 +724,17 @@ node build-presentation.js
 
 ## Definition of Done
 
-Before completing work, verify ALL checkpoints:
+| Phase | Critical Checkpoints |
+|-------|---------------------|
+| **1. READ DOCS** | ✅ All docs loaded from docs/project/, docs/reference/, docs/tasks/ ✅ Metadata extracted ✅ Mermaid blocks preserved |
+| **2. VALIDATE EXISTS** | ✅ Required files exist (requirements.md, architecture.md, tech_stack.md) ✅ ERROR if missing |
+| **3. VALIDATE QUALITY** | ✅ Diagrams checked ✅ Placeholders detected ✅ Content length checked ✅ WARN only (non-blocking) |
+| **4. CREATE DIR** | ✅ docs/presentation/ created ✅ README.md created/preserved |
+| **5. COPY TEMPLATES** | ✅ assets/ created with all templates OR preserved if exists |
+| **6. INJECT CONTENT** | ✅ All 6 tabs populated ✅ **CRITICAL: Example blocks deleted** ✅ No `<!-- EXAMPLE -->` markers ✅ No hardcoded e-commerce data |
+| **7. BUILD HTML** | ✅ `node build-presentation.js` executed ✅ presentation_final.html created (~120-150 KB) ✅ Tested in browser |
 
-### Phase 1: READ DOCS
-
-**✅ Documentation Loaded:**
-- [ ] docs/project/ documentation read (requirements.md, architecture.md, tech_stack.md + optional)
-- [ ] docs/reference/ documentation read (adrs/, guides/ if exist)
-- [ ] docs/tasks/ documentation read (kanban_board.md if exists)
-- [ ] Metadata extracted (project name, date, version)
-- [ ] Mermaid blocks identified and preserved
-
-### Phase 2: VALIDATE SOURCE EXISTS
-
-**✅ Required Files Validated:**
-- [ ] requirements.md exists and NOT empty (>100 bytes)
-- [ ] architecture.md exists and NOT empty
-- [ ] tech_stack.md exists and NOT empty
-- [ ] If ANY required missing: ERROR logged, execution stopped
-
-**✅ Optional Files Checked:**
-- [ ] Optional files existence checked (api_spec.md, database_schema.md, design_guidelines.md, runbook.md)
-- [ ] Optional directories checked (adrs/, guides/, kanban_board.md)
-- [ ] Warnings logged for missing optional files
-- [ ] Execution continues even if optional missing
-
-### Phase 3: VALIDATE SOURCE QUALITY
-
-**✅ Diagrams Validated:**
-- [ ] architecture.md checked for Mermaid diagrams (warn if 0 found)
-- [ ] database_schema.md checked for ER diagram (if file exists, warn if no diagram)
-- [ ] Warnings logged but execution continues
-
-**✅ Placeholders Detected:**
-- [ ] All source files scanned for `{{PLACEHOLDER}}`, `[Add your...]`, `TODO:`
-- [ ] Placeholder locations logged with line numbers
-- [ ] Warnings logged but execution continues
-
-**✅ Content Length Checked:**
-- [ ] requirements.md word count checked (warn if <500 words)
-- [ ] architecture.md word count checked (warn if <1000 words)
-- [ ] tech_stack.md word count checked (warn if <200 words)
-- [ ] Warnings logged but execution continues
-
-**✅ Quality Report:**
-- [ ] Summary logged: diagrams status, placeholders count, content length status
-- [ ] Suggestions provided: "Run ln-114 to complete docs" or "Fix manually"
-
-### Phase 4: CREATE DIR
-
-**✅ Presentation Directory & README:**
-- [ ] docs/presentation/ directory created
-- [ ] docs/presentation/README.md created (if didn't exist) OR preserved (if existed)
-- [ ] README contains: Purpose, Quick Navigation, Customization Guide, Build Instructions, Maintenance
-- [ ] Placeholders replaced: `{{PROJECT_NAME}}`, `{{LAST_UPDATED}}`
-- [ ] User notified: created OR preserved
-
-### Phase 5: COPY TEMPLATES
-
-**✅ Modular HTML Structure Created:**
-- [ ] Assets directory created: docs/presentation/assets/
-- [ ] All template files copied from references/ to assets/ (if assets/ didn't exist):
-  - presentation_template.html
-  - styles.css (~400-500 lines)
-  - scripts.js (tab switching, Mermaid init)
-  - build-presentation.js (Node.js build script)
-  - All 6 tab templates in tabs/ subdirectory
-- [ ] OR assets/ already existed: preserved user customizations
-
-### Phase 6: INJECT CONTENT
-
-**✅ Content Generated from MD Docs (Project-Specific):**
-- [ ] All 6 tabs populated with content from docs/project/, docs/reference/, docs/tasks/
-- [ ] All Mermaid diagrams preserved with valid syntax
-- [ ] All placeholders replaced (no `{{PLACEHOLDER}}` remaining in tab files)
-- [ ] **CRITICAL**: All example blocks deleted (no `<!-- EXAMPLE START -->` or `<!-- EXAMPLE END -->` markers)
-- [ ] **CRITICAL**: NO hardcoded e-commerce examples (John Smith, React 18 badges, Stripe, etc.)
-- [ ] Only actual project data visible in presentation tabs
-- [ ] SCOPE tags present in each tab (HTML comments at top)
-- [ ] Special characters escaped (XSS prevention)
-- [ ] Semantic HTML used (proper hierarchy, ARIA labels)
-
-### Phase 7: BUILD HTML
-
-**✅ Build Process Completed:**
-- [ ] Navigate to docs/presentation/assets/
-- [ ] Build script executed: `node build-presentation.js`
-- [ ] presentation_final.html created successfully (~120-150 KB)
-- [ ] Standalone file (no external dependencies except Mermaid.js CDN)
-- [ ] File size validated (<200 KB threshold)
-- [ ] User notified: rebuilt OR created + file size
-
-**✅ Validation Passed:**
-- [ ] All 6 tabs functional (navigation works, content displays correctly)
-- [ ] Mermaid diagrams syntax valid (no build errors)
-- [ ] Collapsible sections work (details/summary, accordion)
-- [ ] Responsive design works (mobile/tablet/desktop)
-- [ ] Tested in browser: Opens without errors
-
-**✅ User Guidance Provided:**
-- [ ] Success message with file size
-- [ ] File location: docs/presentation/presentation_final.html
-- [ ] Next steps: "Test in browser: Double-click to open"
-- [ ] Customization reminder: "Edit assets/, then rebuild with node build-presentation.js"
-
-**Output:** Standalone HTML presentation in docs/presentation/presentation_final.html + modular source in assets/ directory + navigation README
+**Output:** docs/presentation/presentation_final.html + assets/ + README.md
 
 ---
 

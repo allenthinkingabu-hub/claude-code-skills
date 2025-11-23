@@ -1,6 +1,6 @@
 ---
 name: ln-322-adr-creator
-description: Creates minimal ADRs via 5-question dialog. Categorizes as Strategic (business/patterns) or Technical (frameworks/infra). Nygard format, 7 sections (~300-500 words). Used after ln-114-project-docs-creator.
+description: Creates ADRs via 5-question dialog. Strategic/Technical categories. Nygard format, 7 sections (~300-500 words).
 ---
 
 # ADR Creator

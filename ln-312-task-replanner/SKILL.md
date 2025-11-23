@@ -150,7 +150,7 @@ Array of existing task structures ready for comparison.
 
 **Steps**:
 
-#### Step 1: Match by Goal
+**Step 1: Match by Goal**
 
 For EACH task in IDEAL plan:
 - Extract goal (from title and description)
@@ -165,7 +165,7 @@ For EACH existing task:
 - Search IDEAL plan for similar goal
 - Result: Match found → Candidate for KEEP/UPDATE, No match → Mark for OBSOLETE
 
-#### Step 2: Determine Operations
+**Step 2: Determine Operations**
 
 **Categorize each task based on criteria:**
 
@@ -178,7 +178,7 @@ For EACH existing task:
 
 **Details:** See [replan_algorithm.md](references/replan_algorithm.md) for detailed criteria and edge cases.
 
-#### Step 3: Handle Edge Cases
+**Step 3: Handle Edge Cases**
 
 **Show WARNING, let user decide (no auto-action):**
 

@@ -171,7 +171,7 @@ Skill(skill: "ln-310-story-decomposer", context: {
 
 This phase loops until Story status = "To Review".
 
-#### Step 1: Story Verification
+**Step 1: Story Verification**
 
 **Trigger**: Story status = "Backlog" OR Tasks exist but not verified
 
@@ -196,7 +196,7 @@ Skill(skill: "ln-320-story-validator", context: {
 
 **Update checkpoint:** Mark Step 1 completed with auto-fix count and status transition.
 
-#### Step 2: Story Execution
+**Step 2: Story Execution**
 
 **Trigger**: Story status = "Todo" OR "In Progress"
 
@@ -222,7 +222,7 @@ Skill(skill: "ln-330-story-executor", context: {
 
 **Update checkpoint:** Mark Step 2 progress with tasks completed count.
 
-#### Step 3: Story Review Pass 1 + Pass 2 (Explicitly Delegated by ln-330-story-executor)
+**Step 3: Story Review Pass 1 + Pass 2 (Explicitly Delegated by ln-330-story-executor)**
 
 **Trigger**: ln-330-story-executor explicitly delegates to ln-340-story-quality-gate Pass 1 when all implementation tasks Done
 

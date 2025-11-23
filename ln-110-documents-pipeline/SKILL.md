@@ -1,6 +1,6 @@
 ---
 name: ln-110-documents-pipeline
-description: Unified Documentation Orchestrator - creates complete doc system by invoking 6 workers sequentially (ln-111→ln-112→ln-113→ln-114→ln-115→ln-116). Each worker validates own output. Phase 4 performs global cleanup (deduplication, orphaned files, consolidation, cross-links). Idempotent.
+description: Orchestrates complete doc system via 6 workers (ln-111→ln-116). Each worker self-validates. Phase 4: global cleanup. Idempotent.
 ---
 
 # Documentation Pipeline (Orchestrator)
@@ -127,7 +127,7 @@ The skill follows a 5-phase orchestration workflow: User confirmation → Invoke
 
 **Process**:
 
-#### 4.1 Scan for duplicate content
+**4.1 Scan for duplicate content**
 
 1. **Read all .md files in docs/**
    - Use Glob tool: `pattern: "docs/**/*.md"`
@@ -164,7 +164,7 @@ The skill follows a 5-phase orchestration workflow: User confirmation → Invoke
    - "✓ Removed {count} duplicate sections"
    - List: "{section_name} removed from {file} (canonical: {canonical_file})"
 
-#### 4.2 Scan for orphaned files
+**4.2 Scan for orphaned files**
 
 1. **List all .md files in docs/**
    - Use Glob tool: `pattern: "docs/**/*.md"`
@@ -203,7 +203,7 @@ The skill follows a 5-phase orchestration workflow: User confirmation → Invoke
    - "✓ Archived {count} orphaned files to .archive/{date}/"
    - List archived files
 
-#### 4.3 Consolidate knowledge
+**4.3 Consolidate knowledge**
 
 1. **Identify scattered information:**
    - Known patterns:
@@ -228,7 +228,7 @@ The skill follows a 5-phase orchestration workflow: User confirmation → Invoke
    - "✓ Consolidated {count} scattered concepts"
    - List: "{concept} consolidated to {SSoT_file}"
 
-#### 4.4 Cross-link validation
+**4.4 Cross-link validation**
 
 1. **Scan all .md files for internal links:**
    - For each file:
@@ -263,7 +263,7 @@ The skill follows a 5-phase orchestration workflow: User confirmation → Invoke
    - "✓ Added {count} missing critical links"
    - List changes
 
-#### 4.5 Final report
+**4.5 Final report**
 
 ```
 ✅ Global Cleanup Complete:

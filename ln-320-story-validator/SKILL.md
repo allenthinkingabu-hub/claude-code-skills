@@ -464,20 +464,116 @@ This skill should be used when:
 **What it checks:**
 - Solution complies with industry standards (OAuth 2.0, REST, OpenAPI, WebSocket, JSON)
 - No custom implementations of standardized protocols
+- Implementation path is verified against best practices documentation
 
-**Auto-fix actions:**
-- Research RFC/standard via MCP Ref (`ref_search_documentation`) or WebSearch
-- Identify relevant standard: OAuth 2.0 (RFC 6749), REST API design, OpenAPI 3.x, etc.
-- Rewrite Story Technical Notes to comply with standard
-- Update Tasks with standard-compliant implementation
-  - Example: Unified `/token` endpoint instead of separate `/tokens` and `/refresh`
-- Add RFC/spec references in Technical Notes
-- Update Linear issues (Story + all affected Tasks)
-- Add comment: "Solution updated to comply with [Standard Name] [RFC/Spec Number]"
+**Trigger conditions (when this criterion applies):**
+- Story involves protocols, APIs, authentication, data formats
+- Story references external integrations or library usage
+- Task implementation path not documented in existing guides/manuals
+
+**REQUIRED actions (Evidence-Based - cannot skip without explicit reason):**
+
+1. **Check existing documentation FIRST:**
+   - Scan `docs/guides/` for relevant implementation patterns
+   - Scan `docs/manuals/` for library/API references
+   - Scan `docs/adrs/` for architectural decisions
+
+2. **IF documentation gap found → Invoke workers:**
+   - Missing pattern guide → MUST invoke `ln-321-guide-creator`
+   - Missing library manual → MUST invoke `ln-323-manual-creator`
+   - Missing architectural decision → MUST invoke `ln-322-adr-creator`
+   - Workers perform research via MCP Ref/Context7 internally
+
+3. **Document compliance:**
+   - Add document links to Story Technical Notes
+   - Update Linear issues (Story + all affected Tasks)
+   - Add comment: "Standards verified via [document path] OR created via [worker name]"
+
+4. **IF no applicable standards:**
+   - MUST explicitly state reason in Verification Log
+   - Example: "No applicable standards - Story is internal refactoring only"
+
+**Required evidence for ✅:**
+- Document path (existing or created): `docs/guides/XX-pattern.md`
+- OR Worker invocation result with created document path
+- OR Explicit skip reason documented in Verification Log
 
 **Rule:** If KISS/YAGNI conflicts with standard → Standard wins (integration, security, maintainability > short-term simplicity).
 
 **See:** `references/verification_checklist.md` for complete checklist.
+**See:** `references/verification_log_template.md` for evidence documentation.
+
+---
+
+## Self-Audit Protocol (MANDATORY)
+
+**Purpose:** Prevent "fake verification" where agent marks criteria as ✅ without actual checks.
+
+**Critical Rule:** Before marking ANY criterion as ✅, agent MUST:
+
+1. **Answer the Self-Audit Question** for that criterion (not blank, not generic)
+2. **Provide concrete evidence** (document path, Linear comment link, worker call result)
+3. **Document in Verification Log** (`checkpoints/{STORY_ID}_verification_log.md`)
+
+**If evidence is missing → CANNOT mark ✅ → MUST perform required action first**
+
+### Self-Audit Questions by Criterion
+
+| # | Criterion | Self-Audit Question | Required Evidence |
+|---|-----------|---------------------|-------------------|
+| 1 | Story Structure | "Did I validate all 8 sections exist in order?" | Section list in log |
+| 2 | Tasks Structure | "Did I load FULL description for EACH task?" | Task validation count |
+| 3 | Story Statement | "Is statement in As a/I want/So that format?" | Quote the statement |
+| 4 | Acceptance Criteria | "Are AC testable in Given/When/Then format?" | AC count and format |
+| 5 | Solution Optimization | "Did I question 'Is this best for 2025?'" | Reasoning documented |
+| 6 | Library & Version | "Are all versions current stable?" | Version list checked |
+| 7 | Test Strategy | "Does Test Strategy follow Risk-Based Testing?" | E2E/Integration/Unit counts |
+| 8 | Documentation Integration | "Are docs integrated, no standalone tasks?" | Integration evidence |
+| 9 | Story Size | "Is task count 3-8, each 3-5h?" | Task count and sizes |
+| 10 | Test Task Cleanup | "Are there NO premature test tasks?" | Search result |
+| 11 | YAGNI Violations | "Does Story deliver only what's needed NOW?" | Scope review result |
+| 12 | KISS Violations | "Is solution simplest within standards?" | Simplicity justification |
+| 13 | Guide Links | "Are all relevant guides linked?" | Guide paths in Technical Notes |
+| 14 | Foundation-First | "Are tasks ordered DB→Repo→Service→API?" | Task order list |
+| 15 | Code Quality | "Are hardcoded values flagged/fixed?" | TODO placeholders or config |
+| 16 | Industry Standards | "Did I verify implementation path via docs/worker?" | **Document path OR worker call** |
+
+### Criterion #16 Evidence Requirements (Enhanced)
+
+**Trigger:** Story involves protocols, APIs, authentication, data formats, or external integrations
+
+**REQUIRED actions (cannot skip without explicit reason):**
+
+1. **IF implementation path needs verification:**
+   - Check existing documentation in `docs/guides/`, `docs/manuals/`, `docs/adrs/`
+   - IF guide missing for pattern → MUST invoke `ln-321-guide-creator`
+   - IF manual missing for library → MUST invoke `ln-323-manual-creator`
+   - IF architectural decision unclear → MUST invoke `ln-322-adr-creator`
+
+2. **Evidence MUST include:**
+   - Document path (existing or created): `docs/guides/XX-pattern.md`
+   - OR Worker invocation result: "Created via ln-321-guide-creator"
+   - OR Explicit skip reason: "No applicable standards - Story is internal refactoring only"
+
+3. **Linear comment MUST document:**
+   - Which standard/pattern was verified
+   - How compliance was confirmed
+   - Link to relevant documentation
+
+**If agent marks ✅ without above evidence → Verification is INVALID**
+
+### Verification Log Requirement
+
+**For every verification session, agent MUST:**
+
+1. Create `checkpoints/{STORY_ID}_verification_log.md` from template
+2. Fill ALL 16 criteria sections with actual evidence
+3. Mark verdicts only after Self-Audit answer is documented
+4. Save log before announcing verification results
+
+**Template:** `references/verification_log_template.md`
+
+---
 
 ## Example Workflows
 
@@ -556,7 +652,8 @@ This skill should be used when:
 - `../ln-311-task-creator/references/task_template_implementation.md` - Task structure (7 sections)
 
 **Checklists (Verification):**
-- `verification_checklist.md` - Complete 16-criteria checklist with detailed checks
+- `references/verification_checklist.md` - Complete 16-criteria checklist with detailed checks
+- `references/verification_log_template.md` - Evidence documentation template (MANDATORY for each verification)
 
 **Methodology (Testing):**
 - `../ln-350-story-test-planner/references/risk_based_testing_guide.md` - Risk-Based Testing approach (Priority ≥15 scenarios)
@@ -577,6 +674,11 @@ This skill should be used when:
 9. **Trust auto-discovery** - Let skill find Team ID and project structure automatically
 
 ## Definition of Done
+
+**Pre-Verification: Evidence Documentation**
+- [ ] Verification Log created: `checkpoints/{STORY_ID}_verification_log.md`
+- [ ] All 16 criteria have Self-Audit answers documented
+- [ ] Evidence provided for each criterion (not blank)
 
 **Phase 1: Discovery & Loading**
 - [ ] Team ID and project configuration auto-discovered
@@ -648,5 +750,5 @@ This skill should be used when:
 
 ---
 
-**Version:** 11.1.0 (Fixed Writing Style: "Use this skill when" → "This skill should be used when" for skill-creator compliance.)
-**Last Updated:** 2025-11-16
+**Version:** 12.0.0 (Added Evidence-Based Verification: Self-Audit Protocol, Verification Log template, criterion #16 enforcement)
+**Last Updated:** 2025-11-23

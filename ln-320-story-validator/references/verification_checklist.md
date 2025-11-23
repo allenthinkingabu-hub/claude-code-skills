@@ -285,55 +285,109 @@ For each Task with structure violations:
 - **Protocols:** HTTP/HTTPS, WebSocket, GraphQL standards compliance
 - **Data formats:** JSON (RFC 8259), XML, YAML standard compliance
 
-**Process:**
-1. Identify relevant industry standard for Story domain (OAuth, REST, OpenAPI, protocols)
-2. Research standard via MCP Ref (`ref_search_documentation`) or WebSearch
-3. Verify Story Technical Notes and Tasks comply with standard
-4. If KISS/YAGNI conflicts with standard → Standard wins
-5. Document standard compliance in Technical Notes with RFC/spec references
+---
+
+### Evidence-Based Verification (MANDATORY)
+
+**Trigger conditions (when this criterion applies):**
+- Story involves protocols, APIs, authentication, data formats
+- Story references external integrations or library usage
+- Task implementation path not documented in existing guides/manuals
+
+**REQUIRED actions (cannot mark ✅ without evidence):**
+
+1. **Check existing documentation FIRST:**
+   - Scan `docs/guides/` for relevant implementation patterns
+   - Scan `docs/manuals/` for library/API references
+   - Scan `docs/adrs/` for architectural decisions
+
+2. **IF documentation gap found → MUST invoke workers:**
+   - Missing pattern guide → MUST invoke `ln-321-guide-creator`
+   - Missing library manual → MUST invoke `ln-323-manual-creator`
+   - Missing architectural decision → MUST invoke `ln-322-adr-creator`
+   - Workers perform research via MCP Ref/Context7 internally
+
+3. **Document compliance (REQUIRED evidence):**
+   - Document path (existing or created): `docs/guides/XX-pattern.md`
+   - OR Worker invocation result: "Created via ln-321-guide-creator"
+   - OR Explicit skip reason: "No applicable standards - Story is internal refactoring only"
+
+4. **IF no applicable standards:**
+   - MUST explicitly state reason in Verification Log
+   - CANNOT leave blank or assume "not applicable"
+
+**Self-Audit Question (MUST answer before marking ✅):**
+> "Did I verify implementation path via docs/worker? Evidence: ___"
+
+If answer is blank or generic → CANNOT mark ✅ → MUST perform verification first
+
+---
 
 **Red Flags:**
 ❌ Custom implementation when industry standard exists (OAuth, REST, OpenAPI)
 ❌ Non-standard endpoints/flows for "simplicity" (KISS overriding RFC compliance)
 ❌ "Proprietary" protocols when standard protocol available
 ❌ Non-compliant API design (e.g., mixing REST and RPC styles)
+❌ **Marking ✅ without documented evidence** (fake verification)
 
 **Auto-fix actions (#15):**
-- Research RFC/standard via MCP Ref or WebSearch
-- Rewrite Story Technical Notes to comply with standard
+- Check existing docs in `docs/guides/`, `docs/manuals/`, `docs/adrs/`
+- IF gap found → Invoke ln-321/ln-322/ln-323 workers (they perform research internally)
+- Add document links to Story Technical Notes
 - Update Tasks with standard-compliant implementation
 - Add RFC/spec references in Technical Notes
 - Update Linear issues
-- Add comment: "Solution updated to comply with [Standard Name] [RFC/Spec Number]"
+- Add comment: "Standards verified via [document path] OR created via [worker name]"
 
-**Tools:** MCP Ref (`ref_search_documentation`), Context7 (`get-library-docs`), WebSearch (if needed)
+**Verification Log:** Document evidence in `checkpoints/{STORY_ID}_verification_log.md`
 
 ---
 
 ## Quick Verification Matrix
 
-| Criterion | Pass | Notes |
-|-----------|------|-------|
-| Story follows template? | ☐ | 8 sections in order |
-| All Tasks follow template? | ☐ | 7 sections each |
-| Clear Story statement? | ☐ | As a/I want/So that |
-| Testable AC? | ☐ | Given/When/Then at Story level |
-| Test Strategy present? | ☐ | Story has Test Strategy (Risk-Based Testing: 2-5 E2E, 3-8 Integration, 5-15 Unit, 10-28 total, Priority ≥15) |
-| Final test task planned? | ☐ | Last task in Implementation Tasks |
-| **Standards compliant?** | ☐ | **OAuth 2.0, REST, RFCs (Level 1) - checked FIRST** |
-| Follows patterns? | ☐ | References guides in Technical Notes |
-| Library research? | ☐ | Latest versions, no reinventing |
-| Docs integrated? | ☐ | Story DoD + Tasks include docs |
-| Size 3-8 Tasks? | ☐ | Not too small/large |
-| YAGNI? | ☐ | No premature features (within standard boundaries) |
-| KISS? | ☐ | Simplest solution (within standard boundaries) |
-| Guides referenced? | ☐ | Links to patterns |
-| Consumer-first? | ☐ | Task order correct |
-| No hardcoded values? | ☐ | Config management, no magic numbers |
+| Criterion | Pass | Notes | Evidence Required |
+|-----------|------|-------|-------------------|
+| Story follows template? | ☐ | 8 sections in order | Section list |
+| All Tasks follow template? | ☐ | 7 sections each | Task validation count |
+| Clear Story statement? | ☐ | As a/I want/So that | Quote statement |
+| Testable AC? | ☐ | Given/When/Then at Story level | AC count |
+| Test Strategy present? | ☐ | Risk-Based Testing (2-5 E2E, 3-8 Int, 5-15 Unit) | Test counts |
+| Final test task planned? | ☐ | Last task in Implementation Tasks | Task list |
+| **Standards compliant?** | ☐ | **OAuth 2.0, REST, RFCs - checked FIRST** | **Doc path OR worker call** |
+| Follows patterns? | ☐ | References guides in Technical Notes | Guide links |
+| Library research? | ☐ | Latest versions, no reinventing | Version list |
+| Docs integrated? | ☐ | Story DoD + Tasks include docs | Integration proof |
+| Size 3-8 Tasks? | ☐ | Not too small/large | Task count |
+| YAGNI? | ☐ | No premature features | Scope review |
+| KISS? | ☐ | Simplest solution (within standards) | Simplicity reason |
+| Guides referenced? | ☐ | Links to patterns | Guide paths |
+| Foundation-first? | ☐ | Task order: DB→Repo→Service→API | Task order |
+| No hardcoded values? | ☐ | Config management, no magic numbers | TODO placeholders |
+
+---
+
+## Evidence-Based Verification Protocol
+
+**MANDATORY:** Before marking ANY criterion as ✅, agent MUST:
+
+1. **Answer Self-Audit Question** for that criterion (not blank)
+2. **Provide concrete evidence** (document path, tool result, or explicit reason)
+3. **Document in Verification Log:** `checkpoints/{STORY_ID}_verification_log.md`
+
+**If evidence missing → CANNOT mark ✅ → MUST perform required action first**
+
+**Template:** `verification_log_template.md`
+
+---
 
 **Result:** ALL criteria auto-fixed → ALWAYS Approve → Todo
+
 > [!NOTE]
 > No "Keep in Backlog" path exists - all issues auto-fixed before approval
+
+> [!WARNING]
+> Marking ✅ without documented evidence = INVALID verification
+
 **Hierarchy:** Industry Standards (#15) checked BEFORE KISS/YAGNI (#11/#10)
 
 ---
@@ -399,5 +453,5 @@ For each Task with structure violations:
 
 ---
 
-**Version:** 6.1.0 (Added #15 Industry Standards Compliance)
-**Last Updated:** 2025-11-08
+**Version:** 7.0.0 (Added Evidence-Based Verification Protocol, Self-Audit Questions, Verification Log requirement)
+**Last Updated:** 2025-11-23

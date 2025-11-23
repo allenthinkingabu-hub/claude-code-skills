@@ -382,7 +382,7 @@ if similarity(func1, func2) > 0.8:
 - 1-5: Simple, low risk
 - 6-10: Moderate complexity
 - 11-15: Complex, needs refactoring (MEDIUM severity)
-- 16+: Very complex, high risk (HIGH severity)
+- 16+: Highly complex, high risk (HIGH severity)
 
 ### Layer Detection
 

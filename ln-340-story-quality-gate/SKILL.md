@@ -164,16 +164,11 @@ Skill(skill: "ln-341-code-quality-checker", storyId: Story.id)
 
 **Parse ln-341-code-quality-checker result:**
 
-#### Verdict: PASS (verdict = "PASS")
-**Worker reported:**
-- No HIGH or MEDIUM severity issues
-- Code quality acceptable
+**Verdict: PASS (verdict = "PASS")**
+Worker reported: No HIGH or MEDIUM severity issues. Code quality acceptable.
+Actions: Worker already added Linear comment. **Proceed to Phase 4 (Regression Check)**
 
-**Actions:**
-- Worker already added Linear comment with analysis results
-- **Proceed to Phase 4 (Regression Check)**
-
-#### Verdict: FAIL (verdict = "ISSUES_FOUND")
+**Verdict: FAIL (verdict = "ISSUES_FOUND")**
 **Worker reported:**
 - HIGH or MEDIUM severity issues found (DRY/KISS/YAGNI/Architecture/Guide violations)
 - Detailed issue list in worker's Linear comment
@@ -210,16 +205,11 @@ Skill(skill: "ln-342-regression-checker", storyId: Story.id)
 
 **Parse ln-342-regression-checker result:**
 
-#### Verdict: PASS (verdict = "PASS")
-**Worker reported:**
-- All existing tests pass (failed = 0)
-- No regression detected
+**Verdict: PASS (verdict = "PASS")**
+Worker reported: All existing tests pass (failed = 0). No regression detected.
+Actions: Worker already added Linear comment. **Proceed to Phase 5 (Manual Functional Testing)**
 
-**Actions:**
-- Worker already added Linear comment with test results
-- **Proceed to Phase 5 (Manual Functional Testing)**
-
-#### Verdict: FAIL (verdict = "FAIL")
+**Verdict: FAIL (verdict = "FAIL")**
 **Worker reported:**
 - Test failures detected (failed > 0)
 - Implementation tasks broke existing tests
@@ -257,19 +247,11 @@ Skill(skill: "ln-343-manual-tester", storyId: Story.id)
 
 **Parse ln-343-manual-tester result:**
 
-#### Verdict: PASS (verdict = "PASS")
-**Worker reported:**
-- All Story AC work correctly (manual testing passed)
-- Integration between tasks works
-- Edge cases handled correctly
-- Error handling verified
+**Verdict: PASS (verdict = "PASS")**
+Worker reported: All Story AC work correctly. Integration works. Edge cases and error handling verified.
+Actions: Linear comment added (Format v1.0). Temp script created. **Proceed to Phase 6 (Verdict and Next Steps)**
 
-**Actions:**
-- Worker already added Linear comment (Format v1.0) with structured test results
-- Temporary testing script created at path from worker result
-- **Proceed to Phase 6 (Verdict and Next Steps)**
-
-#### Verdict: FAIL (verdict = "FAIL")
+**Verdict: FAIL (verdict = "FAIL")**
 **Worker reported:**
 - Story AC failed OR functional bugs found
 - Details in worker result (failed AC, bugs, integration issues)
@@ -293,7 +275,7 @@ Skill(skill: "ln-343-manual-tester", storyId: Story.id)
 
 **Determine path based on overall Pass 1 results:**
 
-#### Path A: All Quality Gates Passed
+**Path A: All Quality Gates Passed**
 
 **Criteria:**
 - ✅ **Phase 3:** Code Quality passed (no critical DRY/KISS/YAGNI/Architecture violations)
@@ -415,7 +397,7 @@ If we reached Phase 6, it means all quality gates passed. Phase 6 only creates t
 
 **Apply final verdict:**
 
-#### Verdict: Pass (All Checks Passed)
+**Verdict: Pass (All Checks Passed)**
 
 **Actions:**
 
@@ -429,7 +411,7 @@ If we reached Phase 6, it means all quality gates passed. Phase 6 only creates t
    - Epic header preserved in Done section with Story and all Done tasks
    - No additional movement needed (tasks already moved by ln-332-task-reviewer)
 
-#### Verdict: Fail (Issues Found)
+**Verdict: Fail (Issues Found)**
 
 **Actions:**
 

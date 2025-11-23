@@ -69,7 +69,7 @@ Auto-discovers project configuration:
 
 ### Phase 3: Review Checklist
 
-#### 3.1 Universal Checks (All Tasks)
+**3.1 Universal Checks (All Tasks)**
 
 **Architecture & Design:**
 - **Approach deviations justified**: If implementation differs from Task Technical Approach, verify rationale is documented and represents best practice (not a workaround)
@@ -129,7 +129,7 @@ Auto-discovers project configuration:
 - Input validation / database injection prevention
 - Quality gates pass (tests, types, lint)
 
-#### 3.2 Task Type-Specific Checks
+**3.2 Task Type-Specific Checks**
 
 **For Test Tasks:**
 - **Run test environment:** `docker-compose -f docker-compose.test.yml up --abort-on-container-exit` → All tests must pass
