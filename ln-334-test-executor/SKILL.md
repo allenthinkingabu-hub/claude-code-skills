@@ -31,7 +31,8 @@ This skill should be used when executing Story Finalizer test task (status = Tod
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **End:** Record `| timestamp | ln-334 | Released | ln-330 |` in Ownership Log before returning to orchestrator
+> - **Start:** Record `| timestamp | ln-334 | Acquired | from ln-330 |` in Ownership Log
+> - **End:** Record `| timestamp | ln-334 | Released | to ln-330 |` in Ownership Log before returning
 
 ### Phase 1: Discovery (Automated)
 

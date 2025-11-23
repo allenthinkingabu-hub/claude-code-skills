@@ -23,7 +23,8 @@ This skill should be used when:
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **End:** Record `| timestamp | ln-343 | Released | ln-340 |` in Ownership Log before returning to orchestrator
+> - **Start:** Record `| timestamp | ln-343 | Acquired | from ln-340 |` in Ownership Log
+> - **End:** Record `| timestamp | ln-343 | Released | to ln-340 |` in Ownership Log before returning
 
 ### Phase 1: Setup & Load
 
@@ -32,10 +33,22 @@ Setup test environment and load Story Acceptance Criteria.
 **Sub-steps:**
 
 **1.1 Setup Environment**
-- Detect Story type from description/labels (API or UI)
-- For API: Check health endpoint `curl http://localhost:8000/health`
-- For UI: Launch puppeteer browser, navigate to base URL
-- If not running → return ERROR ("Application not running")
+
+> [!WARNING]
+> **MANDATORY Docker Rebuild:** Always rebuild Docker containers before testing to ensure ALL code changes are included. Skipping this step may test outdated code.
+
+- **Step 1: Rebuild Docker containers (REQUIRED)**
+  - Stop running containers: `docker-compose down` (or `docker compose down`)
+  - Rebuild with no cache: `docker-compose build --no-cache` (or `docker compose build --no-cache`)
+  - Start containers: `docker-compose up -d` (or `docker compose up -d`)
+  - Wait for containers to be healthy (10-30 seconds, check logs)
+  - If rebuild fails → return ERROR ("Docker rebuild failed: [error details]")
+
+- **Step 2: Verify application running**
+  - Detect Story type from description/labels (API or UI)
+  - For API: Check health endpoint `curl http://localhost:8000/health`
+  - For UI: Launch puppeteer browser, navigate to base URL
+  - If not running → return ERROR ("Application not running")
 
 **1.2 Load Acceptance Criteria**
 - Load Story via `mcp__linear-server__get_issue(id=Story.id)`
@@ -391,6 +404,8 @@ This skill does NOT:
 Before completing work, verify ALL checkpoints:
 
 **Phase 1: Setup & Load**
+- [ ] Docker containers rebuilt with `--no-cache` (MANDATORY - ensures all code changes included)
+- [ ] Containers started and healthy (docker-compose up -d, wait for health)
 - [ ] Story type detected (API/UI), base URL determined
 - [ ] Application verified (health check for API, browser start for UI)
 - [ ] Story loaded from Linear, Acceptance Criteria section parsed

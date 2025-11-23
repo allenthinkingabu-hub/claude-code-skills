@@ -30,7 +30,8 @@ Creates minimal Package API reference manuals (300-500 words, OpenAPI-inspired f
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **End:** Record `| timestamp | ln-323 | Released | ln-320 |` in Ownership Log before returning to orchestrator
+> - **Start:** Record `| timestamp | ln-323 | Acquired | from ln-320 |` in Ownership Log
+> - **End:** Record `| timestamp | ln-323 | Released | to ln-320 |` in Ownership Log before returning
 
 ### Phase 0: Research & Discovery (Automated, 10-15 min)
 

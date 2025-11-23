@@ -248,6 +248,14 @@ Checkpoint file tracks pipeline execution progress. All checkboxes start uncheck
 - [ ] Verdict: ____
 - [ ] If FAIL: Refactoring task created → STOP, go to Step 1
 
+**Phase 3.5: Linter Check**
+- [ ] Linters read from `docs/project/tech_stack.md` (Section 4.3)
+- [ ] All linter commands executed
+- [ ] Results: ____ errors
+- **Decision Point:** 0 errors → PASS, else → FAIL
+- [ ] Verdict: ____
+- [ ] If FAIL: Lint fix task created → STOP, go to Step 1
+
 **Phase 4: Regression (ln-342-regression-checker)**
 - [ ] Test framework detected: ____
 - [ ] Tests executed (5-min timeout)

@@ -28,7 +28,8 @@ No "technical debt", "can improve later", "this is minor, skip it" - everything 
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **End:** Record `| timestamp | ln-332 | Released | ln-330 |` in Ownership Log before returning to orchestrator
+> - **Start:** Record `| timestamp | ln-332 | Acquired | from ln-330 |` in Ownership Log
+> - **End:** Record `| timestamp | ln-332 | Released | to ln-330 |` in Ownership Log before returning
 
 ### Phase 1: Discovery (Automated)
 
@@ -127,7 +128,14 @@ Auto-discovers project configuration:
 **Security & Quality:**
 - No secrets or PII logged
 - Input validation / database injection prevention
-- Quality gates pass (tests, types, lint)
+- Quality gates pass (tests, types)
+
+**Linter/Quality Tools Check (REQUIRED):**
+- Read project linters from `docs/project/tech_stack.md` (Section 4.3)
+- Run ALL configured linters (e.g., `npm run lint`, `eslint .`, `ruff check .`)
+- Run type checker if configured (e.g., `tsc --noEmit`, `mypy`)
+- Run formatter check if configured (e.g., `prettier --check .`, `black --check .`)
+- **0 errors required** — any linter error = Needs Rework verdict
 
 **3.2 Task Type-Specific Checks**
 
@@ -205,6 +213,7 @@ Before completing work, verify ALL checkpoints:
 **✅ Review Checklist Complete:**
 - [ ] All Phase 3 checklist sections verified:
   - Universal Checks: Architecture, DRY, KISS, YAGNI, Existing Code Impact, Documentation, Security & Quality
+  - **Linter Check: All project linters passed (0 errors)**
   - Task Type-Specific: Test tasks (docker-compose.test.yml run, test limits, Priority ≥15 scenarios) OR Implementation tasks
 - [ ] Code diffs reviewed thoroughly (no skipped files)
 - [ ] Existing codebase searched for duplication (Grep used)

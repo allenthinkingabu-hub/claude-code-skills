@@ -23,7 +23,8 @@ This skill should be used when:
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **End:** Record `| timestamp | ln-341 | Released | ln-340 |` in Ownership Log before returning to orchestrator
+> - **Start:** Record `| timestamp | ln-341 | Acquired | from ln-340 |` in Ownership Log
+> - **End:** Record `| timestamp | ln-341 | Released | to ln-340 |` in Ownership Log before returning
 
 ### Phase 1: Discovery
 

@@ -185,9 +185,38 @@ Actions: Worker already added Linear comment. **Proceed to Phase 4 (Regression C
 
 **Purpose:** Fail Fast - No point running tests if code quality fundamentally flawed.
 
-### Phase 4: Regression Check (Pass 1 only)
+### Phase 3.5: Linter Check (Pass 1 only)
 
 **PREREQUISITE: Phase 3 Code Quality passed.**
+
+**Run project linters:**
+1. Read `docs/project/tech_stack.md` → extract Section 4.3 (Linters & Quality Tools)
+2. Execute ALL configured linter commands:
+   - If ESLint: `npm run lint` or `eslint .`
+   - If Prettier: `npm run format:check` or `prettier --check .`
+   - If TypeScript: `tsc --noEmit`
+   - If Python: `ruff check .` or `flake8`
+3. All linters must pass (**0 errors required**)
+
+**Verdict: PASS (0 errors)**
+Actions: **Proceed to Phase 4 (Regression Check)**
+
+**Verdict: FAIL (linter errors found)**
+Actions:
+1. **Create lint fix task** via ln-311-task-creator (taskType: "implementation"):
+   - Title: "Fix linter errors for Story [ID]"
+   - Description: List of linter errors to fix
+   - Label: "bug"
+   - Parent: Story.id
+   - Status: Backlog
+2. **STOP Pass 1** - Do NOT proceed to Phase 4 (Regression)
+3. **Exit:** Lint fix task created, Story remains current state
+
+**Purpose:** Fail Fast - Linter errors indicate code style/quality issues that should be fixed before testing.
+
+### Phase 4: Regression Check (Pass 1 only)
+
+**PREREQUISITE: Phase 3.5 Linter Check passed.**
 
 **Delegate to ln-342-regression-checker (L3 Worker):**
 
@@ -271,7 +300,7 @@ Actions: Linear comment added (Format v1.0). Temp script created. **Proceed to P
 
 ### Phase 6: Verdict and Next Steps
 
-**PREREQUISITE: All Phase 3-4-5 passed (Code Quality → Regression → Manual Testing).**
+**PREREQUISITE: All Phase 3-3.5-4-5 passed (Code Quality → Linter Check → Regression → Manual Testing).**
 
 **Determine path based on overall Pass 1 results:**
 
@@ -453,7 +482,7 @@ If we reached Phase 6, it means all quality gates passed. Phase 6 only creates t
 
 | Delegation | When | Domain Separation | Rationale |
 |------------|------|-------------------|-----------|
-| **ln-330-story-executor → ln-340-story-quality-gate Pass 1** | After all implementation tasks Done | Task execution → Story quality validation | ln-330-story-executor delegates quality verification (Code Quality, Regression, Manual Testing, Early Exit Pattern) |
+| **ln-330-story-executor → ln-340-story-quality-gate Pass 1** | After all implementation tasks Done | Task execution → Story quality validation | ln-330-story-executor delegates quality verification (Code Quality, Linter Check, Regression, Manual Testing, Early Exit Pattern) |
 | **ln-330-story-executor → ln-340-story-quality-gate Pass 2** | After test task Done | Task execution → Final approval | ln-330-story-executor delegates final Story approval (test verification, Priority ≥15 coverage, Story → Done) |
 
 **Why this skill is L2 (orchestrator, not L3 worker):**
@@ -512,7 +541,7 @@ If we reached Phase 6, it means all quality gates passed. Phase 6 only creates t
 - [ ] **If test task does NOT exist:** Proceeded to ln-350-story-test-planner invocation
 
 **✅ Verdict Determined (Phase 6):**
-- [ ] **All Phase 3-4-5 passed** (Code Quality → Regression → Manual Testing)
+- [ ] **All Phase 3-3.5-4-5 passed** (Code Quality → Linter Check → Regression → Manual Testing)
 - [ ] ln-350-story-test-planner invoked AUTOMATICALLY with autoApprove: true (ONLY if no test task exists)
 - [ ] After completion: test task created in kanban_board.md with status Backlog
 
@@ -547,13 +576,14 @@ If we reached Phase 6, it means all quality gates passed. Phase 6 only creates t
 
 ### Best Practices
 
-1. **Early Exit Pattern** - Fail fast at each phase (Code Quality → Regression → Manual Testing)
+1. **Early Exit Pattern** - Fail fast at each phase (Code Quality → Linter Check → Regression → Manual Testing)
 2. **Phase 3: Code Quality first** - No point running tests if code quality fundamentally flawed
-3. **Phase 4: Regression before new features** - Catch broken tests early
-4. **Phase 5: Test real functionality** - Use curl/puppeteer, document results (Format v1.0)
-5. **Phase 6: E2E first** - Use Skill tool to invoke ln-350-story-test-planner (Risk-Based Testing)
-6. **Pass 2: Verify Priority ≥15 scenarios** - Tests must cover critical paths (money, security, core flows)
-7. **Refactoring cycle** - Issues caught in Phase 3/4/5 → Fix → Re-run Pass 1 until clean
+3. **Phase 3.5: Linter Check** - Run ALL project linters from tech_stack.md (0 errors required)
+4. **Phase 4: Regression before new features** - Catch broken tests early
+5. **Phase 5: Test real functionality** - Use curl/puppeteer, document results (Format v1.0)
+6. **Phase 6: E2E first** - Use Skill tool to invoke ln-350-story-test-planner (Risk-Based Testing)
+7. **Pass 2: Verify Priority ≥15 scenarios** - Tests must cover critical paths (money, security, core flows)
+8. **Refactoring cycle** - Issues caught in Phase 3/4/5 → Fix → Re-run Pass 1 until clean
 
 ### Comparison with Other Reviews
 

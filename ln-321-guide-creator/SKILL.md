@@ -20,7 +20,8 @@ This skill should be used when:
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **End:** Record `| timestamp | ln-321 | Released | ln-320 |` in Ownership Log before returning to orchestrator
+> - **Start:** Record `| timestamp | ln-321 | Acquired | from ln-320 |` in Ownership Log
+> - **End:** Record `| timestamp | ln-321 | Released | to ln-320 |` in Ownership Log before returning
 
 ### Phase 1: Research & Discovery (Automated)
 

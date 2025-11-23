@@ -34,7 +34,8 @@ Do NOT use if:
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **End:** Record `| timestamp | ln-350 | Released | ln-340 |` in Ownership Log before returning to orchestrator
+> - **Start:** Record `| timestamp | ln-350 | Acquired | from ln-340 |` in Ownership Log
+> - **End:** Record `| timestamp | ln-350 | Released | to ln-340 |` in Ownership Log before returning
 
 ### Phase 1: Discovery (Automated)
 

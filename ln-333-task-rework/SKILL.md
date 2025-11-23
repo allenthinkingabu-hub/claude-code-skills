@@ -20,7 +20,8 @@ This skill should be used when fixing issues in task (status = To Rework) after 
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **End:** Record `| timestamp | ln-333 | Released | ln-330 |` in Ownership Log before returning to orchestrator
+> - **Start:** Record `| timestamp | ln-333 | Acquired | from ln-330 |` in Ownership Log
+> - **End:** Record `| timestamp | ln-333 | Released | to ln-330 |` in Ownership Log before returning
 
 ### Phase 1: Discovery (Automated)
 

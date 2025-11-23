@@ -181,6 +181,34 @@ services:
 {{VSCODE_EXTENSIONS}}
 <!-- Example: ESLint, Prettier, Docker, Prisma, Tailwind CSS IntelliSense -->
 
+### 4.3 Linters & Code Quality Tools
+
+| Tool | Version | Purpose | Command | Config File |
+|------|---------|---------|---------|-------------|
+| {{LINTER_1}} | {{VERSION_1}} | {{PURPOSE_1}} | {{COMMAND_1}} | {{CONFIG_1}} |
+
+<!-- Example:
+| ESLint | 9.x | JavaScript/TypeScript linting | `npm run lint` | .eslintrc.js |
+| Prettier | 3.x | Code formatting | `npm run format:check` | .prettierrc |
+| TypeScript | 5.x | Type checking | `tsc --noEmit` | tsconfig.json |
+| Ruff | 0.4.x | Python linting | `ruff check .` | pyproject.toml |
+| Stylelint | 16.x | CSS/SCSS linting | `npm run lint:css` | .stylelintrc |
+-->
+
+**CI/CD Integration:**
+{{CI_LINT_INTEGRATION}}
+<!-- Example:
+- Pre-commit hook: `npm run lint && npm run format:check`
+- GitHub Actions: `npm run lint` in CI workflow
+- Required for merge: All linters must pass (0 errors)
+-->
+
+**Run All Quality Checks:**
+```bash
+{{LINT_ALL_COMMAND}}
+```
+<!-- Example: npm run lint && npm run format:check && tsc --noEmit -->
+
 ---
 
 ## 5. Naming Conventions
