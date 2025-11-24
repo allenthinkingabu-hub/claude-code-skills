@@ -118,6 +118,9 @@ Phase 3: Loop (Verify → Execute → Review Pass 1 + explicit Pass 2 delegation
 
 ### Phase 1: Discovery (Automated)
 
+> [!NOTE]
+> **Checkpoint Check:** Read checkpoint → verify "Phase 0-1 ✅" NOT in Completed Phases. If found → skip to Phase 2.
+
 Auto-discovers Team ID from `docs/tasks/kanban_board.md`.
 
 Parses request for:
@@ -139,9 +142,15 @@ Story {
 
 **NO full description loaded** - token efficiency.
 
-**Update checkpoint:** Mark Phase 1 completed with Team ID and Story status.
+**Update checkpoint:**
+- Mark `- [x]` all Phase 1 checkboxes
+- Collapse to Completed Phases: `### Phase 0-1 ✅ Setup complete, Story [ID] loaded (status: [X])`
+- Clear "Current Phase" section
 
 ### Phase 2: Task Planning
+
+> [!NOTE]
+> **Checkpoint Check:** Read checkpoint → verify "Phase 2 ✅" NOT in Completed Phases. If found → skip to Phase 3.
 
 **Check**: Does Story have tasks?
 
@@ -171,13 +180,19 @@ Skill(skill: "ln-310-story-decomposer", context: {
 
 **After completion**: Reload Story + Tasks metadata.
 
-**Update checkpoint:** Mark Phase 2 completed with mode (CREATE/REPLAN) and task count.
+**Update checkpoint:**
+- Mark `- [x]` all Phase 2 checkboxes
+- Collapse to Completed Phases: `### Phase 2 ✅ (ln-310 → ln-311/312) Mode: [X], Y tasks created`
+- Clear "Current Phase" section
 
 ### Phase 3: Story Verification & Execution Loop
 
 This phase loops until Story status = "To Review".
 
 **Step 1: Story Verification**
+
+> [!NOTE]
+> **Checkpoint Check:** Read checkpoint → verify "Step 1 ✅" NOT in Completed Phases (for current iteration). If found → skip to Step 2.
 
 **Trigger**: Story status = "Backlog" OR Tasks exist but not verified
 
@@ -200,9 +215,15 @@ Skill(skill: "ln-320-story-validator", context: {
 
 **After completion**: Reload Story + Tasks metadata.
 
-**Update checkpoint:** Mark Step 1 completed with auto-fix count and status transition.
+**Update checkpoint:**
+- Mark `- [x]` all Step 1 checkboxes in "Current Phase"
+- Add to "Completed Phases": `- Step 1: X auto-fixes, Backlog → Todo`
+- Copy Step 2 template to "Current Phase"
 
 **Step 2: Story Execution**
+
+> [!NOTE]
+> **Checkpoint Check:** Read checkpoint → verify "Step 2 ✅" NOT in Completed Phases (for current iteration). If found → skip to Step 3 or next iteration Step 1.
 
 **Trigger**: Story status = "Todo" OR "In Progress"
 
@@ -226,9 +247,15 @@ Skill(skill: "ln-330-story-executor", context: {
 
 **After completion**: Reload Story + Tasks metadata.
 
-**Update checkpoint:** Mark Step 2 progress with tasks completed count.
+**Update checkpoint:**
+- Mark `- [x]` all Step 2 checkboxes in "Current Phase"
+- Add to "Completed Phases": `- Step 2: X/Y impl tasks Done` (or `- Step 2 (cont): Test task Done`)
+- Copy Step 3 template to "Current Phase" if proceeding to quality gate
 
 **Step 3: Story Review Pass 1 + Pass 2 (Explicitly Delegated by ln-330-story-executor)**
+
+> [!NOTE]
+> **Checkpoint Check:** Read checkpoint → verify "Pass 1 ✅" or "Pass 2 ✅" NOT in Completed Phases. These checks are done by ln-340, not ln-300.
 
 **Trigger**: ln-330-story-executor explicitly delegates to ln-340-story-quality-gate Pass 1 when all implementation tasks Done
 
@@ -248,7 +275,9 @@ Skill(skill: "ln-330-story-executor", context: {
 
 **Exit Condition**: Story status = "Done" (all tasks Done, test task Done, Pass 2 passed)
 
-**Update checkpoint:** Mark Pass 1/Pass 2 completed with verdict.
+**Update checkpoint:**
+- Pass 1/Pass 2 updates handled by ln-340-story-quality-gate
+- ln-300 reads "Completed Phases" to determine if iteration complete
 
 ### Phase 4: Completion Report
 

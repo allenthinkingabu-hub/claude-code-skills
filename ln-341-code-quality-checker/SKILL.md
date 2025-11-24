@@ -24,7 +24,10 @@ This skill should be used when:
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
 > - **Start:** Record `| timestamp | ln-341 | Acquired | from ln-340 |` in Ownership Log
-> - **End:** Record `| timestamp | ln-341 | Released | to ln-340 |` in Ownership Log before returning
+> - **During work:** Mark `- [x]` checkboxes as steps complete (Tasks loaded, Code analyzed, etc.)
+> - **Before returning:**
+>   - Mark `- [x]` final checkboxes with results (Verdict: PASS/FAIL, Issues categorized)
+>   - Record `| timestamp | ln-341 | Released | to ln-340 |` in Ownership Log
 
 ### Phase 1: Discovery
 

@@ -32,7 +32,10 @@ This skill should be used when executing Story Finalizer test task (status = Tod
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
 > - **Start:** Record `| timestamp | ln-334 | Acquired | from ln-330 |` in Ownership Log
-> - **End:** Record `| timestamp | ln-334 | Released | to ln-330 |` in Ownership Log before returning
+> - **During work:** Mark `- [x]` checkboxes as steps complete (Existing tests fixed, New tests implemented, etc.)
+> - **Before returning:**
+>   - Mark `- [x]` final checkboxes with results (All tests passing, Status → To Review)
+>   - Record `| timestamp | ln-334 | Released | to ln-330 |` in Ownership Log
 
 ### Phase 1: Discovery (Automated)
 

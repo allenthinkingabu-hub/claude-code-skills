@@ -103,7 +103,10 @@ description: Creates ALL task types (implementation, refactoring, test). Generat
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
 > - **Start:** Record `| timestamp | ln-311 | Acquired | from orchestrator-name |` in Ownership Log
-> - **End:** Record `| timestamp | ln-311 | Released | to orchestrator-name |` in Ownership Log before returning
+> - **During work:** Mark `- [x]` checkboxes as steps complete (Context research, Task documents generated, etc.)
+> - **Before returning:**
+>   - Mark `- [x]` final checkboxes with results (Tasks created count, kanban updated)
+>   - Record `| timestamp | ln-311 | Released | to orchestrator-name |` in Ownership Log
 
 > [!NOTE]
 > **ADD MODE (appendMode: true)**: When adding tasks to existing Story, Phase 1 is simplified:

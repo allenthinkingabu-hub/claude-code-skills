@@ -28,7 +28,10 @@ This skill should be used when executing approved implementation task (status = 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
 > - **Start:** Record `| timestamp | ln-331 | Acquired | from ln-330 |` in Ownership Log
-> - **End:** Record `| timestamp | ln-331 | Released | to ln-330 |` in Ownership Log before returning
+> - **During work:** Mark `- [x]` checkboxes as steps complete (Guides read, Implementation completed, etc.)
+> - **Before returning:**
+>   - Mark `- [x]` final checkboxes with results (Quality gates passed, Status → To Review)
+>   - Record `| timestamp | ln-331 | Released | to ln-330 |` in Ownership Log
 
 ### Phase 1: Read Referenced Guides (Automated)
 

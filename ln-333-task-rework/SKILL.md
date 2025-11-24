@@ -21,7 +21,10 @@ This skill should be used when fixing issues in task (status = To Rework) after 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
 > - **Start:** Record `| timestamp | ln-333 | Acquired | from ln-330 |` in Ownership Log
-> - **End:** Record `| timestamp | ln-333 | Released | to ln-330 |` in Ownership Log before returning
+> - **During work:** Mark `- [x]` checkboxes as steps complete (Feedback loaded, Must-fix items addressed, etc.)
+> - **Before returning:**
+>   - Mark `- [x]` final checkboxes with results (Quality gates passed, Status → To Review)
+>   - Record `| timestamp | ln-333 | Released | to ln-330 |` in Ownership Log
 
 ### Phase 1: Discovery (Automated)
 

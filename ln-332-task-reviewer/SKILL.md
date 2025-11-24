@@ -29,7 +29,10 @@ No "technical debt", "can improve later", "this is minor, skip it" - everything 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
 > - **Start:** Record `| timestamp | ln-332 | Acquired | from ln-330 |` in Ownership Log
-> - **End:** Record `| timestamp | ln-332 | Released | to ln-330 |` in Ownership Log before returning
+> - **During work:** Mark `- [x]` checkboxes as steps complete (Task/Story read, Duplication searched, etc.)
+> - **Before returning:**
+>   - Mark `- [x]` final checkboxes with results (Verdict: Accept/Minor/Rework, Reason)
+>   - Record `| timestamp | ln-332 | Released | to ln-330 |` in Ownership Log
 
 ### Phase 1: Discovery (Automated)
 
