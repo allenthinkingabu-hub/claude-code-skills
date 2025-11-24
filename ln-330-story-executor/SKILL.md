@@ -98,10 +98,12 @@ This skill should be used when:
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
-> - **Start:** Read checkpoint → find current task progress
+> - **Start:** Read checkpoint → copy Step 2 template to "Current Phase", restore task matrix progress
 > - **Before delegating to worker:** Record `| timestamp | ln-330 | Acquired | worker-name |`
 > - **After worker returns:** Verify `Released` entry, update `Current Owner: ln-330`, mark task in matrix
-> - **End:** Record `| timestamp | ln-330 | Released | ln-300 |`, mark Phase 3.2 completed
+> - **End:** Record `| timestamp | ln-330 | Released | ln-300 |`
+> - **Collapse:** Move "Current Phase" to "Completed Phases" as summary:
+>   `- Step 2: X/Y impl tasks Done` (or `- Step 2 (cont): Test task Done`)
 
 ### Phase 1: Discovery
 

@@ -34,10 +34,12 @@ This skill should be used when:
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
-> - **Start:** Read checkpoint → verify Phase 3.1 not completed
+> - **Start:** Read checkpoint → copy Step 1 template to "Current Phase" if empty
 > - **Before delegating to worker:** Record `| timestamp | ln-320 | Acquired | worker-name |`
 > - **After worker returns:** Verify `Released` entry, update `Current Owner: ln-320`
-> - **End:** Record `| timestamp | ln-320 | Released | ln-300 |`, mark Step 1 completed
+> - **End:** Record `| timestamp | ln-320 | Released | ln-300 |`
+> - **Collapse:** Move "Current Phase" to "Completed Phases" as summary:
+>   `- Step 1: X auto-fixes, Backlog → Todo`
 
 ### Phase 1: Discovery & Loading
 

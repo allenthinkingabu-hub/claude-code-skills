@@ -89,26 +89,32 @@ Phase 3: Loop (Verify → Execute → Review Pass 1 + explicit Pass 2 delegation
 ### Phase 0: Checkpoint Setup
 
 > [!NOTE]
-> **Checkpoint enables context recovery** after interruption or context loss. File persists execution state.
+> **Compact History Pattern:** Checkpoint keeps full Ownership Log + collapsed completed phases + detailed current phase only. ~70% token savings.
 
 **Create or Load checkpoint:**
 - Check if `docs/tasks/checkpoints/[story_id].md` exists
 - **If NOT exists:**
-  1. Read `references/checkpoint_format.md` template COMPLETELY
-  2. Copy template to `docs/tasks/checkpoints/[story_id].md`
+  1. Read `references/checkpoint_format.md` template
+  2. Copy header + Ownership Log + Completed Phases + Current Phase sections
   3. Replace `[Story ID]` placeholder with actual Story ID
-  4. Fill Story metadata (Pipeline, Started timestamp)
-- **If EXISTS:** Read checkpoint, find last completed step, resume from there
+  4. Fill metadata (Pipeline, Started, Current: Phase 0-1)
+  5. Copy Phase 0-1 template to "Current Phase" section
+- **If EXISTS:** Read checkpoint, resume from "Current Phase" position
 
-**Resume logic:**
-- Phase 2 completed -> Skip ln-310-story-decomposer
-- Phase 3.1 completed -> Skip ln-320-story-validator (for this iteration)
-- Phase 3.2 in progress -> Resume ln-330-story-executor from last task
-- Pass 1/2 completed -> Skip to next step
+**Resume logic (read "Completed Phases" to determine position):**
+- Phase 2 ✅ in Completed -> Skip ln-310-story-decomposer
+- Step 1 ✅ in Completed -> Skip ln-320-story-validator (for this iteration)
+- Step 2 in Current Phase -> Resume ln-330-story-executor from task matrix
+- Pass 1/2 ✅ in Completed -> Skip to next step
 
 **Ownership Log (Baton Passing):**
-- **Before delegating to worker:** Record in Ownership Log: `| timestamp | ln-300-story-pipeline | Acquired | worker-name |`
-- **After worker returns:** Verify worker recorded `Released` entry, update `Current Owner: ln-300-story-pipeline`
+- **Before delegating:** Record `| timestamp | ln-300 | Acquired | worker-name |`
+- **After worker returns:** Verify `Released` entry, update `Current Owner: ln-300`
+
+**Collapse Rule (when phase/step completes):**
+- Move "Current Phase" content to "Completed Phases" as one-line summary
+- Clear "Current Phase", copy next template if continuing
+- Example: `### Phase 0-1 ✅ Setup complete, Story US001 loaded (status: Backlog)`
 
 ### Phase 1: Discovery (Automated)
 

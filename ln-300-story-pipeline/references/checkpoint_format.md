@@ -1,8 +1,8 @@
 # Execution Checkpoint Format
 
-<!-- SCOPE: Pipeline execution tracking template for ln-300-story-pipeline. Tracks all 14 skills, decision points, and AC checkpoints. NOT for manual editing - auto-generated and auto-deleted by pipeline. -->
+<!-- SCOPE: Pipeline execution tracking template for ln-300-story-pipeline. Compact History Pattern: full Ownership Log + collapsed completed phases + detailed current phase only. Auto-generated and auto-deleted by pipeline. -->
 
-Checkpoint file tracks pipeline execution progress. All checkboxes start unchecked `- [ ]` and are marked `- [x]` as work progresses.
+Checkpoint file tracks pipeline execution with minimal token usage. Completed phases are collapsed to one-line summaries. Only current phase has detailed checkboxes.
 
 **Location:** `docs/tasks/checkpoints/[story_id].md`
 
@@ -12,354 +12,218 @@ Checkpoint file tracks pipeline execution progress. All checkboxes start uncheck
 
 **Pipeline:** ln-300-story-pipeline
 **Started:** YYYY-MM-DD HH:MM
-**Last Updated:** YYYY-MM-DD HH:MM
+**Current:** Phase X, Step Y (skill-name)
 
 ---
 
 ## Ownership Log
 
 > [!NOTE]
-> **Baton Passing Pattern:** Each skill records ownership before/after work. Orchestrators record before delegating, Workers record after completing.
+> **Baton Passing Pattern:** Each skill records ownership before/after work. This log is NEVER collapsed - full history preserved.
 
 | Timestamp | Skill | Action | Next |
 |-----------|-------|--------|------|
 | ____ | ____ | Acquired/Released | ____ |
 
 **Current Owner:** ____
-**Next Expected:** ____
 
 ---
 
-## Phase 0: Checkpoint Setup (ln-300-story-pipeline)
+## Completed Phases
+
+> [!NOTE]
+> **Collapse Rule:** When phase/step completes, replace detailed checkboxes with one-line summary. Format: `### Phase X ✅ (key results)`
+
+<!-- Example collapsed phases:
+### Phase 0-1 ✅
+Setup complete, Story US001 loaded (status: Backlog)
+
+### Phase 2 ✅ (ln-310 → ln-311)
+CREATE MODE, 4 impl tasks created, kanban updated
+
+### Phase 3, Iteration 1 ✅
+- Step 1: 16 auto-fixes, Backlog → Todo
+- Step 2: 4/4 impl tasks Done
+- Step 3 Pass 1: Code ✅, Linter ✅, Regression ✅, Manual ✅, Test task API-55 created
+-->
+
+---
+
+## Current Phase
+
+> [!NOTE]
+> **Expand Rule:** Only current phase/step has detailed checkboxes. Copy from Phase Templates below when starting new phase.
+
+<!-- Current phase details go here. Example:
+
+### Phase 3, Iteration 2
+
+#### Step 2: Story Execution (ln-330-story-executor)
+- [x] Test task selected (API-55)
+- [x] 11 sections verified
+- [ ] ln-334-test-executor delegated  <-- CURRENT POSITION
+
+**Decision Points:**
+- Test task type: Story Finalizer (11 sections)
+-->
+
+---
+
+## Phase Templates
+
+> [!NOTE]
+> **Usage:** Copy relevant template to "Current Phase" when starting that phase. Delete template content after copying.
+
+<details>
+<summary>Phase 0-1: Setup & Discovery (ln-300)</summary>
+
+### Phase 0: Checkpoint Setup
 - [ ] Checkpoint file created/loaded
 - [ ] Resume point identified (if existed)
 
-## Phase 1: Discovery (ln-300-story-pipeline)
+### Phase 1: Discovery
 - [ ] Team ID auto-discovered from kanban_board.md
 - [ ] Story ID parsed from request
 - [ ] Story metadata loaded (ID, title, status, labels)
 - [ ] Current status: ____
 
----
+</details>
 
-## Phase 2: Task Planning (ln-310-story-decomposer)
+<details>
+<summary>Phase 2: Task Planning (ln-310)</summary>
 
-### Discovery & Analysis
+### Phase 2: Task Planning (ln-310-story-decomposer)
+
+**Discovery & Analysis:**
 - [ ] Story loaded from Linear (AC, Technical Notes, Context)
-- [ ] NFRs stripped (not converted to tasks)
-- [ ] Complexity analyzed (simple/medium/complex): ____
-- [ ] Optimal task count determined (1-6): ____
-- [ ] Foundation-First execution order applied
-- [ ] Guide links extracted from Technical Notes
+- [ ] Complexity analyzed: ____
+- [ ] Optimal task count (1-6): ____
 
-### Mode Detection
-- [ ] Existing tasks queried from Linear
-- [ ] Task count: ____
-- **Decision Point:**
-  - `count = 0` → CREATE MODE
-  - `count ≥ 1 AND ADD keywords ("add", "append", "more")` → ADD MODE
-  - `count ≥ 1 AND REPLAN keywords ("update plan", "replan")` → REPLAN MODE
-  - `count ≥ 1 AND ambiguous` → ASK USER
-- [ ] Mode selected: ____
+**Mode Detection:**
+- [ ] Existing tasks count: ____
+- [ ] Mode selected: CREATE / ADD / REPLAN
 - [ ] Reason: ____
 
-### Delegation (one of):
-
-#### If CREATE MODE → ln-311-task-creator
-- [ ] Context research completed (codebase, schema, dependencies, docs)
-- [ ] Story Correction Proposal generated (if reality differs)
-- [ ] Task documents generated (7 sections each)
-- [ ] NO test creation validated (scan for "write tests")
-- [ ] Preview shown to user
-- [ ] User confirmed (or autoApprove=true)
-- [ ] Tasks created in Linear: ____ count
-- [ ] kanban_board.md updated (Backlog section)
-
-#### If ADD MODE → ln-311-task-creator (appendMode)
-- [ ] Research for NEW task(s) only
-- [ ] Task document(s) generated
-- [ ] Preview shown
-- [ ] Task(s) created in Linear: ____ count
+**Delegation:**
+- [ ] Worker invoked: ln-311 / ln-312
+- [ ] Tasks created/updated: ____ count
 - [ ] kanban_board.md updated
 
-#### If REPLAN MODE → ln-312-task-replanner
-- [ ] Existing tasks loaded with full descriptions
-- [ ] IDEAL vs Existing comparison done
-- [ ] Operations categorized:
-  - KEEP: ____
-  - UPDATE: ____
-  - OBSOLETE: ____
-  - CREATE: ____
-- [ ] Status constraints checked (Todo/Backlog only for UPDATE/OBSOLETE)
-- [ ] Preview shown
-- [ ] User confirmed (or autoApprove=true)
-- [ ] Operations executed in Linear
-- [ ] kanban_board.md updated
+</details>
 
----
+<details>
+<summary>Phase 3, Step 1: Story Verification (ln-320)</summary>
 
-## Phase 3: Verification & Execution Loop
+### Step 1: Story Verification (ln-320-story-validator)
+- [ ] Story fetched (8 sections)
+- [ ] Tasks metadata loaded (3-8 expected): ____
+- [ ] Industry standards researched
+- [ ] Codebase verified
 
-### Iteration ____
+**Documentation Created:**
+| Type | Worker | Path |
+|------|--------|------|
+| Guide | ln-321 | ____ |
+| ADR | ln-322 | ____ |
+| Manual | ln-323 | ____ |
 
-#### Step 1: Story Verification (ln-320-story-validator)
-- [ ] Story fetched from Linear (FULL description, 8 sections)
-- [ ] Child Tasks metadata loaded (3-8 expected)
-- [ ] Industry standards identified and researched
-- [ ] Codebase verified (implementations, schema, UI, logic)
-- **Decision Point:** If KISS/YAGNI conflicts with standard → Standard wins
-- [ ] Story auto-corrected if reality differs
+**Auto-Fixes Applied:** ____/16
 
-**Documentation Auto-Creation (Phase 2, Step 2c):**
+**Status Transitions:**
+- [ ] Story: Backlog → Todo
+- [ ] Tasks: Backlog → Todo
 
-| Document Type | Worker | Created | Path |
-|---------------|--------|---------|------|
-| Guide | - [ ] ln-321-guide-creator | Yes/No | ____ |
-| ADR | - [ ] ln-322-adr-creator | Yes/No | ____ |
-| Manual | - [ ] ln-323-manual-creator | Yes/No | ____ |
+</details>
 
-**Auto-Fix Checklist (16 criteria):**
+<details>
+<summary>Phase 3, Step 2: Story Execution (ln-330)</summary>
 
-*A. Structural Fixes:*
-- [ ] #1: Story structure validated (8 sections)
-- [ ] #2: Tasks structure validated (7 sections each)
-- [ ] #3: Story statement clarified (As a/I want/So that)
-- [ ] #4: AC standardized (Given/When/Then, 3-5 AC)
-
-*B. Solution Optimization:*
-- [ ] #5: Solution optimized per 2025 best practices
-- [ ] #6: Libraries updated to current stable
-- [ ] #13: Guide links inserted in Technical Notes
-- [ ] #16: Industry standards compliance verified
-
-*C. Workflow Optimization:*
-- [ ] #7: Test Strategy added (Risk-Based Testing)
-- [ ] #10: Premature test tasks removed
-- [ ] #8: Documentation integrated into implementation
-- [ ] #14: Foundation-First execution order applied
-
-*D. Scope & Quality:*
-- [ ] #9: Story size validated (3-8 tasks)
-- **Decision Point:** If < 3 tasks → invoke ln-310-story-decomposer
-  - [ ] ln-310 invoked: ____
-  - [ ] Missing tasks created: ____
-- [ ] #11: YAGNI violations removed
-- [ ] #12: KISS violations simplified
-- [ ] #15: Code quality requirements added
-
-**Completion:**
-- [ ] Story status: Backlog → Todo
-- [ ] All Tasks status: Backlog → Todo
-- [ ] kanban_board.md updated
-- [ ] Approval comment added to Linear
-- [ ] Auto-fixes applied: ____ count
-
----
-
-#### Step 2: Story Execution (ln-330-story-executor)
+### Step 2: Story Execution (ln-330-story-executor)
 
 **Task Loading:**
-- [ ] Story metadata fetched (NO description)
-- [ ] Child Tasks loaded via list_issues (metadata only)
-- [ ] ZERO get_issue() calls for Tasks
+- [ ] Child Tasks loaded (metadata only)
 
 **Orchestration Loop:**
 
-*Priority 0: To Review Tasks*
-| Task ID | ln-332-task-reviewer | Verdict |
-|---------|---------------------|---------|
-| ____ | - [ ] Reviewed | Accept / Minor / Rework |
-
-*Priority 1: To Rework Tasks*
-| Task ID | ln-333-task-rework | Completed |
-|---------|-------------------|-----------|
-| ____ | - [ ] Reworked | - [ ] To Review |
-
-*Priority 2: Todo Tasks*
-| Task ID | Worker | Completed |
-|---------|--------|-----------|
-| ____ | - [ ] ln-331/334 | - [ ] To Review |
-
-> [!NOTE]
-> **Matrix format:** Rows = criteria, Columns = tasks. Add columns as tasks appear. Mark `[x]` when criterion verified for that task.
-
-**Task Execution Matrix (ln-331/ln-334):**
-
-| Criterion | Task 1 | Task 2 | Task 3 |
-|-----------|--------|--------|--------|
-| Guide links read | [ ] | [ ] | [ ] |
-| Implementation completed | [ ] | [ ] | [ ] |
-| KISS/YAGNI applied | [ ] | [ ] | [ ] |
-| Existing Code Impact | [ ] | [ ] | [ ] |
-| Quality gates passed | [ ] | [ ] | [ ] |
-| Status → To Review | [ ] | [ ] | [ ] |
-| kanban_board.md updated | [ ] | [ ] | [ ] |
-
-**Review Matrix (ln-332-task-reviewer):**
-
-| Criterion | Task 1 | Task 2 | Task 3 |
-|-----------|--------|--------|--------|
-| Task read COMPLETELY | [ ] | [ ] | [ ] |
-| Story read COMPLETELY | [ ] | [ ] | [ ] |
-| Duplication searched | [ ] | [ ] | [ ] |
-| Universal checks (Arch/DRY/KISS/YAGNI/Docs/Security) | [ ] | [ ] | [ ] |
-| **Verdict** | ____ | ____ | ____ |
-| **Reason** | ____ | ____ | ____ |
-
-**Decision Point (per task):** Accept ✅ → Done | Minor Fixes 🔧 → Fix → Done | Needs Rework ❌ → To Rework
-
-**Rework Matrix (ln-333-task-rework):**
-
-| Criterion | Task 1 | Task 2 | Task 3 |
-|-----------|--------|--------|--------|
-| Feedback loaded | [ ] | [ ] | [ ] |
-| Must-fix items addressed | [ ] | [ ] | [ ] |
-| Quality gates passed | [ ] | [ ] | [ ] |
-| Status → To Review | [ ] | [ ] | [ ] |
+| Task ID | Status | Worker | Verdict |
+|---------|--------|--------|---------|
+| ____ | ____ | ln-331/332/333/334 | ____ |
 
 **Loop Status:**
-- [ ] All Priority 0 processed
-- [ ] All Priority 1 processed
-- [ ] All Priority 2 processed
-- [ ] Stop condition met (no more tasks to process)
+- [ ] All To Review → processed
+- [ ] All To Rework → processed
+- [ ] All Todo → processed
+- [ ] Stop condition met
 
 **Story Transitions:**
-- [ ] Story: Todo → In Progress (first task started)
-- [ ] All implementation tasks Done: ____/____
+- [ ] Story: Todo → In Progress
+- [ ] Impl tasks Done: ____/____
 
----
+</details>
 
-#### Step 3: Story Review Pass 1 (ln-340-story-quality-gate)
+<details>
+<summary>Phase 3, Step 3 Pass 1: Story Quality Gate (ln-340)</summary>
 
-**Preparation:**
-- [ ] Story and Tasks metadata loaded
-- [ ] Modified files identified
+### Step 3: Story Review Pass 1 (ln-340-story-quality-gate)
 
-**Phase 3: Code Quality (ln-341-code-quality-checker)**
-- [ ] Done implementation tasks queried
-- [ ] Code analyzed (git diff, AST)
-- [ ] DRY violations checked
-- [ ] KISS violations checked
-- [ ] YAGNI violations checked
-- [ ] Architecture violations checked
-- [ ] Guide compliance checked
-- [ ] Issues categorized (HIGH/MEDIUM/LOW)
-- **Decision Point:** No HIGH/MEDIUM → PASS, else → FAIL
-- [ ] Verdict: ____
-- [ ] If FAIL: Refactoring task created → STOP, go to Step 1
+**Phase 3: Code Quality (ln-341)**
+- [ ] Verdict: PASS / FAIL
+- [ ] If FAIL: Refactoring task created → STOP
 
 **Phase 3.5: Linter Check**
-- [ ] Linters read from `docs/project/tech_stack.md` (Section 4.3)
-- [ ] All linter commands executed
-- [ ] Results: ____ errors
-- **Decision Point:** 0 errors → PASS, else → FAIL
-- [ ] Verdict: ____
-- [ ] If FAIL: Lint fix task created → STOP, go to Step 1
+- [ ] Errors: ____
+- [ ] Verdict: PASS / FAIL
+- [ ] If FAIL: Lint fix task created → STOP
 
-**Phase 4: Regression (ln-342-regression-checker)**
-- [ ] Test framework detected: ____
-- [ ] Tests executed (5-min timeout)
-- [ ] Results parsed (total/passed/failed)
-- **Decision Point:** failed=0 → PASS, else → FAIL
-- [ ] Verdict: ____
-- [ ] Failed tests: ____
-- [ ] If FAIL: Fix task created → STOP, go to Step 1
+**Phase 4: Regression (ln-342)**
+- [ ] Framework: ____
+- [ ] Results: ____/____
+- [ ] Verdict: PASS / FAIL
+- [ ] If FAIL: Fix task created → STOP
 
-**Phase 5: Manual Testing (ln-343-manual-tester)**
-- [ ] Story type detected (API/UI): ____
-- [ ] Application verified running
-- [ ] AC parsed into structured list
+**Phase 5: Manual Testing (ln-343)**
+- [ ] Story type: API / UI
+- [ ] AC results: ____/____
+- [ ] Verdict: PASS / FAIL
+- [ ] Temp script: scripts/tmp_[story_id].sh
+- [ ] If FAIL: Bug fix task created → STOP
 
-*AC Testing:*
-| AC ID | Given/When/Then | Result |
-|-------|-----------------|--------|
-| AC1 | ____ | - [ ] PASS / FAIL |
-| AC2 | ____ | - [ ] PASS / FAIL |
-| AC3 | ____ | - [ ] PASS / FAIL |
+**Phase 6: Test Task Creation (ln-350)**
+- [ ] E2E tests (2-5): ____
+- [ ] Integration tests (0-8): ____
+- [ ] Unit tests (0-15): ____
+- [ ] Total (10-28): ____
+- [ ] Mode: CREATE / REPLAN
+- [ ] Test task created: ____
 
-*Edge Cases (3-5):*
-| Case | Result |
-|------|--------|
-| ____ | - [ ] PASS / FAIL |
+</details>
 
-*Error Handling:*
-| Scenario | Result |
-|----------|--------|
-| ____ | - [ ] PASS / FAIL |
+<details>
+<summary>Phase 3, Step 2 (continued): Test Task Execution (ln-334)</summary>
 
-*Integration Points (2-3):*
-| Integration | Result |
-|-------------|--------|
-| ____ | - [ ] PASS / FAIL |
-
-- **Decision Point:** All AC PASS + no critical failures → PASS, else → FAIL
-- [ ] Verdict: ____
-- [ ] Temp script created: scripts/tmp_[story_id].sh
-- [ ] If FAIL: Bug fix task created → STOP, go to Step 1
-
-**Phase 6: Test Task Creation (ln-350-story-test-planner)**
-- [ ] Manual test results parsed (Format v1.0)
-- [ ] Risk Priority calculated (Impact × Probability)
-- [ ] E2E tests selected (2-5, Priority ≥15): ____
-- [ ] Integration tests selected (0-8, Priority ≥15): ____
-- [ ] Unit tests selected (0-15, Priority ≥15): ____
-- [ ] Total tests (10-28 limit, goal 2-7): ____
-- [ ] 11-section task generated
-- [ ] Existing test task checked
-- **Decision Point:** count=0 → CREATE, count≥1 → REPLAN
-- [ ] Mode: ____
-- [ ] Worker delegated (ln-311 or ln-312)
-- [ ] Test task created/updated in Linear
-
-**Pass 1 Completion:**
-- [ ] All quality gates passed (Code → Regression → Manual)
-- [ ] Test task created
-- [ ] Test task auto-verified: Backlog → Todo
-- [ ] Comment added to Story
-
----
-
-#### Step 2 (continued): Test Task Execution
+### Step 2 (continued): Test Task Execution
 
 - [ ] Test task selected (label "tests")
-- [ ] 11 sections verified present
+- [ ] 11 sections verified
 
 **ln-334-test-executor:**
+- [ ] Step 1: Existing tests fixed
+- [ ] Step 2: New tests (E2E ____, Int ____, Unit ____)
+- [ ] Step 3: Infrastructure + Docs + Cleanup
+- [ ] Step 4: Quality gates passed
+- [ ] Status: In Progress → To Review
 
-*Step 1: Fix Existing Tests*
-- [ ] Section 8 loaded
-- [ ] Affected tests identified
-- [ ] All tests updated and passing
-
-*Step 2: New Tests (E2E → Integration → Unit)*
-- [ ] E2E tests implemented (2-5): ____
-- [ ] E2E tests passing
-- [ ] Integration tests implemented (0-8): ____
-- [ ] Integration tests passing
-- [ ] Unit tests implemented (0-15): ____
-- [ ] Unit tests passing
-- [ ] Total within 10-28 limit: ____
-- [ ] Priority ≥15 scenarios covered
-
-*Step 3: Update Project Files*
-- [ ] Section 9: Infrastructure updated (package.json, Dockerfile, compose)
-- [ ] Section 10: Documentation updated (tests/README, README, CHANGELOG)
-- [ ] Section 11: Legacy cleanup completed
-- [ ] All tests still pass after cleanup
-
-*Step 4: Final Verification*
-- [ ] All quality gates passed
-- [ ] Task moved: In Progress → To Review
-
-**Test Task Review (ln-332-task-reviewer):**
-- [ ] docker-compose.test.yml run verified
-- [ ] Test limits verified (2-5/3-8/5-15, 10-28 total)
-- [ ] Priority ≥15 scenarios verified
+**Test Task Review (ln-332):**
+- [ ] docker-compose.test.yml passed
+- [ ] Test limits verified
 - [ ] Verdict: ____
 
----
+</details>
 
-#### Step 3: Story Review Pass 2 (ln-340-story-quality-gate)
+<details>
+<summary>Phase 3, Step 3 Pass 2: Final Quality Gate (ln-340)</summary>
+
+### Step 3: Story Review Pass 2 (ln-340-story-quality-gate)
 
 **Prerequisites:**
 - [ ] Test task exists
@@ -367,32 +231,30 @@ Checkpoint file tracks pipeline execution progress. All checkboxes start uncheck
 
 **Verification:**
 - [ ] All tests pass (0 failures)
-- [ ] Total tests within 10-28 limit: ____
-- [ ] All Priority ≥15 scenarios tested
-- [ ] E2E tests cover all Story AC
-- [ ] Tests focus on business logic (no framework tests)
-- [ ] Infrastructure updated
+- [ ] Total tests within 10-28: ____
+- [ ] Priority ≥15 scenarios tested
+- [ ] E2E covers all Story AC
 
-**Decision Point:** All checks pass → Story Done, else → create fix tasks
+**Decision:** PASS → Story Done / FAIL → create fix tasks
 - [ ] Verdict: ____
 
 **If PASS:**
-- [ ] Story status: To Review → Done
-- [ ] kanban_board.md minimal cleanup
+- [ ] Story: To Review → Done
+- [ ] kanban_board.md cleanup
 - [ ] Linear comment added
 
-**If FAIL:**
-- [ ] Fix tasks created: ____
-- [ ] Go back to Step 1
+</details>
 
----
+<details>
+<summary>Phase 4: Completion (ln-300)</summary>
 
-## Phase 4: Completion (ln-300-story-pipeline)
+### Phase 4: Completion
 - [ ] Story status = Done
 - [ ] All tasks Done: ____/____
-- [ ] Pipeline complete: Todo → In Progress → To Review → Done
 - [ ] Completion report generated
 - [ ] Checkpoint file DELETED
+
+</details>
 
 ---
 
@@ -400,14 +262,23 @@ Checkpoint file tracks pipeline execution progress. All checkboxes start uncheck
 
 | Event | Action |
 |-------|--------|
-| Pipeline start | Create checkpoint, Phase 0-1 |
-| After each skill | Update checkboxes, add details |
-| Decision made | Record choice + reason |
-| Loop iteration | Add new Iteration section |
-| Pipeline end | Mark Phase 4, DELETE file |
-| Context loss | Read checkpoint, resume from last `- [x]` |
+| Pipeline start | Create checkpoint with Phase 0-1 in "Current Phase" |
+| Phase/Step complete | Collapse to summary in "Completed Phases", clear "Current Phase" |
+| New phase/step start | Copy template to "Current Phase", fill details |
+| Ownership change | Add row to Ownership Log, update Current Owner |
+| Decision made | Record in current phase section |
+| Pipeline end | Delete checkpoint file |
+| Context loss | Read checkpoint, resume from "Current Phase" position |
+
+**Collapse Format:**
+```markdown
+### Phase X ✅ (key-skill)
+Summary: result1, result2, decision made
+```
+
+**Token Savings:** ~70-80% vs full checkboxes (60-80 lines vs 400+)
 
 ---
 
-**Version:** 2.0.0
-**Last Updated:** 2025-11-22
+**Version:** 3.0.0 (Compact History Pattern: collapsed completed phases, detailed current phase only)
+**Last Updated:** 2025-11-23

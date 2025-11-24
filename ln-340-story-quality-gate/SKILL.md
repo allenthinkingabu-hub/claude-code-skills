@@ -111,11 +111,13 @@ Skill(skill: "ln-340-story-quality-gate", storyId: "US004", pass: 2)
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
-> - **Start:** Read `docs/tasks/checkpoints/[story_id].md` → verify Pass 1 not completed
+> - **Start:** Read checkpoint → copy Step 3 Pass 1 template to "Current Phase" if empty
 > - **Ownership Log (Baton Passing):**
 >   - **Before delegating to worker:** Record `| timestamp | ln-340 | Acquired | worker-name |`
 >   - **After worker returns:** Verify worker recorded `Released` entry, update `Current Owner: ln-340`
-> - **End:** Record `| timestamp | ln-340 | Released | ln-330 |`, mark Pass 1 completed with verdict (PASS/FAIL) and created task type
+> - **End:** Record `| timestamp | ln-340 | Released | ln-330 |`
+> - **Collapse:** Move "Current Phase" to "Completed Phases" as summary:
+>   `- Step 3 Pass 1: Code ✅, Linter ✅, Regression ✅, Manual ✅, Test task API-XX created`
 
 ### Phase 1: Discovery
 
@@ -356,11 +358,13 @@ If we reached Phase 6, it means all quality gates passed. Phase 6 only creates t
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
-> - **Start:** Read `docs/tasks/checkpoints/[story_id].md` → verify Pass 2 not completed
+> - **Start:** Read checkpoint → copy Step 3 Pass 2 template to "Current Phase" if empty
 > - **Ownership Log (Baton Passing):**
 >   - **Before delegating to worker:** Record `| timestamp | ln-340 | Acquired | worker-name |`
 >   - **After worker returns:** Verify worker recorded `Released` entry, update `Current Owner: ln-340`
-> - **End:** Record `| timestamp | ln-340 | Released | ln-330 |`, mark Pass 2 completed with test verification results
+> - **End:** Record `| timestamp | ln-340 | Released | ln-330 |`
+> - **Collapse:** Move "Current Phase" to "Completed Phases" as summary:
+>   `- Step 3 Pass 2: All tests ✅, Story → Done`
 
 ### Phase 1: Prerequisites Check
 

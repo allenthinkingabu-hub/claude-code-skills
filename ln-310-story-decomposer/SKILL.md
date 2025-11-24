@@ -117,10 +117,12 @@ See [task_template_implementation.md](../ln-311-task-creator/references/task_tem
 
 > [!NOTE]
 > **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
-> - **Start:** Read checkpoint → verify Phase 2 not completed
+> - **Start:** Read checkpoint → copy Phase 2 template to "Current Phase" if empty
 > - **Before delegating to worker:** Record `| timestamp | ln-310 | Acquired | worker-name |`
 > - **After worker returns:** Verify `Released` entry, update `Current Owner: ln-310`
-> - **End:** Record `| timestamp | ln-310 | Released | ln-300 |`, mark Phase 2 completed
+> - **End:** Record `| timestamp | ln-310 | Released | ln-300 |`
+> - **Collapse:** Move "Current Phase" content to "Completed Phases" as one-line summary:
+>   `### Phase 2 ✅ (ln-310 → ln-311/312) Mode: X, Y tasks created`
 
 ### Phase 1: Discovery (Automated)
 
