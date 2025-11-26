@@ -89,24 +89,19 @@ This skill should be used when:
 - Executor skills (ln-331-task-executor, ln-334-test-executor, ln-333-task-rework, ln-332-task-reviewer) are SOLELY responsible for updating their selected task status
 - Each executor MUST update ONLY the task ID passed to it (NOT all tasks in the Story)
 
+**Status Transition Validation (ENFORCED):**
+- ⛔ **CRITICAL:** After EVERY worker completion, ln-330 MUST verify task status is correct
+- ✅ **ln-331-task-executor / ln-334-test-executor / ln-333-task-rework completion** → Task MUST be "To Review" (NOT "Done")
+- ❌ **FORBIDDEN:** Task status = "Done" after execution workers → Only ln-332-task-reviewer can approve to Done
+- 🔍 **Validation:** Reload task metadata via `get_issue(taskId)` after worker returns, check status field
+- ⚠️ **If violation detected:** Report ERROR with worker name + stop workflow (do NOT continue loop)
+
 **Phase 3 vs Phase 4:**
 - **Phase 3:** Task-level orchestration (handles ALL task types: implementation, refactoring, test)
 - **Phase 4:** Story-level delegation (invokes ln-340-story-quality-gate Pass 1 for quality verification)
 - ln-330-story-executor does NOT execute Story quality checks directly - delegates to ln-340-story-quality-gate
 
 ## Workflow
-
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
-> - **Start:** Read checkpoint → copy Step 2 template to "Current Phase", restore task matrix progress
-> - **During work:** Mark `- [x]` checkboxes as tasks processed (Task loaded, Stop condition checks)
-> - **Before delegating to worker:** Record `| timestamp | ln-330 | Acquired | worker-name |`
-> - **After worker returns:** Verify `Released` entry, update `Current Owner: ln-330`, mark `- [x]` task row in matrix
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes (Loop Status: All priorities processed, Story Transitions)
->   - Add to "Completed Phases": `- Step 2: X/Y impl tasks Done` (or `- Step 2 (cont): Test task Done`)
->   - Keep task matrix in "Completed Phases" for resume capability
->   - Record `| timestamp | ln-330 | Released | ln-300 |` in Ownership Log
 
 ### Phase 1: Discovery
 
@@ -157,7 +152,10 @@ Auto-discovers Team ID and project configuration from `docs/tasks/kanban_board.m
   2. Extract first "To Rework" task ID
   3. **Use Skill tool:** `Skill(skill: "ln-333-task-rework")` with task ID
   4. ln-333-task-rework loads full description and handles: To Rework → In Progress → To Review
-  5. After completion: Loop back to Phase 2 (reload from Linear - AUTOMATIC, no user input)
+  5. After completion:
+     a. **Verify status transition:** Reload task metadata from Linear (`get_issue` with task ID)
+     b. **MUST be "To Review"** - If status = "Done" → ⛔ ERROR: "Worker violation: ln-333 incorrectly set task to Done. Only ln-332-task-reviewer can approve tasks."
+     c. Loop back to Phase 2 (reload all tasks - AUTOMATIC, no user input)
 
 **Priority 2: Execute Next Task (Todo → In Progress → To Review)**
 
@@ -176,7 +174,11 @@ Auto-discovers Team ID and project configuration from `docs/tasks/kanban_board.m
      - **ELSE (implementation):** `Skill(skill: "ln-331-task-executor")` with task ID
        - ln-331-task-executor loads full implementation task description (7 sections)
        - Handles implementation task: Todo → In Progress → To Review
-  5. After completion: Loop back to Phase 2 (reload from Linear - AUTOMATIC, no user input)
+  5. After completion:
+     a. **Verify status transition:** Reload task metadata from Linear (`get_issue` with task ID)
+     b. **MUST be "To Review"** - If status = "Done" → ⛔ ERROR: "Worker violation: Task incorrectly set to Done after execution. Only ln-332-task-reviewer can approve tasks to Done."
+     c. If status = "In Progress" → ⛔ ERROR: "Worker violation: Task still In Progress. Worker must complete implementation and set to To Review."
+     d. Loop back to Phase 2 (reload all tasks - AUTOMATIC, no user input)
 
 **Stop Condition:**
 - No more To Review tasks AND no more To Rework tasks AND no more Todo tasks
@@ -414,11 +416,14 @@ Before completing work, verify ALL checkpoints:
 **✅ Orchestration Loop Executed (Phase 3):**
 - [ ] **Priority 0:** All To Review tasks processed via ln-332-task-reviewer
 - [ ] **Priority 1:** All To Rework tasks processed via ln-333-task-rework
+  - [ ] **Status validation:** After ln-333 completion, task status verified = "To Review" (NOT "Done")
 - [ ] **Priority 2:** All Todo tasks processed via executors:
   - [ ] Test tasks (label "tests") → ln-334-test-executor
   - [ ] Implementation tasks → ln-331-task-executor
+  - [ ] **Status validation:** After ln-331/ln-334 completion, task status verified = "To Review" (NOT "Done")
 - [ ] **Stop Condition:** No more To Review AND To Rework AND Todo tasks
 - [ ] All tasks in final state: Done, In Progress, or To Rework
+- [ ] **CRITICAL:** No tasks incorrectly marked Done by execution workers (only ln-332 can approve to Done)
 
 **✅ Story Quality Verification (Phase 4):**
 - [ ] If first task started: Story status updated Todo → In Progress

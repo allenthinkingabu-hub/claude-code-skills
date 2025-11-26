@@ -75,14 +75,6 @@ description: Updates ALL task types (impl/refactoring/test). Compares IDEAL vs e
 
 ## Workflow
 
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **Start:** Record `| timestamp | ln-312 | Acquired | from orchestrator-name |` in Ownership Log
-> - **During work:** Mark `- [x]` checkboxes as steps complete (Existing tasks loaded, Operations categorized, etc.)
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes with results (Operations executed: KEEP/UPDATE/OBSOLETE/CREATE counts, kanban updated)
->   - Record `| timestamp | ln-312 | Released | to orchestrator-name |` in Ownership Log
-
 ### Phase 1: Load Existing Tasks
 
 **Goal**: Fetch full task descriptions from Linear for comparison, determine task type.

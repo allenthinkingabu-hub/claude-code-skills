@@ -21,14 +21,6 @@ This skill should be used when:
 
 ## Workflow
 
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **Start:** Record `| timestamp | ln-343 | Acquired | from ln-340 |` in Ownership Log
-> - **During work:** Mark `- [x]` checkboxes as steps complete (Docker rebuilt, AC tested, etc.)
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes with results (Verdict: PASS/FAIL, Temp script path)
->   - Record `| timestamp | ln-343 | Released | to ln-340 |` in Ownership Log
-
 ### Phase 1: Setup & Load
 
 Setup test environment and load Story Acceptance Criteria.

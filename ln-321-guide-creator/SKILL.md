@@ -18,14 +18,6 @@ This skill should be used when:
 
 ## How It Works
 
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **Start:** Record `| timestamp | ln-321 | Acquired | from ln-320 |` in Ownership Log
-> - **During work:** Mark `- [x]` checkboxes as steps complete (Research completed, Guide generated, etc.)
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes with results (Guide path, sources count)
->   - Record `| timestamp | ln-321 | Released | to ln-320 |` in Ownership Log
-
 ### Phase 1: Research & Discovery (Automated)
 
 **Objective**: Automatically research pattern best practices and gather sources.

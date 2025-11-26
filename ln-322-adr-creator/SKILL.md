@@ -24,14 +24,6 @@ This skill should be used when:
 
 ## How It Works
 
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **Start:** Record `| timestamp | ln-322 | Acquired | from orchestrator-name |` in Ownership Log
-> - **During work:** Mark `- [x]` checkboxes as steps complete (ADR number detected, Dialog completed, ADR generated, etc.)
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes with results (ADR path, category)
->   - Record `| timestamp | ln-322 | Released | to orchestrator-name |` in Ownership Log
-
 The skill follows a 4-phase workflow with streamlined interactive dialog:
 
 ### Phase 1: Discovery & Dialog

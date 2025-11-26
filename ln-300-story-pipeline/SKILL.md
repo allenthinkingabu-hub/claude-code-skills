@@ -88,38 +88,11 @@ Phase 3: Loop (Verify → Execute → Review Pass 1 + explicit Pass 2 delegation
 
 ### Phase 0: Checkpoint Setup
 
-> [!NOTE]
-> **Compact History Pattern:** Checkpoint keeps full Ownership Log + collapsed completed phases + detailed current phase only. ~70% token savings.
-
-**Create or Load checkpoint:**
-- Check if `docs/tasks/checkpoints/[story_id].md` exists
-- **If NOT exists:**
-  1. Read `references/checkpoint_format.md` template
-  2. Copy header + Ownership Log + Completed Phases + Current Phase sections
-  3. Replace `[Story ID]` placeholder with actual Story ID
-  4. Fill metadata (Pipeline, Started, Current: Phase 0-1)
-  5. Copy Phase 0-1 template to "Current Phase" section
-- **If EXISTS:** Read checkpoint, resume from "Current Phase" position
-
-**Resume logic (read "Completed Phases" to determine position):**
-- Phase 2 ✅ in Completed -> Skip ln-310-story-decomposer
-- Step 1 ✅ in Completed -> Skip ln-320-story-validator (for this iteration)
-- Step 2 in Current Phase -> Resume ln-330-story-executor from task matrix
-- Pass 1/2 ✅ in Completed -> Skip to next step
-
-**Ownership Log (Baton Passing):**
-- **Before delegating:** Record `| timestamp | ln-300 | Acquired | worker-name |`
-- **After worker returns:** Verify `Released` entry, update `Current Owner: ln-300`
-
-**Collapse Rule (when phase/step completes):**
-- Move "Current Phase" content to "Completed Phases" as one-line summary
-- Clear "Current Phase", copy next template if continuing
-- Example: `### Phase 0-1 ✅ Setup complete, Story US001 loaded (status: Backlog)`
+**Optional checkpoint:**
+- If `docs/tasks/checkpoints/[story_id].md` exists → mark progress checkboxes as phases complete
+- If file missing → continue without errors (checkpoint optional)
 
 ### Phase 1: Discovery (Automated)
-
-> [!NOTE]
-> **Checkpoint Check:** Read checkpoint → verify "Phase 0-1 ✅" NOT in Completed Phases. If found → skip to Phase 2.
 
 Auto-discovers Team ID from `docs/tasks/kanban_board.md`.
 
@@ -142,15 +115,7 @@ Story {
 
 **NO full description loaded** - token efficiency.
 
-**Update checkpoint:**
-- Mark `- [x]` all Phase 1 checkboxes
-- Collapse to Completed Phases: `### Phase 0-1 ✅ Setup complete, Story [ID] loaded (status: [X])`
-- Clear "Current Phase" section
-
 ### Phase 2: Task Planning
-
-> [!NOTE]
-> **Checkpoint Check:** Read checkpoint → verify "Phase 2 ✅" NOT in Completed Phases. If found → skip to Phase 3.
 
 **Check**: Does Story have tasks?
 
@@ -180,19 +145,11 @@ Skill(skill: "ln-310-story-decomposer", context: {
 
 **After completion**: Reload Story + Tasks metadata.
 
-**Update checkpoint:**
-- Mark `- [x]` all Phase 2 checkboxes
-- Collapse to Completed Phases: `### Phase 2 ✅ (ln-310 → ln-311/312) Mode: [X], Y tasks created`
-- Clear "Current Phase" section
-
 ### Phase 3: Story Verification & Execution Loop
 
 This phase loops until Story status = "To Review".
 
 **Step 1: Story Verification**
-
-> [!NOTE]
-> **Checkpoint Check:** Read checkpoint → verify "Step 1 ✅" NOT in Completed Phases (for current iteration). If found → skip to Step 2.
 
 **Trigger**: Story status = "Backlog" OR Tasks exist but not verified
 
@@ -215,15 +172,7 @@ Skill(skill: "ln-320-story-validator", context: {
 
 **After completion**: Reload Story + Tasks metadata.
 
-**Update checkpoint:**
-- Mark `- [x]` all Step 1 checkboxes in "Current Phase"
-- Add to "Completed Phases": `- Step 1: X auto-fixes, Backlog → Todo`
-- Copy Step 2 template to "Current Phase"
-
 **Step 2: Story Execution**
-
-> [!NOTE]
-> **Checkpoint Check:** Read checkpoint → verify "Step 2 ✅" NOT in Completed Phases (for current iteration). If found → skip to Step 3 or next iteration Step 1.
 
 **Trigger**: Story status = "Todo" OR "In Progress"
 
@@ -247,15 +196,7 @@ Skill(skill: "ln-330-story-executor", context: {
 
 **After completion**: Reload Story + Tasks metadata.
 
-**Update checkpoint:**
-- Mark `- [x]` all Step 2 checkboxes in "Current Phase"
-- Add to "Completed Phases": `- Step 2: X/Y impl tasks Done` (or `- Step 2 (cont): Test task Done`)
-- Copy Step 3 template to "Current Phase" if proceeding to quality gate
-
 **Step 3: Story Review Pass 1 + Pass 2 (Explicitly Delegated by ln-330-story-executor)**
-
-> [!NOTE]
-> **Checkpoint Check:** Read checkpoint → verify "Pass 1 ✅" or "Pass 2 ✅" NOT in Completed Phases. These checks are done by ln-340, not ln-300.
 
 **Trigger**: ln-330-story-executor explicitly delegates to ln-340-story-quality-gate Pass 1 when all implementation tasks Done
 
@@ -274,10 +215,6 @@ Skill(skill: "ln-330-story-executor", context: {
 **Loop Condition**: If new task created (fix/refactoring/test), Phase 3 restarts from ln-320-story-validator to approve Backlog → Todo before ln-330-story-executor executes again.
 
 **Exit Condition**: Story status = "Done" (all tasks Done, test task Done, Pass 2 passed)
-
-**Update checkpoint:**
-- Pass 1/Pass 2 updates handled by ln-340-story-quality-gate
-- ln-300 reads "Completed Phases" to determine if iteration complete
 
 ### Phase 4: Completion Report
 
@@ -299,8 +236,6 @@ Story successfully processed from planning to Done without manual intervention.
 ```
 
 **Result**: Story fully automated from task planning to Done status.
-
-**Delete checkpoint:** Remove `docs/tasks/checkpoints/[story_id].md` (Story completed, no recovery needed).
 
 ---
 

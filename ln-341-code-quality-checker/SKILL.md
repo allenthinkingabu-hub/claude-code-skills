@@ -21,14 +21,6 @@ This skill should be used when:
 
 ## Workflow
 
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **Start:** Record `| timestamp | ln-341 | Acquired | from ln-340 |` in Ownership Log
-> - **During work:** Mark `- [x]` checkboxes as steps complete (Tasks loaded, Code analyzed, etc.)
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes with results (Verdict: PASS/FAIL, Issues categorized)
->   - Record `| timestamp | ln-341 | Released | to ln-340 |` in Ownership Log
-
 ### Phase 1: Discovery
 
 Auto-discovers project configuration and loads Story details.

@@ -18,14 +18,6 @@ This skill should be used when fixing issues in task (status = To Rework) after 
 
 ## How It Works
 
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **Start:** Record `| timestamp | ln-333 | Acquired | from ln-330 |` in Ownership Log
-> - **During work:** Mark `- [x]` checkboxes as steps complete (Feedback loaded, Must-fix items addressed, etc.)
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes with results (Quality gates passed, Status → To Review)
->   - Record `| timestamp | ln-333 | Released | to ln-330 |` in Ownership Log
-
 ### Phase 1: Discovery (Automated)
 
 Auto-discovers Team ID and project configuration from `docs/tasks/kanban_board.md` and `CLAUDE.md`.
@@ -152,6 +144,12 @@ Before completing work, verify ALL checkpoints:
 - [ ] NO git commit made (commits happen after ln-332-task-reviewer approval)
 - [ ] Task NOT closed (remains To Review for re-review)
 - [ ] Only fixes applied (no scope creep, no new features)
+
+**⛔ FORBIDDEN (workflow violation):**
+- [ ] ⛔ **CRITICAL:** Task status is "To Review" (NEVER "Done" - only ln-332-task-reviewer can approve to Done)
+- [ ] ⛔ **ln-330-story-executor validates status** - If task is Done, orchestrator reports worker violation error
+- [ ] Did NOT attempt to re-review own fixes (not rework worker's responsibility)
+- [ ] Returned control to orchestrator/user after To Review
 
 **Output:** Task ready for re-review by ln-332-task-reviewer (status "To Review")
 

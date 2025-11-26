@@ -109,19 +109,6 @@ Skill(skill: "ln-340-story-quality-gate", storyId: "US004", pass: 2)
 
 ## Pass 1 Workflow
 
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
-> - **Start:** Read checkpoint → copy Step 3 Pass 1 template to "Current Phase" if empty
-> - **During work:** Mark `- [x]` checkboxes as phases complete (Code Quality verdict, Linter errors, etc.)
-> - **Ownership Log (Baton Passing):**
->   - **Before delegating to worker:** Record `| timestamp | ln-340 | Acquired | worker-name |`
->   - **After worker returns:** Verify worker recorded `Released` entry, update `Current Owner: ln-340`
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes (all phase verdicts, test task created)
->   - Add to "Completed Phases": `- Step 3 Pass 1: Code ✅, Linter ✅, Regression ✅, Manual ✅, Test task API-XX created`
->   - Clear "Current Phase" section
->   - Record `| timestamp | ln-340 | Released | ln-330 |` in Ownership Log
-
 ### Phase 1: Discovery
 
 Auto-discovers project configuration:
@@ -358,19 +345,6 @@ If we reached Phase 6, it means all quality gates passed. Phase 6 only creates t
 ---
 
 ## Pass 2 Workflow
-
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline):**
-> - **Start:** Read checkpoint → copy Step 3 Pass 2 template to "Current Phase" if empty
-> - **During work:** Mark `- [x]` checkboxes as verifications complete (Prerequisites, test counts, Priority checks)
-> - **Ownership Log (Baton Passing):**
->   - **Before delegating to worker:** Record `| timestamp | ln-340 | Acquired | worker-name |`
->   - **After worker returns:** Verify worker recorded `Released` entry, update `Current Owner: ln-340`
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes (verdict, Story status transition)
->   - Add to "Completed Phases": `- Step 3 Pass 2: All tests ✅, Story → Done`
->   - Clear "Current Phase" section
->   - Record `| timestamp | ln-340 | Released | ln-330 |` in Ownership Log
 
 ### Phase 1: Prerequisites Check
 

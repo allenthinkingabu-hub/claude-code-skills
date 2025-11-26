@@ -29,14 +29,6 @@ This skill should be used when executing Story Finalizer test task (status = Tod
 
 ## How It Works
 
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **Start:** Record `| timestamp | ln-334 | Acquired | from ln-330 |` in Ownership Log
-> - **During work:** Mark `- [x]` checkboxes as steps complete (Existing tests fixed, New tests implemented, etc.)
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes with results (All tests passing, Status → To Review)
->   - Record `| timestamp | ln-334 | Released | to ln-330 |` in Ownership Log
-
 ### Phase 1: Discovery (Automated)
 
 Auto-discovers project configuration:
@@ -263,7 +255,8 @@ Before completing work, verify ALL checkpoints:
 - [ ] Final message: "Story Finalizer task complete. 6 steps executed (Fix Tests + New Tests + Infrastructure + Documentation + Legacy Cleanup + Verification). All quality gates passed. Ready for review."
 
 **⛔ FORBIDDEN (workflow violation):**
-- [ ] Task status is "To Review" (NOT "Done" - only ln-332-task-reviewer can set Done)
+- [ ] ⛔ **CRITICAL:** Task status is "To Review" (NEVER "Done" - only ln-332-task-reviewer can approve to Done)
+- [ ] ⛔ **ln-330-story-executor validates status** - If task is Done, orchestrator reports worker violation error
 - [ ] Did NOT attempt to review own tests (not executor's responsibility)
 - [ ] Returned control to orchestrator/user after To Review
 

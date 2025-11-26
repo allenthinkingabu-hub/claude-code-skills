@@ -32,14 +32,6 @@ Do NOT use if:
 
 ## How It Works
 
-> [!NOTE]
-> **Checkpoint Sync (when invoked by ln-300-story-pipeline hierarchy):**
-> - **Start:** Record `| timestamp | ln-350 | Acquired | from ln-340 |` in Ownership Log
-> - **During work:** Mark `- [x]` checkboxes as steps complete (Manual results parsed, Tests selected, etc.)
-> - **Before returning:**
->   - Mark `- [x]` final checkboxes with results (E2E/Integration/Unit counts, Test task created/updated)
->   - Record `| timestamp | ln-350 | Released | to ln-340 |` in Ownership Log
-
 ### Phase 1: Discovery (Automated)
 
 Auto-discovers Team ID from `docs/tasks/kanban_board.md` (see CLAUDE.md "Configuration Auto-Discovery").
