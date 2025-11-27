@@ -1,747 +1,119 @@
 ---
 name: ln-320-story-validator
-description: Reviews Stories/Tasks against 2025 standards before approval (Backlog → Todo). Auto-fixes issues, validates structure, optimizes via YAGNI/KISS/SOLID. Auto-discovers team/config.
+description: Reviews Stories/Tasks against 2025 standards before approval (Backlog -> Todo). Auto-fixes issues, validates structure, optimizes via YAGNI/KISS/SOLID. Auto-discovers team/config.
 ---
 
 # Story Verification Skill
 
-Critically review and auto-fix Stories and Tasks against 2025 industry standards and project architecture before execution.
+Critically review and auto-fix Stories and Tasks against 2025 standards and project architecture before execution.
 
 ## Purpose & Scope
 
-**What it does:**
-- Validates Story and all child Tasks against industry standards and project patterns
-- Auto-fixes ALL detected issues (structure, solution, workflow, quality)
-- ALWAYS approves Story after fixes (Backlog → Todo transition)
-- Auto-creates missing guides and links them in Story Technical Notes
-- Strips or rejects any Non-Functional Requirements (NFRs) in Stories/Tasks; keep only functional scope and push quality topics to architecture notes if needed
-
-**What it doesn't do:**
-- Does NOT reject Stories (no "Needs Work" path exists)
-- Does NOT execute implementation (delegates to ln-330-story-executor)
-- Does NOT create/update ADRs (delegates to ln-322-adr-creator)
+- Validate Story plus child Tasks against industry standards and project patterns
+- Auto-fix detected issues (structure, solution, workflow, quality) before approval
+- Approve Story after fixes (Backlog -> Todo) and link any missing guides
+- Strip or re-home Non-Functional Requirements; keep only functional scope in Story/Tasks
 
 ## When to Use
 
-This skill should be used when:
-- Reviewing Stories before approval (Backlog → Todo)
-- Validating implementation path (Story + all child Tasks)
-- Ensuring 2025 best practices and project patterns compliance
-- Checking architectural approach and technology choices
-- Optimizing proposed solutions proactively
+- Reviewing Stories before approval (Backlog -> Todo)
+- Validating implementation path across Story and Tasks
+- Ensuring standards, architecture, and solution fit
+- Optimizing or correcting proposed approaches
 
 ## Workflow Overview
 
 ### Phase 1: Discovery & Loading
-
-**Auto-discover configuration and load Story context.**
-
-**Discovery:**
-- Team ID from `docs/tasks/kanban_board.md` (Linear Configuration table)
-- Project documentation from `CLAUDE.md`
-- Epic context from Story's project field
-
-**Loading:**
-1. Fetch Story metadata from Linear (ID, title, status, labels - NO description yet)
-2. Extract Story.id (UUID) for parentId filtering
-3. Fetch child Tasks metadata (ID, title, status, labels - NO descriptions yet)
-4. Validate task count (3-8 implementation tasks expected)
-
-**Rationale:** Phase 1 is overview/coordination. FULL Story description loaded in Phase 2 when analysis begins (progressive loading pattern).
-
-**Technical Details:** See CLAUDE.md or kanban-board.md "Configuration Auto-Discovery" and "Linear Integration".
+- Auto-discover configuration: Team ID (docs/tasks/kanban_board.md), project docs (CLAUDE.md), epic from Story.project
+- Load metadata only: Story ID/title/status/labels, child Task IDs/titles/status/labels
+- Expect 3-8 implementation tasks; record parentId for filtering
+- Rationale: keep loading light; full descriptions arrive in Phase 2
 
 ### Phase 2: Critical Solution Review
-
-**Challenge proposed approach and verify standards compliance.**
-
-**Step 1: Load FULL Story Description**
-- Fetch complete Story description from Linear (all 8 sections)
-- Parse: Story statement, Context, AC, Test Strategy, Technical Notes
-- Rationale: Execution phase begins - need FULL context for analysis
-
-**Step 2: Verify Standards Compliance**
-
-**Standards Hierarchy (priority order):**
-1. **Industry Standards & RFCs** (OAuth 2.0, REST, OpenAPI, WebSocket, JSON) - PRIORITY 1
-2. **Security Standards** (OWASP Top 10, NIST guidelines) - PRIORITY 2
-3. **2025 Best Practices** (modern patterns, current libraries) - PRIORITY 3
-4. **Development Principles** (KISS/YAGNI/DRY within standard boundaries) - PRIORITY 4
-
-**Process:**
-1. **Check industry standards FIRST:**
-   - Research relevant standard for Story domain (OAuth 2.0, REST, OpenAPI, etc.)
-   - Verify Story Technical Notes and Tasks comply with standard
-   - **Rule:** If KISS/YAGNI conflicts with standard → Standard wins
-   - Document compliance with RFC/spec references
-
-2. **Challenge the approach:**
-   - Question: "Is this the best way in 2025?"
-   - Don't accept custom implementation if standard exists
-   - Identify better solutions proactively
-
-3. **Check documentation gaps:**
-
-   a) **Scan Story Technical Notes for triggers:**
-      - Guide: "pattern", "approach", "-ing" forms (Connection Pooling, Error Handling)
-      - Manual: package+version (httpx 0.24.0), API+version (Stripe API v2023-10-16)
-      - ADR: "choose", "selected", "vs", technology names (PostgreSQL, React)
-
-   b) **Check existing documentation:**
-      - `docs/guides/` for implementation patterns
-      - `docs/manuals/` for library/API references
-      - `docs/adrs/` for architecture decisions
-
-   c) **Auto-create missing documentation:**
-      - **Guides:** Invoke ln-321-guide-creator (HOW to implement patterns)
-      - **Manuals:** Invoke ln-323-manual-creator (HOW to use libraries/APIs)
-      - **ADRs:** Invoke ln-322-adr-creator (WHY decisions - AUTO-RESEARCH from Story)
-
-   d) **Save paths for Phase 3 #13 linking**
-
-4. **Task-level validation:**
-   - Verify implementation approaches align with Story architecture
-   - Ensure tasks reference appropriate documentation
-
-**Step 2b: Verify Against Project Codebase**
-
-> [!WARNING]
-> Story description may be outdated or based on assumptions. Verify against actual project state.
-
-- **Search for existing implementations:**
-  - Grep for components mentioned in Tasks (services, repositories, controllers)
-  - Check if proposed files/classes already exist
-  - **If exists:** Flag task to extend/modify instead of create
-- **Verify database schema:**
-  - Read entity files/migrations to check existing columns
-  - If Story says "add column X" but X exists → Flag for Story correction
-- **Check frontend components:**
-  - If UI changes proposed → Read affected screens, verify elements exist
-  - Understand current state before proposing modifications
-- **Review business logic classes:**
-  - If logic changes → Read existing methods/interfaces
-  - Identify actual integration points
-- **Output:**
-  - If reality differs from Story description → Auto-fix Story via `mcp__linear-server__update_issue`
-  - Update Technical Notes: "Column X already exists, task modified to extend"
-
-**Decision Outcomes:**
-- ✅ Better solution found → Rewrite Story/Tasks
-- ✅ Pattern missing → Auto-create guide and link
-- ❌ Non-standard solution → Replace with RFC-compliant approach
-- ❌ Outdated approach → Update to 2025 best practices
+- Load full Story description (all 8 sections) when analysis starts
+- Standards first (priority): Industry/RFCs -> Security -> 2025 best practices -> KISS/YAGNI/DRY within standards
+- Challenge approach: prefer proven standards over custom work; keep language as-is (EN/RU)
+- Documentation check and creation triggers (pattern keywords, package versions, technology choices); invoke ln-321-guide-creator / ln-323-manual-creator / ln-322-adr-creator if missing
+- Verify against codebase reality before edits; if Story is outdated, auto-correct via Linear update
+- Reporting rule: when principles are violated, explain why with best-practice references and propose concrete fixes, not just list names
 
 ### Phase 3: Comprehensive Auto-Fix
-
-**Auto-fix ALL issues across 16 verification criteria in logical execution order.**
-
-**Critical Principle:** This skill ALWAYS fixes issues automatically. Never leave Story in Backlog with feedback.
-
-**Execution Order:**
-
-**A. Structural Fixes (Execute First - Dependencies for Other Fixes):**
-
-1. **Story Structure (#1)** - Validate 8 sections per story_template_universal.md
-2. **Tasks Structure (#2)** - Sequential validation: load each Task description one-by-one, validate 7 sections per task_template_universal.md
-3. **Story Statement (#3)** - Clarify As a/I want/So that format
-4. **Acceptance Criteria (#4)** - Standardize Given/When/Then format, 3-5 AC
-
-**B. Solution Optimization (Core Technical Improvements):**
-
-5. **Industry Standards Compliance (#16)** - Rewrite to comply with RFC/protocol (OAuth 2.0, REST, OpenAPI)
-6. **Solution Optimization (#5)** - Apply 2025 best practices, validate against previous Story context
-7. **Library & Version (#6)** - Update outdated packages to current stable
-8. **Guide Links Insertion (#13)** - Link auto-created and existing guides in Story Technical Notes
-
-**C. Workflow Optimization (Process and Ordering):**
-
-9. **Test Strategy (#7)** - Add Risk-Based Testing (2-5 E2E, 3-8 Integration, 5-15 Unit, 10-28 total, Priority ≥15)
-10. **Test Task Cleanup (#10)** - Remove premature test tasks (created later by ln-350-story-test-planner)
-11. **Documentation Integration (#8)** - Remove standalone doc tasks, integrate into implementation
-12. **Foundation-First Execution (#14)** - Reorder tasks: Database → Repository → Service → API
-
-**D. Scope & Quality (Final Polish):**
-
-13. **Story Size & Task Granularity (#9)** - Check 3-8 tasks, 3-5h each; invoke ln-310-story-decomposer if < 3 tasks
-14. **YAGNI Violations (#11)** - Move premature features to future scope
-15. **KISS Violations (#12)** - Simplify over-engineering within standard boundaries
-16. **Code Quality Fundamentals (#15)** - Flag hardcoded values with TODO placeholders
-
-**Result:** ALL 16 criteria auto-fixed. Story ready for approval.
-
-**See "Auto-Fix Actions Reference" section below for detailed fix actions.**
+- Always auto-fix; no "Needs Work" path. Follow execution order: Structural (1-4) -> Solution (5-8) -> Workflow (9-12) -> Scope & Quality (13-16)
+- Use Auto-Fix Actions table below as the authoritative checklist; keep sequential task validation to avoid truncation
+- Test mention: ensure Test Strategy section exists but keep it empty here; do not plan coverage or execution at this stage
 
 ### Phase 4: Approve & Notify
-
-**Always approve Story and display summary.**
-
-**Critical Principle:** This skill ALWAYS approves Story after auto-fixes. No "Needs Work" path exists.
-
-**Approval Workflow:**
-1. Update Story status: Backlog → Todo (Linear)
-2. Update ALL child Tasks status: Backlog → Todo (Linear, one-by-one)
-3. Update kanban_board.md:
-   - Add ✅ APPROVED marker to Story in Backlog section first
-   - Move Story + ALL Tasks from "### Backlog" to "### Todo"
-   - Preserve hierarchy: Epic header → Story (📖 ✅ APPROVED) → Tasks (-)
-4. Add approval comment to Linear Story with:
-   - Auto-fixed issues summary
-   - Auto-created guides (paths)
-   - Auto-created manuals (paths)
-   - Auto-created ADRs (paths)
-5. Optional warning comment if TODO placeholders exist (user review needed, don't block execution)
-
-**Verification Summary Display:**
-- **Story section:** ID, Title, Verdict (✅ ALWAYS Approved → Todo), Changes made, Related Documentation (guides/manuals/ADRs full paths), Warnings (TODO placeholders if any)
-- **Tasks table:** ID, Title, Changes, Guide (../../guides/XX-pattern.md for implementation tasks, "-" for test tasks)
-
-**Output:**
-- Auto-fixed Story + ALL Tasks (structure, AC, solution, guides)
-- Status: Story and Tasks → Todo
-- Summary table for user visibility
-- Optional warning if TODOs exist
+- Set Story + all Tasks to Todo (Linear); update kanban_board.md with APPROVED marker and move items from Backlog to Todo keeping hierarchy
+- Add Linear comment summarizing fixes, created docs (paths), ADRs/manuals/guides, and any TODO warnings
+- Verification summary display: Story verdict (always Approved -> Todo), changes, linked docs, warnings; Tasks table with changes and guide links
+- Any principle violations in reports must include rationale, best-practice reference, and recommended remediation steps
 
 ## Auto-Fix Actions Reference
 
-**Purpose:** Technical reference for each auto-fix criterion. This section provides implementation details for fixes applied in Phase 3.
-
-### #1: Story Structure Format
-
-**What it checks:**
-- Story has all 8 required sections per story_template_universal.md
-- Sections are in correct order
-- Subsections are present (Current Situation, Desired Outcome, Success Metrics, etc.)
-
-**Auto-fix actions:**
-- Add missing sections with placeholders: `_TODO: Fill this section_`
-- Reorder sections to match template
-- Add missing subsections
-- Update Linear issue: `mcp__linear-server__update_issue(id, description)`
-- Add comment: "Story structure fixed per template v5.0.0"
-- **Language preservation:** Keep original Story language (EN/RU)
-
-**Skip if:** Story Done/Canceled or older than 30 days
-
-### #2: Tasks Structure Format
-
-**What it checks:**
-- EACH Task has all 7 required sections per task_template_universal.md
-- Sections are in correct order for each Task
-
-**Auto-fix actions (Sequential - One Task at a Time):**
-1. Fetch FULL description for current Task from Linear
-2. Parse description into sections
-3. Compare with task_template_universal.md (7 sections)
-4. Add missing sections with placeholders
-5. Reorder sections to match template
-6. Update Linear issue for this Task
-7. Add comment: "Task structure fixed per template v5.0.0"
-8. **Language preservation:** Keep original Task language (EN/RU)
-9. Move to next Task (repeat from step 1)
-
-**Skip if:** Task Done/Canceled or older than 30 days
-
-**Rationale:** Sequential validation prevents token waste and truncation issues.
-
-### #3: Story Statement
-
-**What it checks:**
-- Story statement follows "As a [persona] I want [capability] So that [value]" format
-- Statement is clear and not vague
-
-**Auto-fix actions:**
-- Extract persona from Context section
-- Identify capability from Technical Notes
-- Determine value from Success Metrics
-- Rewrite Story statement in proper format
-- Update Linear issue
-- Add comment: "Story statement clarified"
-
-### #4: Acceptance Criteria
-
-**What it checks:**
-- AC are testable and in Given/When/Then format
-- 3-5 AC covering main flows
-- Edge cases and error handling included
-
-**Auto-fix actions:**
-- Convert vague AC to Given/When/Then format
-- Add edge cases and error handling from Context
-- Ensure 3-5 AC minimum
-- Update Linear issue
-- Add comment: "Acceptance Criteria standardized to Given/When/Then format"
-
-### #5: Solution Optimization
-
-**What it checks:**
-- Proposed solution uses 2025 best practices
-- Solution aligns with previous Story patterns (if available)
-- Modern patterns and libraries are referenced
-
-**Auto-fix actions:**
-- Rewrite Story Technical Notes with improved approach (if better solution found in Phase 2)
-- Update Tasks with optimized implementation plan
-- Reference modern patterns/libraries (2025 standards)
-- Update Linear issues (Story + all affected Tasks)
-- Add comment: "Solution optimized per 2025 best practices"
-- **If previous Story context loaded:**
-  - Add missing guides from previous Story to current Story
-  - Check for duplicate components, add TODO if reinventing
-  - Check for conflicting integrations, add TODO if incompatible
-  - Add reference: "Related to previous Story [US00X]"
-
-**Language preservation:** Keep original language (EN/RU)
-
-### #6: Library & Version
-
-**What it checks:**
-- Libraries are current stable versions (2025 standards)
-- No outdated packages
-- Library built-ins preferred over custom helpers
-
-**Auto-fix actions:**
-- Replace outdated library versions with current stable
-- Update Story Technical Notes with correct package versions
-- Update Tasks with correct import/usage examples
-- Replace custom helpers with library built-in methods
-- Update Linear issues
-- Add comment: "Libraries updated to current stable versions"
-
-### #7: Test Strategy
-
-**What it checks:**
-- Story has Test Strategy section
-- Risk-Based Testing specified (2-5 E2E, 3-8 Integration, 5-15 Unit, 10-28 total, Priority ≥15)
-- E2E type specified (API/UI based on application)
-
-**Auto-fix actions:**
-- Add Test Strategy section with Risk-Based Testing
-- Specify E2E type (API/UI)
-- Focus on business logic, not frameworks
-- Ensure final test task in Implementation Tasks list
-- Update Story DoD with "All tests passing"
-- Update Linear issue
-- Add comment: "Test Strategy added with Risk-Based Testing approach"
-
-**Reference:** See `ln-350-story-test-planner/references/risk_based_testing_guide.md` for complete methodology.
-
-### #8: Documentation Integration
-
-**What it checks:**
-- No standalone documentation tasks exist
-- Documentation updates integrated into implementation tasks
-
-**Auto-fix actions:**
-- Remove standalone documentation task
-- Add documentation updates to "Affected Components" in implementation tasks
-- Update Story DoD with "Documentation updated"
-- Update Linear issues (Story + Tasks)
-- Add comment: "Documentation integrated into implementation tasks"
-
-### #9: Story Size & Task Granularity
-
-**What it checks:**
-- Task count is 3-8 implementation tasks (optimal range)
-- Each task is 3-5 hours (atomic, testable units)
-- No test task exists (created later by ln-350-story-test-planner)
-
-**Auto-fix actions:**
-- **If < 3 tasks:**
-  - Analyze Story Context and Technical Notes
-  - Check Foundation-First gaps (Database → Repository → Service → API)
-  - Invoke ln-310-story-decomposer via Skill tool: `Skill(skill: "ln-310-story-decomposer")`
-  - Wait for completion (new tasks created in Linear with status = Backlog)
-  - Reload task metadata to include new tasks
-  - Update kanban_board.md (add to Backlog section)
-  - Add comment: "Missing implementation tasks created via ln-310-story-decomposer"
-- **If > 8 tasks:** Add TODO: `_TODO: Consider splitting into multiple Stories_`
-- **If task < 3h:** Add TODO: `_TODO: Consider combining with related tasks_`
-- **If task > 8h:** Add TODO: `_TODO: Consider decomposing into smaller tasks (3-5h each)_`
-- Update Linear issues
-- Add comment: "Story/Task size issues flagged for review"
-
-**Rationale:** 3-8 tasks × 3-5h = 9-40h total (optimal Story size for planning and tracking).
-
-### #10: Test Task Cleanup
-
-**What it checks:**
-- No test tasks exist before Story execution
-- Test tasks are NOT created prematurely
-
-**Auto-fix actions:**
-- Identify test tasks by label "tests" OR title contains "test"/"tests"/"comprehensive"/"final"
-- For EACH test task found:
-  - Update task state to "Canceled": `mcp__linear-server__update_issue(id, state="Canceled")`
-  - Add comment: "Test task removed - will be created by ln-350-story-test-planner after manual testing (Pass 1)"
-  - Remove from kanban_board.md (delete line from Backlog)
-  - Remove from Story "Implementation Tasks" section
-- Update Story description in Linear
-- Add comment to Story: "Premature test task(s) removed - test task created after manual testing"
-
-**Rationale:** Test task created AFTER manual testing (by ln-350-story-test-planner), not before. Manual testing reveals real scenarios for comprehensive test coverage.
-
-### #11: YAGNI Violations
-
-**What it checks:**
-- No premature features in Story scope
-- No "future-proofing" or speculative work
-
-**Auto-fix actions:**
-- Remove premature features from Story scope
-- Add to "Out of Scope" or "Future Enhancements" section
-- Update Technical Notes
-- Update Tasks to remove premature work
-- Update Linear issues
-- Add comment: "Premature features moved to future scope (YAGNI)"
-
-### #12: KISS Violations
-
-**What it checks:**
-- Solution is not over-engineered
-- Simplest approach is used (within standard boundaries)
-
-**Auto-fix actions:**
-- Simplify architectural approach in Technical Notes
-- Replace complex patterns with simpler alternatives (if no standard conflict)
-- Update Tasks with simplified implementation
-- Update Linear issues
-- Add comment: "Solution simplified per KISS principle"
-
-**Important:** If KISS conflicts with industry standard → Standard wins.
-
-### #13: Documentation Links Insertion
-
-**What it checks:**
-- Story Technical Notes has "Related Documentation:" subsection
-- All created documentation linked (guides, manuals, ADRs)
-
-**Auto-fix actions:**
-- Add "Related Documentation:" subsection in Technical Notes (if missing)
-- Insert guide links: `[Guide XX: Pattern](../../guides/XX-pattern.md)`
-- Insert manual links: `[Manual: Package vX.Y.Z](../../manuals/package-vX.Y.Z.md)`
-- Insert ADR links: `[ADR-NNN: Decision](../../adrs/adr-NNN-slug.md)`
-- Update Linear Story
-
-**Purpose:** ln-331-task-executor reads these links when implementing.
-
-### #14: Foundation-First Execution Order
-
-**What it checks:**
-- Tasks are ordered: Database → Repository → Service → API → Frontend
-- Each layer is testable when built (foundation before consumers)
-
-**Auto-fix actions:**
-- Reorder Tasks: Database first, then Repository, then Service, then API
-- Update Story "Implementation Tasks" section
-- Add note in Technical Notes about foundation-first execution order
-- Update Linear issue
-- Add comment: "Task order corrected per Foundation-First execution order"
-
-### #15: Code Quality Fundamentals
-
-**What it checks:**
-- No hardcoded values (magic numbers, URLs, credentials)
-- Configuration management approach defined
-
-**Auto-fix actions:**
-- Add TODO placeholders in Tasks:
-  - `_TODO: Extract magic numbers to named constants with WHY comments_`
-  - `_TODO: Move hardcoded URLs/paths to config files_`
-  - `_TODO: Use environment variables for credentials_`
-- Add configuration management approach in Technical Notes
-- Update Linear issues
-- Add comment: "Configuration management requirements added"
-
-### #16: Industry Standards Compliance
-
-**What it checks:**
-- Solution complies with industry standards (OAuth 2.0, REST, OpenAPI, WebSocket, JSON)
-- No custom implementations of standardized protocols
-- Implementation path is verified against best practices documentation
-
-**Trigger conditions (when this criterion applies):**
-- Story involves protocols, APIs, authentication, data formats
-- Story references external integrations or library usage
-- Task implementation path not documented in existing guides/manuals
-
-**REQUIRED actions (Evidence-Based - cannot skip without explicit reason):**
-
-1. **Check existing documentation FIRST:**
-   - Scan `docs/guides/` for relevant implementation patterns
-   - Scan `docs/manuals/` for library/API references
-   - Scan `docs/adrs/` for architectural decisions
-
-2. **IF documentation gap found → Invoke workers:**
-   - Missing pattern guide → MUST invoke `ln-321-guide-creator`
-   - Missing library manual → MUST invoke `ln-323-manual-creator`
-   - Missing architectural decision → MUST invoke `ln-322-adr-creator`
-   - Workers perform research via MCP Ref/Context7 internally
-
-3. **Document compliance:**
-   - Add document links to Story Technical Notes
-   - Update Linear issues (Story + all affected Tasks)
-   - Add comment: "Standards verified via [document path] OR created via [worker name]"
-
-4. **IF no applicable standards:**
-   - MUST explicitly state reason in Verification Log
-   - Example: "No applicable standards - Story is internal refactoring only"
-
-**Required evidence for ✅:**
-- Document path (existing or created): `docs/guides/XX-pattern.md`
-- OR Worker invocation result with created document path
-- OR Explicit skip reason documented in Verification Log
-
-**Rule:** If KISS/YAGNI conflicts with standard → Standard wins (integration, security, maintainability > short-term simplicity).
-
-**See:** `references/verification_checklist.md` for complete checklist.
-**See:** `references/verification_log_template.md` for evidence documentation.
-
----
-
-## Self-Audit Protocol (MANDATORY)
-
-**Purpose:** Prevent "fake verification" where agent marks criteria as ✅ without actual checks.
-
-**Critical Rule:** Before marking ANY criterion as ✅, agent MUST:
-
-1. **Answer the Self-Audit Question** for that criterion (not blank, not generic)
-2. **Provide concrete evidence** (document path, Linear comment link, worker call result)
-3. **Document in Verification Log** (`checkpoints/{STORY_ID}_verification_log.md`)
-
-**If evidence is missing → CANNOT mark ✅ → MUST perform required action first**
-
-### Self-Audit Questions by Criterion
-
-| # | Criterion | Self-Audit Question | Required Evidence |
-|---|-----------|---------------------|-------------------|
-| 1 | Story Structure | "Did I validate all 8 sections exist in order?" | Section list in log |
-| 2 | Tasks Structure | "Did I load FULL description for EACH task?" | Task validation count |
-| 3 | Story Statement | "Is statement in As a/I want/So that format?" | Quote the statement |
-| 4 | Acceptance Criteria | "Are AC testable in Given/When/Then format?" | AC count and format |
-| 5 | Solution Optimization | "Did I question 'Is this best for 2025?'" | Reasoning documented |
-| 6 | Library & Version | "Are all versions current stable?" | Version list checked |
-| 7 | Test Strategy | "Does Test Strategy follow Risk-Based Testing?" | E2E/Integration/Unit counts |
-| 8 | Documentation Integration | "Are docs integrated, no standalone tasks?" | Integration evidence |
-| 9 | Story Size | "Is task count 3-8, each 3-5h?" | Task count and sizes |
-| 10 | Test Task Cleanup | "Are there NO premature test tasks?" | Search result |
-| 11 | YAGNI Violations | "Does Story deliver only what's needed NOW?" | Scope review result |
-| 12 | KISS Violations | "Is solution simplest within standards?" | Simplicity justification |
-| 13 | Guide Links | "Are all relevant guides linked?" | Guide paths in Technical Notes |
-| 14 | Foundation-First | "Are tasks ordered DB→Repo→Service→API?" | Task order list |
-| 15 | Code Quality | "Are hardcoded values flagged/fixed?" | TODO placeholders or config |
-| 16 | Industry Standards | "Did I verify implementation path via docs/worker?" | **Document path OR worker call** |
-
-### Criterion #16 Evidence Requirements (Enhanced)
-
-**Trigger:** Story involves protocols, APIs, authentication, data formats, or external integrations
-
-**REQUIRED actions (cannot skip without explicit reason):**
-
-1. **IF implementation path needs verification:**
-   - Check existing documentation in `docs/guides/`, `docs/manuals/`, `docs/adrs/`
-   - IF guide missing for pattern → MUST invoke `ln-321-guide-creator`
-   - IF manual missing for library → MUST invoke `ln-323-manual-creator`
-   - IF architectural decision unclear → MUST invoke `ln-322-adr-creator`
-
-2. **Evidence MUST include:**
-   - Document path (existing or created): `docs/guides/XX-pattern.md`
-   - OR Worker invocation result: "Created via ln-321-guide-creator"
-   - OR Explicit skip reason: "No applicable standards - Story is internal refactoring only"
-
-3. **Linear comment MUST document:**
-   - Which standard/pattern was verified
-   - How compliance was confirmed
-   - Link to relevant documentation
-
-**If agent marks ✅ without above evidence → Verification is INVALID**
-
-### Verification Log Requirement
-
-**For every verification session, agent MUST:**
-
-1. Create `checkpoints/{STORY_ID}_verification_log.md` from template
-2. Fill ALL 16 criteria sections with actual evidence
-3. Mark verdicts only after Self-Audit answer is documented
-4. Save log before announcing verification results
-
-**Template:** `references/verification_log_template.md`
-
----
-
-## Example Workflows
-
-### Scenario 1: Story with Outdated Libraries
-
-**Input:**
-- Story US005 uses library 1.0.0 from 2023
-- Library has major version 2.5.0 with breaking changes
-
-**Auto-fix Process:**
-- Phase 1: Load Story + Tasks metadata
-- Phase 2: Identify outdated library
-- Phase 3 (#6): Update to library 2.5.0 (current stable)
-  - Update Story Technical Notes with new version
-  - Update Tasks with correct import statements
-  - Update Linear issues
-  - Add comment: "Libraries updated to current stable versions"
-- Phase 4: Approve Story → Todo
-
-**Output:**
-- Story approved with library 2.5.0
-- Tasks updated with correct imports
-- Comment in Linear explaining library update
-
-### Scenario 2: Story Violates OAuth 2.0 Standard
-
-**Input:**
-- Story proposes separate `/tokens` and `/refresh` endpoints for simplicity
-- Uses custom auth flow instead of OAuth 2.0
-
-**Auto-fix Process:**
-- Phase 1: Load Story + Tasks metadata
-- Phase 2: Research OAuth 2.0 (RFC 6749)
-  - Identify standard requires unified `/token` endpoint with grant_type parameter
-  - Challenge custom approach: "Is this the best way in 2025?" → NO
-- Phase 3 (#16): Rewrite to comply with RFC 6749
-  - Unified `/token` endpoint with grant_type
-  - Update Story Technical Notes with RFC reference
-  - Update all affected Tasks
-  - Add comment: "Solution updated to comply with OAuth 2.0 (RFC 6749)"
-- Phase 4: Approve Story → Todo
-
-**Output:**
-- Story approved with RFC-compliant OAuth 2.0 implementation
-- Tasks updated with unified `/token` endpoint
-- Comment explaining standard compliance
-
-### Scenario 3: Missing Implementation Tasks
-
-**Input:**
-- Story US007 has only 2 tasks (too small for scope)
-- Missing Service layer and Repository tasks
-
-**Auto-fix Process:**
-- Phase 1: Load Story + 2 Tasks metadata
-- Phase 2: Check existing guides for architecture patterns
-- Phase 3 (#9): Detect < 3 tasks violation
-  - Analyze Story Context: requires API endpoint, business logic, database access
-  - Identify Foundation-First gaps: Service and Repository missing
-  - Invoke ln-310-story-decomposer: `Skill(skill: "ln-310-story-decomposer")`
-  - ln-310-story-decomposer creates 2 missing tasks (Service, Repository)
-  - Reload task metadata (now 4 tasks total)
-  - Update kanban_board.md with new tasks
-  - Add comment: "Missing implementation tasks created via ln-310-story-decomposer"
-- Phase 4: Approve Story → Todo
-
-**Output:**
-- Story approved with 4 tasks (Database → Repository → Service → API)
-- Tasks in correct Foundation-First execution order
-- Comment explaining task creation
-
-## Reference Files
-
-**Templates (Structure Validation):**
-- `../ln-220-story-coordinator/references/story_template_universal.md` - Story structure (8 sections)
-- `../ln-311-task-creator/references/task_template_implementation.md` - Task structure (7 sections)
-
-**Checklists (Verification):**
-- `references/verification_checklist.md` - Complete 16-criteria checklist with detailed checks
-- `references/verification_log_template.md` - Evidence documentation template (MANDATORY for each verification)
-
-**Methodology (Testing):**
-- `../ln-350-story-test-planner/references/risk_based_testing_guide.md` - Risk-Based Testing approach (Priority ≥15 scenarios)
-
-**Integration (Linear API):**
-- `../ln-210-epic-coordinator/references/linear_integration.md` - Linear MCP usage patterns
-
-## Best Practices
-
-1. **Always auto-fix and approve** - No "Needs Work" path exists; fix all issues in Phase 3
-2. **Standards first, simplicity second** - RFC/protocol compliance > KISS/YAGNI when conflicts arise
-3. **Sequential task validation** - Load task metadata first (Phase 1), then fetch full descriptions one-by-one (Phase 3 #2)
-4. **Delegate task creation** - Use ln-310-story-decomposer Skill tool (Phase 3 #9), never create tasks directly
-5. **Preserve language** - Keep Story/Tasks in original language (EN/RU) when updating
-6. **Bold corrections** - Rewrite Story/Tasks if better solution exists, don't just comment
-7. **Check documentation before approve** - Auto-create missing guides/manuals/ADRs via Skill tools (Phase 2)
-8. **Documentation hierarchy** - Auto-create Guides (HOW implement) + Manuals (HOW use) + ADRs (WHY decide) via AUTO-RESEARCH
-9. **Trust auto-discovery** - Let skill find Team ID and project structure automatically
+| # | What it checks | Auto-fix actions | Notes/Evidence |
+|---|----------------|------------------|----------------|
+|1 Story Structure|8 sections per story_template_universal.md in order|Add/reorder sections and subsections with TODO placeholders; update Linear; preserve language|Skip if Done/Canceled or older than 30 days|
+|2 Tasks Structure|Each Task has 7 sections in order|Load each Task full description sequentially; add/reorder sections with placeholders; update Linear and comment; preserve language|Sequential per task; skip if Done/Canceled or older than 30 days|
+|3 Story Statement|As a/I want/So that clarity|Rewrite using persona (Context), capability (Technical Notes), value (Success Metrics); update Linear and comment|-|
+|4 Acceptance Criteria|Given/When/Then, 3-5 items, edge/error coverage|Normalize AC to G/W/T; add missing edge/error cases; update Linear and comment|-|
+|5 Solution Optimization|2025-best approach aligned with prior patterns|Rewrite Technical Notes and Tasks if better approach exists; cite modern patterns/libs; reference prior Story context; add TODO for duplicates/conflicts|Log rationale in Linear|
+|6 Library & Version|Current stable versions; prefer built-ins|Update versions in Technical Notes/Tasks; replace custom helpers with built-ins; update Linear and comment|List versions checked|
+|7 Test Strategy|Section exists but remains empty now|Ensure Test Strategy section present; leave empty with note that testing is planned later by ln-350; do not add coverage details|Mention "testing handled later; not evaluated in this phase"|
+|8 Documentation Integration|No standalone doc tasks|Remove doc-only tasks; fold doc updates into implementation tasks and DoD; update Linear and comment|-|
+|9 Story Size & Granularity|3-8 tasks; 3-5h each|If <3 tasks invoke ln-310-story-decomposer; if >8 add TODO to split; flag tasks <3h or >8h with TODO; reload metadata and update kanban_board.md|Comment creation source|
+|10 Test Task Cleanup|No premature test tasks|Cancel/remove tasks labeled as tests or named test/comprehensive/final; remove from Story/kanban; comment that testing tasks appear later|Testing not executed now|
+|11 YAGNI|No premature features|Move speculative items to Out of Scope/Future; update Technical Notes/Tasks; comment rationale|-|
+|12 KISS|Simplest solution within standards|Replace over-engineered parts with simpler options unless standards require otherwise; update Linear with reasoning|Standard overrides simplicity|
+|13 Documentation Links|Technical Notes reference docs|Add "Related Documentation" subsection; link guides/manuals/ADRs by path; update Linear|Use created/existing paths|
+|14 Foundation-First Order|Task order DB -> Repo -> Service -> API -> Frontend|Reorder Implementation Tasks and note execution order; update Linear and comment|-|
+|15 Code Quality Basics|No magic values; config approach defined|Add TODOs for constants/config/env creds; describe config management in Technical Notes; update Linear|Warn in summary if TODOs remain|
+|16 Industry Standards|Compliance with RFCs/protocols|Check docs in guides/manuals/ADRs; if missing invoke creators; document compliance and links; if none apply, state explicit reason; update Linear|Evidence required: doc path or worker call; log skip reason if applicable|
+
+## Self-Audit Protocol (Mandatory)
+
+- Before marking any criterion, answer its Self-Audit question, provide concrete evidence (doc path, Linear comment link, worker result), and record in `checkpoints/{STORY_ID}_verification_log.md`. No evidence -> no completion.
+
+| # | Self-Audit Question | Required Evidence |
+|---|---------------------|-------------------|
+|1|Validated all 8 Story sections in order?|Section list|
+|2|Loaded full description for each Task?|Task validation count|
+|3|Statement in As a/I want/So that?|Quoted statement|
+|4|AC are G/W/T and testable?|AC count and format|
+|5|Challenged "best for 2025"?|Reasoning logged|
+|6|All versions current stable?|Version list checked|
+|7|Test Strategy kept empty for now?|Note that testing is deferred|
+|8|Docs integrated, no standalone tasks?|Integration evidence|
+|9|Task count 3-8 and 3-5h?|Task count/sizes|
+|10|No premature test tasks?|Search result|
+|11|Only current-scope features?|Scope review|
+|12|Simplest approach within standards?|Simplicity justification|
+|13|All relevant guides linked?|Guide paths|
+|14|Tasks ordered DB->Repo->Service->API?|Task order list|
+|15|Hardcoded values handled?|TODO/config evidence|
+|16|Standards verified via docs/worker?|Doc path or worker result|
 
 ## Definition of Done
 
-**Pre-Verification: Evidence Documentation**
-- [ ] Verification Log created: `checkpoints/{STORY_ID}_verification_log.md`
-- [ ] All 16 criteria have Self-Audit answers documented
-- [ ] Evidence provided for each criterion (not blank)
+- Verification log created from template with answered Self-Audit for all 16 criteria and evidence
+- Phase 1: auto-discovery done; Story + Tasks metadata loaded; task count checked
+- Phase 2: full Story parsed; standards researched; doc gaps filled via creators; codebase reality verified; reports explain violations with best-practice references and fixes
+- Phase 3: criteria 1-16 auto-fixed in order; Test Strategy section present but empty; test tasks removed; guide links inserted
+- Phase 4: Story/Tasks set to Todo; kanban_board.md updated with APPROVED marker and hierarchy; Linear comment added with fixes, docs, ADRs/manuals/guides, TODO warnings; summary table shown
 
-**Phase 1: Discovery & Loading**
-- [ ] Team ID and project configuration auto-discovered
-- [ ] Story fetched from Linear (FULL description, all 8 sections)
-- [ ] Story parsed: statement, Context, AC, Test Strategy, Technical Notes
-- [ ] Story.id (UUID) extracted for parentId filtering
-- [ ] Child Tasks metadata loaded (ID, title, status, labels - NO descriptions)
-- [ ] Task breakdown validated (3-8 implementation tasks, no test task)
-- [ ] Epic context identified
-- [ ] Previous Story context loaded if available
+## Example Workflows
 
-**Phase 2: Critical Solution Review**
-- [ ] Industry standards identified (OAuth 2.0, REST, OpenAPI, WebSocket, JSON)
-- [ ] Standards researched via MCP Ref or WebSearch
-- [ ] Story compliance verified (KISS/YAGNI conflicts → Standard wins)
-- [ ] Proposed solution critically evaluated ("Best way in 2025?")
-- [ ] Existing guides checked in `docs/guides/`
-- [ ] Missing guides auto-created via ln-321-guide-creator
-- [ ] Guide paths saved for linking
-- [ ] Task approaches validated against Story architecture
-- [ ] **Codebase verified (Step 2b):**
-  - Existing implementations searched (services, repositories)
-  - Database schema checked (no duplicate columns)
-  - Frontend screens read (if UI changes)
-  - Business logic classes inspected (if logic changes)
-  - Story auto-corrected if reality differs from description
+- **Outdated library:** Detect old version, update to current stable in Technical Notes/Tasks, document change, approve.
+- **OAuth violation:** Replace custom endpoints with RFC-compliant `/token` flow, add spec reference, update Tasks/Technical Notes, approve.
+- **Missing tasks:** If <3 tasks, run ln-310-story-decomposer, reload tasks, reorder Foundation-First, update kanban and comments, approve.
 
-**Phase 3: Comprehensive Auto-Fix**
-- [ ] **Structural Fixes (1-4):**
-  - Story structure validated (8 sections, correct order)
-  - Tasks structure validated sequentially (7 sections each)
-  - Story statement clarified (As a/I want/So that)
-  - Acceptance Criteria standardized (Given/When/Then, 3-5 AC)
-- [ ] **Solution Optimization (5-8):**
-  - Industry standards compliance verified (#16)
-  - Solution optimized per 2025 best practices (#5)
-  - Libraries updated to current stable (#6)
-  - Guide links inserted in Story Technical Notes (#13)
-- [ ] **Workflow Optimization (9-12):**
-  - Test Strategy added (Risk-Based Testing: 2-5 E2E, 3-8 Integration, 5-15 Unit, Priority ≥15) (#7)
-  - Test tasks removed (created later by ln-350-story-test-planner) (#10)
-  - Documentation integrated into implementation tasks (#8)
-  - Tasks reordered per Foundation-First execution order (#14)
-- [ ] **Scope & Quality (13-16):**
-  - Story size validated (3-8 tasks, ln-310-story-decomposer invoked if < 3) (#9)
-  - YAGNI violations removed (#11)
-  - KISS violations simplified (within standard boundaries) (#12)
-  - Code quality requirements added (config management, TODO placeholders) (#15)
+## Reference Files
 
-**Phase 4: Approve & Notify**
-- [ ] Story status updated: Backlog → Todo (Linear)
-- [ ] ALL Tasks status updated: Backlog → Todo (Linear, one-by-one)
-- [ ] kanban_board.md updated:
-  - ✅ APPROVED marker added to Story
-  - Story + ALL Tasks moved from "### Backlog" to "### Todo"
-  - Hierarchy preserved (Epic → Story → Tasks)
-- [ ] Approval comment added to Linear Story with fixes summary
-- [ ] Optional warning comment if TODO placeholders exist
-- [ ] Verification summary table displayed:
-  - Story section (ID, Title, Verdict, Changes, Guides, Warnings)
-  - Tasks table (ID, Title, Changes, Guide paths)
-
-**Output:**
-- ALWAYS Approved Story (status: Todo)
-- Auto-fixed Story + ALL Tasks (structure, solution, guides)
-- Guide links in Story Technical Notes
-- Verification summary table
-- Optional warning if TODOs exist
+- Templates: `../ln-220-story-coordinator/references/story_template_universal.md`, `../ln-311-task-creator/references/task_template_implementation.md`
+- Checklists: `references/verification_checklist.md`, `references/verification_log_template.md`
+- Testing methodology (for later phases): `../ln-350-story-test-planner/references/risk_based_testing_guide.md`
+- Linear integration: `../ln-210-epic-coordinator/references/linear_integration.md`
 
 ---
 
-**Version:** 12.0.0 (Added Evidence-Based Verification: Self-Audit Protocol, Verification Log template, criterion #16 enforcement)
-**Last Updated:** 2025-11-23
+Version: 12.1.0 (Condensed guidance, tabled auto-fix actions, clarified testing deferral and violation reporting)
+Last Updated: 2025-11-26
