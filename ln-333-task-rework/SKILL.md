@@ -1,177 +1,41 @@
 ---
 name: ln-333-task-rework
-description: Addresses review feedback, fixes To Rework tasks. Applies fixes via KISS/YAGNI/DRY, runs type checks/linting, submits to To Review. Auto-discovers config.
+description: Fixes tasks in To Rework and returns them to To Review. Applies reviewer feedback only for the selected task.
 ---
 
-# Task Rework Skill
+# Task Rework Executor
 
-Fix issues in tasks (To Rework → In Progress → To Review) based on review feedback.
+Executes rework for a single task marked To Rework and hands it back for review.
 
-## When to Use This Skill
+## Purpose & Scope
+- Load full task, reviewer comments, and parent Story; understand requested changes.
+- Apply fixes per feedback, keep KISS/YAGNI, and align with guides/Technical Approach.
+- Update only this task: To Rework -> In Progress -> To Review; no other tasks touched.
 
-This skill should be used when fixing issues in task (status = To Rework) after review feedback.
+## Workflow (concise)
+1) **Select task:** Provided ID or choose from To Rework list. Read task, review notes, parent Story.
+2) **Plan fixes:** Map each comment to an action; confirm no new scope added.
+3) **Implement:** Follow task plan/checkboxes; address config/hardcoded issues; update docs/tests noted in Affected Components and Existing Code Impact.
+4) **Quality:** Run typecheck/lint (or project equivalents); ensure fixes reflect guides/manuals/ADRs.
+5) **Handoff:** Set task to To Review in Linear; move it in kanban; add summary comment referencing resolved feedback.
 
-⚠️ **CRITICAL RULE - Single Task Updates:**
-- ✅ Update status for ONLY the selected task (the one passed as parameter)
-- ❌ NEVER update status for multiple tasks at once
-- ❌ NEVER update status for all To Rework tasks
-
-## How It Works
-
-### Phase 1: Discovery (Automated)
-
-Auto-discovers Team ID and project configuration from `docs/tasks/kanban_board.md` and `CLAUDE.md`.
-
-**Details:** See CLAUDE.md "Configuration Auto-Discovery".
-
-### Phase 2: Preparation
-
-**Steps:**
-1. **Select task:**
-   - If task ID provided → Fetch specific task
-   - If no ID → List "To Rework" tasks and ask user to choose
-2. **Read review feedback:** Load all comments with Must-fix items
-3. **Identify scope:** Code, tests, documentation, architecture, and Existing Code Impact items
-4. **Track progress:** Create TodoWrite todos with full workflow:
-   - Update ONLY the selected task's status to "In Progress" (Linear via update_issue with task ID)
-   - Update kanban_board.md (To Rework → In Progress) for ONLY the selected task:
-     * Find Task in parent Story section under "### To Rework"
-     * Remove task line: `    - [LINEAR_ID: EP#_## Task Title](link)` (4-space indent)
-     * Add task line to same Story section under "### In Progress"
-     * Preserve Epic header and Story structure
-   - Address each Must-fix item from review feedback
-   - Complete Existing Code Impact tasks (refactoring, existing tests, documentation)
-   - Quality gates: type checking, linting, [for test tasks] re-run tests + check coverage ≥80%
-   - Add rework summary comment
-   - Update ONLY the selected task's status to "To Review" (Linear via update_issue with task ID)
-   - Update kanban_board.md (In Progress → To Review) for ONLY the selected task:
-     * Find Task in parent Story section under "### In Progress"
-     * Remove task line from In Progress
-     * Add task line to same Story section under "### To Review"
-5. **Execute first todo:** Update ONLY the selected task's status to "In Progress" in Linear
-6. **Execute second todo:** Update kanban_board.md with hierarchical task movement for ONLY the selected task (Epic → Story → Task preserved)
-
-### Phase 3: Implementation
-
-**Documentation-First process:**
-1. **Update documentation FIRST:**
-   - If feedback mentions doc issues → fix docs first
-   - If code changes affect architecture → update ARCHITECTURE.md first
-   - Use updated docs as specification for code fixes
-2. **Address each Must-fix item** from review feedback
-3. **Follow principles:** KISS / YAGNI / DRY
-4. **Apply fixes:** Code changes, test updates
-5. **Complete Existing Code Impact:**
-   - Finish all refactoring from task's "Existing Code Impact" section
-   - Update all existing tests (maintain passing status)
-   - Update all affected documentation
-6. **Request clarification:** If new or unclear issues appear, document and ask before proceeding
-
-**Quality validation:**
-- Run quality gates (types, lint)
-- **For test tasks only:** Run all tests, verify Priority ≥15 scenarios covered, check test limits (10-28 total)
-- Re-run specific tests mentioned in review (if applicable)
-- Fix all newly surfaced issues immediately
-
-### Phase 4: Submit for Re-Review
-
-**Steps:**
-1. **Add rework summary comment:**
-   - List all fixes applied
-   - Reference each Must-fix item addressed
-   - **For test tasks only:** Note Priority ≥15 scenarios tested and test limits (10-28 total)
-   - Note quality gates status
-2. **Update status:** In Progress → To Review
-3. **Update kanban_board.md with hierarchical task movement:**
-   - Find Task in parent Story section under "### In Progress"
-   - Remove task line: `    - [LINEAR_ID: EP#_## Task Title](link)` (4-space indent)
-   - Add task line to same Story section under "### To Review"
-   - Preserve Epic header and Story structure
-
-**Important:**
-- Do NOT commit changes (commits happen after final approval)
-- Do NOT close task
-- Focus solely on fixes and updates
-
-> [!CAUTION]
-> **⛔ STOP HERE. DO NOT proceed to Done status.**
-> - Task status MUST remain "To Review" (NOT Done)
-> - Only **ln-332-task-reviewer** can set status to Done after re-review
-> - Return control to orchestrator (ln-330-story-executor) or user
-
----
+## Critical Rules
+- Single-task only; never bulk update.
+- Do not mark Done; only To Review (ln-332 decides Done).
+- Keep language (EN/RU) consistent with task.
+- No new tests/tasks created here; only update existing tests if impacted.
+- Preserve Foundation-First ordering from orchestrator; do not reorder tasks.
 
 ## Definition of Done
+- Task and review feedback fully read; actions mapped.
+- Fixes applied; docs/tests updated as required.
+- Quality checks passed (typecheck/lint or project standards).
+- Status set to To Review; kanban updated; summary comment added referencing fixed items.
 
-Before completing work, verify ALL checkpoints:
-
-**✅ Review Feedback Addressed:**
-- [ ] All Must-fix items from reviewer feedback completed
-- [ ] Should-fix items completed (if time permits)
-- [ ] Root causes fixed (not just symptoms)
-- [ ] No additional issues introduced
-
-**✅ Fixes Applied:**
-- [ ] Code changes follow KISS/YAGNI principles (no over-engineering)
-- [ ] DRY violations removed (refactored to shared method/function/service/base class)
-- [ ] Guide patterns applied correctly (if feedback mentioned guide compliance)
-- [ ] No code duplication introduced
-
-**✅ Quality Gates Passed:**
-- [ ] Type checking: No type errors
-- [ ] Linting: Code style compliant
-- [ ] **For test tasks:** All tests pass, test limits verified (10-28), Priority ≥15 scenarios tested
-- [ ] All quality gates that failed in review now pass
-
-**✅ CRITICAL: Single Task Update Verified:**
-- [ ] Verified via Linear: ONLY the selected task (input task ID) status was updated
-- [ ] Verified via Linear: NO other tasks in the Story were updated
-- [ ] Verified via kanban_board.md: ONLY one task line moved between sections
-
-**✅ Linear Updated:**
-- [ ] Fixes comment added to Linear:
-  - "Rework complete. Addressed feedback:"
-  - List of fixed items (what was fixed, how)
-  - Reference to review feedback items
-- [ ] Task status changed: "To Rework" → "To Review"
-- [ ] kanban_board.md updated with hierarchical task movement:
-  - Task found in parent Story section under "### To Rework"
-  - Task line removed: `    - [LINEAR_ID: EP#_## Task Title](link)`
-  - Task line added to same Story section under "### To Review"
-  - Epic header and Story structure preserved
-
-**✅ NO Premature Actions:**
-- [ ] NO git commit made (commits happen after ln-332-task-reviewer approval)
-- [ ] Task NOT closed (remains To Review for re-review)
-- [ ] Only fixes applied (no scope creep, no new features)
-
-**⛔ FORBIDDEN (workflow violation):**
-- [ ] ⛔ **CRITICAL:** Task status is "To Review" (NEVER "Done" - only ln-332-task-reviewer can approve to Done)
-- [ ] ⛔ **ln-330-story-executor validates status** - If task is Done, orchestrator reports worker violation error
-- [ ] Did NOT attempt to re-review own fixes (not rework worker's responsibility)
-- [ ] Returned control to orchestrator/user after To Review
-
-**Output:** Task ready for re-review by ln-332-task-reviewer (status "To Review")
+## Reference Files
+- Task template: `../ln-311-task-creator/references/task_template_implementation.md`
+- Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-
-## Example Usage
-
-**Direct invocation:**
-```
-Rework task API-42 based on review feedback
-```
-
-## Best Practices
-
-1. **Documentation FIRST** - Fix doc issues BEFORE code fixes (docs as specification)
-2. **Address all Must-fix items** - Check each item in review feedback
-3. **Request clarification early** - If unclear, ask before coding
-4. **Run quality gates continuously** - Don't wait until end
-5. **Document all changes** - Clear summary for re-review
-6. **Research before fixing** - On unclear rework items, use mcp__Ref__ref_search_documentation to understand best practice before applying fixes
-
----
-
-**Version:** 5.1.0 (Hierarchical kanban_board.md updates)
-**Last Updated:** 2025-11-08
+Version: 5.0.0 (Condensed rework flow, single-task safety)
+Last Updated: 2025-11-26

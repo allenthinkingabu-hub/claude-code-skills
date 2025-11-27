@@ -38,6 +38,7 @@ Coordinates creation or replanning of implementation tasks for a Story. Builds t
 - Decompose-first: always build IDEAL plan before looking at existing tasks.
 - Foundation-First execution order: DB -> Repository -> Service -> API -> Frontend.
 - Task limits: 1-6 tasks, 3-5h each; cap total at 6 tasks.
+- Linear creation must be sequential: create one task, confirm success, then create the next (no bulk) to catch errors early.
 - No test creation anywhere in implementation tasks.
 - No code snippets in descriptions; workers own task documents and Linear/kanban updates.
 - Language preservation: keep Story language (EN/RU) in any generated content by workers.
