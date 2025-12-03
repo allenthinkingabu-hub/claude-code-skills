@@ -19,8 +19,8 @@ Executes a Story end-to-end by looping through its tasks in priority order and d
 
 ## Workflow (concise)
 - **Phase 1 Discovery:** Auto-discover Team ID/config from kanban_board.md + CLAUDE.md.
-- **Phase 2 Load:** Fetch Story metadata and all child task metadata via `list_issues(parentId=Story.id)` (ID/title/status/labels only). Summarize counts; do not call `get_issue` yet.
-- **Phase 3 Loop (priority, review-after-each-task):**
+- **Phase 2 Load:** Fetch Story metadata and all child task metadata via `list_issues(parentId=Story.id)` (ID/title/status/labels only). Summarize counts (e.g., "2 To Review, 1 To Rework, 3 Todo"). **NO analysis** — proceed immediately to Phase 3.
+- **Phase 3 Loop (immediate delegation, one task at a time):**
   1) To Review -> ln-332-task-reviewer (one task). Reload metadata after worker.
   2) To Rework -> ln-333-task-rework (one task). After worker, verify status = To Review, then immediately call ln-332-task-reviewer on that same task. Reload metadata.
   3) Todo -> pick first Todo; if label "tests" use ln-334-test-executor else ln-331-task-executor. After worker, verify status = To Review (not Done/In Progress), then immediately call ln-332-task-reviewer on that same task. Reload metadata. Repeat loop; never queue multiple tasks in To Review—review right after each execution/rework.
@@ -28,6 +28,7 @@ Executes a Story end-to-end by looping through its tasks in priority order and d
 
 ## Critical Rules
 - Metadata first: never load task descriptions in Phase 2; only workers load full text.
+- No pre-analysis: after Phase 2 counts, pick ONE task by priority (To Review > To Rework > Todo) and delegate immediately. Do not plan, analyze, or reason about other tasks until they become next in queue.
 - Single-task operations: each worker handles only the passed task ID; ln-330 never bulk-updates tasks.
 - Status discipline: after ln-331/ln-333/ln-334, task must be To Review; immediately invoke ln-332 on that task. Only ln-332 may set Done. Stop and report if any worker leaves task Done or In Progress.
 - Source of truth: trust Linear metadata, not kanban_board.md, for orchestration decisions.
