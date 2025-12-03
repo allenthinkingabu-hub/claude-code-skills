@@ -184,7 +184,7 @@ Each Story = ONE vertical slice of user capability (end-to-end: UI → API → S
    - Each Story: persona + capability + business value
    - Each Story: 3-5 testable AC (Given-When-Then)
    - Stories ordered by dependency
-   - Each Story: Test Strategy (Risk-Based: 2-5 E2E, 3-8 Integration, 5-15 Unit, 10-28 total)
+   - Each Story: Test Strategy section exists but is **empty** (tests planned later by ln-350-story-test-planner)
    - Each Story: Technical Notes (architecture, integrations, **Standards Research from Phase 2**, guide links)
 
 **INVEST Checklist:**
@@ -195,7 +195,7 @@ Each Story = ONE vertical slice of user capability (end-to-end: UI → API → S
 | **Negotiable** | AC focus on WHAT, not HOW | "User gets valid token" (what) | "Use authlib 1.3.0, store in Redis" (how) |
 | **Valuable** | Clear business value | "User refreshes expired token to maintain session" | "Add token_refresh table" (no user value) |
 | **Estimable** | Can estimate 6-20h | Clear scope, known patterns, researched standards | "Implement authentication" (too vague) |
-| **Small** | Fits 1-2 sprints | 3-5 AC, 6-20h, 10-28 tests | "Full OAuth flow" (>5 AC, >20h) |
+| **Small** | Fits 1-2 sprints | 3-5 AC, 6-20h | "Full OAuth flow" (>5 AC, >20h) |
 | **Testable** | AC measurable | "Given valid refresh token, Then receive token <200ms" | "Token refresh should be fast" (not measurable) |
 
 **Output:** IDEAL Story plan (5-10 Stories) with titles, statements, core AC, ordering
@@ -333,6 +333,18 @@ Skill(
 
 **Output:** Created Story URL + summary from worker
 
+**TodoWrite format (mandatory):**
+Add phases to todos before starting:
+```
+- Phase 1: Context Assembly (in_progress)
+- Phase 2: Standards Research via ln-221 (pending)
+- Phase 3: Build IDEAL Story Plan (pending)
+- Phase 4: Check Existing Stories (pending)
+- Phase 5: Delegate to ln-222/ln-223 (pending)
+- Wait for worker result (pending)
+```
+Mark each as in_progress when starting, completed when done.
+
 ---
 
 ## Integration with Ecosystem
@@ -430,14 +442,14 @@ Skill(
 - **Vertical Slicing:** Each Story delivers end-to-end functionality (UI → API → Service → DB)
 - **One capability per Story:** Clear, focused persona + capability + value
 - **Testable AC:** Given-When-Then, 3-5 AC, specific criteria ("<200ms" not "fast")
-- **Test Strategy:** Risk-Based Testing (2-5 E2E, 3-8 Integration, 5-15 Unit, 10-28 total)
+- **Test Strategy:** Section exists but is **empty** at Story creation (tests planned later by ln-350-story-test-planner)
 - **Standards Research:** Include Phase 2 research in ALL Story Technical Notes
 
 **Story Decomposition:**
 - **Decompose-First:** Build IDEAL plan before checking existing - prevents anchoring to suboptimal structure
 - **INVEST validation:** Validate every Story against INVEST criteria
-- **Size enforcement:** 3-5 AC, 6-20 hours, 10-28 tests
-- **Avoid over-decomposition:** <3 AC, <6 hours, <10 tests → Merge Stories
+- **Size enforcement:** 3-5 AC, 6-20 hours
+- **Avoid over-decomposition:** <3 AC, <6 hours → Merge Stories
 
 **User Interaction:**
 - **Epic extraction:** Try to extract all planning info from Epic in Phase 1 Step 2 before asking user

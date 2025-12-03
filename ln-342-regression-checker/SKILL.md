@@ -32,5 +32,5 @@ Runs the existing test suite to ensure no regressions after implementation chang
 - Risk-based limits used downstream: `../ln-350-story-test-planner/references/risk_based_testing_guide.md`
 
 ---
-Version: 3.0.0 (Condensed regression worker)
-Last Updated: 2025-11-26
+**Version:** 3.0.0 (Condensed regression worker)
+**Last Updated:** 2025-11-26

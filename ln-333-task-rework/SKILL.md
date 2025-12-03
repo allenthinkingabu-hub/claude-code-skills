@@ -37,5 +37,5 @@ Executes rework for a single task marked To Rework and hands it back for review.
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-Version: 5.0.0 (Condensed rework flow, single-task safety)
-Last Updated: 2025-11-26
+**Version:** 5.1.0
+**Last Updated:** 2025-12-20

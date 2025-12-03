@@ -40,5 +40,5 @@ Runs a single Story final test task (from ln-350-story-test-planner) through imp
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-Version: 4.0.0 (Condensed test executor with limits enforcement)
-Last Updated: 2025-11-26
+**Version:** 4.0.0 (Condensed test executor with limits enforcement)
+**Last Updated:** 2025-11-26

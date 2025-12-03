@@ -18,13 +18,19 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./ln-110-documents-pipeline",
+        "./ln-100-documents-pipeline",
+        "./ln-110-project-docs-coordinator",
         "./ln-111-root-docs-creator",
-        "./ln-112-reference-docs-creator",
-        "./ln-113-tasks-docs-creator",
-        "./ln-114-project-docs-creator",
-        "./ln-115-presentation-creator",
-        "./ln-116-test-docs-creator",
+        "./ln-112-project-core-creator",
+        "./ln-113-backend-docs-creator",
+        "./ln-114-frontend-docs-creator",
+        "./ln-115-devops-docs-creator",
+        "./ln-120-reference-docs-creator",
+        "./ln-130-tasks-docs-creator",
+        "./ln-140-test-docs-creator",
+        "./ln-150-presentation-creator",
+        "./ln-160-docs-auditor",
+        "./ln-170-code-comments-auditor",
         "./ln-200-scope-decomposer",
         "./ln-210-epic-coordinator",
         "./ln-220-story-coordinator",
@@ -36,9 +42,7 @@
         "./ln-311-task-creator",
         "./ln-312-task-replanner",
         "./ln-320-story-validator",
-        "./ln-321-guide-creator",
-        "./ln-322-adr-creator",
-        "./ln-323-manual-creator",
+        "./ln-321-best-practices-researcher",
         "./ln-330-story-executor",
         "./ln-331-task-executor",
         "./ln-332-task-reviewer",
@@ -48,7 +52,9 @@
         "./ln-341-code-quality-checker",
         "./ln-342-regression-checker",
         "./ln-343-manual-tester",
-        "./ln-350-story-test-planner"
+        "./ln-350-story-test-planner",
+        "./ln-360-codebase-auditor",
+        "./ln-370-test-auditor"
       ]
     }
   ]

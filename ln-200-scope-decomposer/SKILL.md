@@ -160,6 +160,19 @@ Skill(skill: "ln-220-story-coordinator", epic_number="Epic N")
 
 **Output:** 30-60 Stories total (5-10 per Epic × 3-7 Epics)
 
+**TodoWrite format (mandatory):**
+Add phases and Epic iterations to todos before starting:
+```
+- Phase 1: Discovery (in_progress)
+- Phase 2: Delegate to ln-210-epic-coordinator (pending)
+- Phase 3: Delegate to ln-220 for Epic 0 (pending)
+- Phase 3: Delegate to ln-220 for Epic 1 (pending)
+- Phase 3: Delegate to ln-220 for Epic 2 (pending)
+... (one todo per Epic)
+- Phase 4: Summary (pending)
+```
+Mark each as in_progress when starting, completed when coordinator returns success.
+
 ### Phase 4: Summary and Next Steps
 
 **Objective:** Provide complete decomposition overview.

@@ -15,7 +15,14 @@ Analyzes Done implementation tasks for code-quality issues and reports findings 
 ## Workflow (concise)
 1) Load Story (full) and Done implementation tasks (full descriptions) via Linear; skip tasks with label "tests".
 2) Collect affected files from tasks (Affected Components/Existing Code Impact) and recent commits/diffs if noted.
-3) Analyze code and docs: reuse existing components, avoid duplication, simplify over-engineering, keep layers clean, no hardcoded creds/URLs/magic numbers, follow referenced guides.
+3) Analyze code and docs:
+   - Reuse existing components; avoid duplication; simplify over-engineering; keep layers clean.
+   - No hardcoded creds/URLs/magic numbers; follow referenced guides.
+   - Logging: structured logging on errors/warnings; log levels appropriate.
+   - Comments: WHY-focused; no commented-out/dead code; public API documented.
+   - Naming: conventions consistent; self-documenting names; no cryptic abbreviations.
+   - Performance: no O(n^2) in loops; no N+1 queries; lazy loading where applicable.
+   - Concurrency: no race conditions; proper locking; async/await correct.
 4) Output verdict: PASS or ISSUES_FOUND with details (category, severity, file, recommendation). Add Linear comment with findings.
 
 ## Critical Rules
@@ -33,5 +40,5 @@ Analyzes Done implementation tasks for code-quality issues and reports findings 
 - Templates for context: `../ln-311-task-creator/references/task_template_implementation.md`
 
 ---
-Version: 4.0.0 (Condensed worker flow)
-Last Updated: 2025-11-26
+**Version:** 4.0.0 (Condensed worker flow)
+**Last Updated:** 2025-11-26

@@ -384,11 +384,11 @@ Orchestrator automatically creates fix tasks when quality checks fail, then rest
 | **Rarely Used Independently** | Functions almost always used together |
 | **Small Total Size** | Combined SKILL.md < 500 lines, < 3 major workflow steps |
 
-### Example: ln-322-adr-creator
+### Example: ln-321-best-practices-researcher (doc_type="adr")
 
 **Functions:** Ask 5 questions → Generate ADR document (7 sections) → Create file in docs/adrs/
 
-**Verdict:** ✅ ONE skill (single user workflow, common tools, small size ~300 lines, not used independently)
+**Verdict:** ✅ ONE skill (single user workflow, common tools, small size ~120 lines, supports 3 doc types)
 
 ---
 
@@ -409,7 +409,7 @@ Phase 4: Output/Save
 **Examples:**
 - `ln-111-docs-creator` - generates documentation sequentially
 - `ln-112-html-builder` - builds HTML presentation
-- `ln-321-guide-creator` - creates guides
+- `ln-321-best-practices-researcher` - creates guides/manuals/ADRs
 
 **Diagram Type:** `graph TD` (top-down linear)
 
@@ -698,8 +698,7 @@ Every User Story should be:
 | Skill | Idempotency Pattern | Files Protected |
 |-------|-------------------|-----------------|
 | **ln-113-tasks-docs-creator v4.0.0** | Critical data protection | kanban_board.md with real tasks (warns user) |
-| **ln-111-root-docs-creator v7.0.0** | File existence checks | CLAUDE.md, docs/README.md, DOCUMENTATION_STANDARDS.md (3 files) |
-| **ln-114-project-docs-creator v9.0.0** | State management | Tracks Phase 1.2 "created file list" → Phase 2 edits ONLY newly created docs (7 files) |
+| **ln-111-project-docs-creator v1.0.0** | File existence checks + State management | CLAUDE.md, docs/README.md, standards, principles (4 root) + requirements, architecture, tech_stack + conditionals (11 files total) |
 | **ln-115-presentation-creator v4.0.0** | User confirmation | Asks before rebuilding presentation_final.html (manual edits protection) |
 | **ln-110-documents-pipeline v4.0.0** | Pre-flight check | Scans 24 potential files, shows "Found X / Missing Y" summary before creation |
 

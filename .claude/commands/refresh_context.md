@@ -59,14 +59,13 @@ allowed-tools: Read, Edit
 - [ ] Read `docs/PLUGIN_MARKETPLACE_GUIDE.md` (427 lines) – plugin marketplace guide
 - [ ] Read `README.md` (section: Installation, lines 160-216) – installation instructions
 
-**When working with Documentation Pipeline (ln-110-116):**
-- [ ] Read `ln-110-documents-pipeline/SKILL.md` – L1 orchestrator (7 documents via 6 workers)
-- [ ] Read `ln-111-root-docs-creator/SKILL.md` + `references/questions.md` – root docs (CLAUDE.md, docs/README.md, standards, principles)
+**When working with Documentation Pipeline (ln-110-115):**
+- [ ] Read `ln-110-documents-pipeline/SKILL.md` – L1 orchestrator (11 documents via 5 workers)
+- [ ] Read `ln-111-project-docs-creator/SKILL.md` + `references/questions.md` – root + project docs (CLAUDE.md, docs/README.md, standards, principles, requirements, architecture, tech_stack, etc.)
 - [ ] Read `ln-112-reference-docs-creator/SKILL.md` – reference structure (adrs/, guides/, manuals/)
 - [ ] Read `ln-113-tasks-docs-creator/SKILL.md` – task management (kanban_board.md, Linear integration)
-- [ ] Read `ln-114-project-docs-creator/SKILL.md` + `references/` – 7 project docs (requirements, architecture, tech_stack, etc.)
+- [ ] Read `ln-114-test-docs-creator/SKILL.md` – testing strategy, Story-Level Test Task Pattern
 - [ ] Read `ln-115-presentation-creator/SKILL.md` – interactive HTML presentation
-- [ ] Read `ln-116-test-docs-creator/SKILL.md` – testing strategy, Story-Level Test Task Pattern
 
 **When working with Planning (ln-200-220):**
 - [ ] Read `ln-200-scope-decomposer/SKILL.md` – L1 orchestrator (Scope → Epics → Stories)
@@ -80,9 +79,7 @@ allowed-tools: Read, Edit
 - [ ] Read `ln-311-task-creator/SKILL.md` + `references/` – CREATE tasks (implementation/refactoring/test templates)
 - [ ] Read `ln-312-task-replanner/SKILL.md` – REPLAN tasks (KEEP/UPDATE/OBSOLETE/CREATE)
 - [ ] Read `ln-320-story-validator/SKILL.md` + `references/verification_checklist.md` – auto-fix Stories/Tasks (Backlog → Todo)
-- [ ] Read `ln-321-guide-creator/SKILL.md` + `references/guide_template.md` – create minimal guides (300-500 words)
-- [ ] Read `ln-322-adr-creator/SKILL.md` – create ADRs (Strategic/Technical, Nygard format)
-- [ ] Read `ln-323-manual-creator/SKILL.md` – create package API reference manuals
+- [ ] Read `ln-321-best-practices-researcher/SKILL.md` + `references/` – research best practices and create guides/manuals/ADRs (doc_type parameter)
 - [ ] Read `ln-330-story-executor/SKILL.md` – L2 coordinator (orchestrate child tasks Todo → Done)
 - [ ] Read `ln-331-task-executor/SKILL.md` – L3 worker (execute implementation tasks)
 - [ ] Read `ln-332-task-reviewer/SKILL.md` – L3 worker (review tasks To Review → Done/Rework)

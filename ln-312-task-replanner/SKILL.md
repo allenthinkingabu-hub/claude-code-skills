@@ -30,7 +30,7 @@ Worker that re-syncs existing tasks to the latest requirements for any task type
 1) Load templates per taskType from ln-311-task-creator/references and fetch full existing task descriptions.
 2) Normalize both sides (IDEAL vs existing sections) and run replan algorithm to classify KEEP/UPDATE/OBSOLETE/CREATE.
 3) Present summary (counts, titles, key diffs). Confirmation required if running interactively.
-4) Execute operations in Linear: update descriptions, cancel obsolete, create missing, preserve parentId/state team.
+4) Execute operations in Linear: update descriptions, cancel obsolete, **create missing with state="Backlog"**, preserve parentId for updates.
 5) Update kanban_board.md: remove canceled, add new tasks under Story in Backlog.
 6) Return operations summary with URLs and warnings.
 
@@ -42,6 +42,7 @@ Worker that re-syncs existing tasks to the latest requirements for any task type
 | test | Risk-based limits | Priority ≤15 scenarios; E2E 2-5, Integration 0-8, Unit 0-15, Total 10-28; no framework/library/DB tests |
 
 ## Critical Notes
+- **MANDATORY:** Always pass `state: "Backlog"` when creating new tasks (CREATE operation). Linear defaults to team's default status (often "Postponed") if not specified.
 - Foundation-First ordering from IDEAL plan is preserved; do not reorder.
 - Language preservation: keep existing task language (EN/RU).
 - No code snippets; keep to approach/steps/AC/components.
@@ -61,5 +62,5 @@ Worker that re-syncs existing tasks to the latest requirements for any task type
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-Version: 6.0.0 (Condensed replan flow and validation table)
-Last Updated: 2025-11-26
+**Version:** 6.0.0
+**Last Updated:** 2025-11-26

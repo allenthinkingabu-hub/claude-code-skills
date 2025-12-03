@@ -46,6 +46,7 @@ Worker that generates task documents and creates Linear issues for implementatio
 | test | Risk-based plan required | Priority ≤15 scenarios; E2E 2-5, Integration 0-8, Unit 0-15, Total 10-28; no framework/library/DB tests |
 
 ## Critical Notes
+- **MANDATORY:** Always pass `state: "Backlog"` when calling create_issue. Linear defaults to team's default status (often "Postponed") if not specified.
 - Foundation-First order for implementation is preserved from orchestrator; do not reorder.
 - No code snippets; keep to approach, APIs, and pseudocode only.
 - Documentation updates must be included in Affected Components/Docs sections.
@@ -65,5 +66,5 @@ Worker that generates task documents and creates Linear issues for implementatio
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-Version: 5.0.0 (Condensed workflow, tabled type rules)
-Last Updated: 2025-11-26
+**Version:** 5.0.0
+**Last Updated:** 2025-11-26

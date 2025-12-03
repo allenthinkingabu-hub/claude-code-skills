@@ -16,11 +16,14 @@ Reviews a single task in To Review and decides Done vs To Rework with immediate 
 ## Workflow (concise)
 1) **Select task:** Use provided ID or pick from To Review list. Detect type (label "tests" -> test task, else implementation/refactor).
 2) **Read context:** Full task + parent Story; load affected components/docs; review diffs if available.
-3) **Review checks:**  
-   - Approach matches Technical Approach or better (documented rationale).  
-   - No hardcoded creds/URLs/magic numbers; config in env/config.  
-   - Error handling/logging sane; layering respected; reuse existing components.  
-   - Docs updated where required.  
+3) **Review checks:**
+   - Approach matches Technical Approach or better (documented rationale).
+   - No hardcoded creds/URLs/magic numbers; config in env/config.
+   - Error handling sane; layering respected; reuse existing components.
+   - Logging: critical paths logged (errors, business events); correct log levels (DEBUG/INFO/WARNING/ERROR).
+   - Comments: explain WHY not WHAT; no commented-out code; docstrings on public methods; Task ID present in new code blocks (`// See PROJ-123`).
+   - Naming: consistent conventions; descriptive names; no single-letter variables (except loops).
+   - Docs updated where required.
    - Tests updated/run: for impl/refactor ensure affected tests adjusted; for test tasks check counts (E2E 2-5, Integration 0-8, Unit 0-15, total 10-28) and Priority ≤15, no framework/DB tests.
 4) **Decision:**  
    - If only nits: apply minor fixes and set Done.  
@@ -45,5 +48,5 @@ Reviews a single task in To Review and decides Done vs To Rework with immediate 
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-Version: 4.0.0 (Condensed review flow and zero-tolerance guidance)
-Last Updated: 2025-11-26
+**Version:** 7.3.0
+**Last Updated:** 2025-12-20

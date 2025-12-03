@@ -164,6 +164,18 @@ Invoke ln-312-task-replanner worker with taskType: "test"
 - CREATE MODE: "Test task created. Linear URL: [...]"
 - REPLAN MODE: "Test task updated. Operations executed."
 
+**TodoWrite format (mandatory):**
+Add phases to todos before starting:
+```
+- Phase 1: Discovery (in_progress)
+- Phase 2: Study test files + Load manual test results (pending)
+- Phase 3: Parse manual test results (pending)
+- Phase 4: Risk-Based Test Planning (pending)
+- Phase 5: Generate Test Task (11 sections) (pending)
+- Phase 6: Delegate to ln-311/ln-312 (pending)
+```
+Mark each as in_progress when starting, completed when done.
+
 ---
 
 ## Definition of Done

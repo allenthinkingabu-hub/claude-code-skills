@@ -235,7 +235,7 @@ NEXT STEPS:
 
 **Location:** `references/` (owned by this skill)
 **Purpose:** Universal Story template (8 sections)
-**Version:** 7.0.0
+**Template Version:** 7.0.0
 **Usage:** ln-223-story-replanner reads from ln-222/references/ for UPDATE/CREATE operations
 
 ## Integration

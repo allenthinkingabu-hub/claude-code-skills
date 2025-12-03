@@ -1,444 +1,107 @@
 ---
 name: ln-111-root-docs-creator
-description: Creates root documentation (CLAUDE.md + docs/README.md + documentation_standards.md + principles.md). First worker in ln-110-documents-pipeline. Establishes documentation structure and standards.
+description: Creates 4 root documentation files (CLAUDE.md, docs/README.md, documentation_standards.md, principles.md). L3 Worker invoked by ln-110-project-docs-coordinator.
 ---
 
 # Root Documentation Creator
 
-This skill creates the root documentation entry points for a project: CLAUDE.md (project root), docs/README.md (documentation hub with general standards), docs/documentation_standards.md (60 universal documentation requirements), and docs/principles.md (11 development principles).
+L3 Worker that creates 4 root documentation files using templates and Context Store from coordinator.
 
-## When to Use This Skill
+## Purpose & Scope
+- Creates 4 root documentation files (entry points for AI agents)
+- Receives Context Store from ln-110-project-docs-coordinator
+- Replaces placeholders with project-specific data
+- Self-validates structure and content (22 questions)
+- Never gathers context itself; uses coordinator input
 
-**This skill is a WORKER** invoked by **ln-110-documents-pipeline** orchestrator.
+## Invocation (who/when)
+- **ln-110-project-docs-coordinator:** ALWAYS invoked as first worker
+- Never called directly by users
 
-This skill should be used directly when:
-- Creating only root documentation files (CLAUDE.md + docs/README.md + documentation_standards.md + principles.md)
-- Setting up documentation structure for existing project
-- NOT creating full documentation structure (use ln-110-documents-pipeline for complete setup)
+## Inputs
+From coordinator:
+- `contextStore`: Key-value pairs with all placeholders
+  - PROJECT_NAME, PROJECT_DESCRIPTION
+  - TECH_STACK_SUMMARY
+  - DEV_COMMANDS (from package.json scripts)
+  - DATE (current date)
+  - **LEGACY_CONTENT** (optional, from ln-100 Phase 0 migration):
+    - `legacy_principles`: { principles[], anti_patterns[], conventions[] }
+- `targetDir`: Project root directory
 
-## How It Works
+**LEGACY_CONTENT** is used as base content when creating principles.md. Priority: **Legacy > Template defaults**.
 
-The skill follows a 3-phase workflow: **CREATE** → **VALIDATE STRUCTURE** → **VALIDATE CONTENT**. Each phase builds on the previous, ensuring complete structure and semantic validation.
+## Documents Created (4)
 
----
+| File | Target Sections | Questions |
+|------|-----------------|-----------|
+| CLAUDE.md | Critical Rules, Documentation Navigation, Development Commands, Maintenance | Q1-Q6 |
+| docs/README.md | Overview, Standards, Writing Guidelines, Quick Navigation, Maintenance | Q7-Q13 |
+| docs/documentation_standards.md | Quick Reference (60+ requirements), 12 main sections, Maintenance | Q14-Q16 |
+| docs/principles.md | Core Principles (8), Decision Framework, Anti-Patterns, Verification, Maintenance | Q17-Q22 |
 
-### Phase 1: Create Structure
+## Workflow
 
-**Objective**: Create all 4 root documentation files.
+### Phase 1: Receive Context
+1. Parse Context Store from coordinator
+2. Validate required keys present (PROJECT_NAME, PROJECT_DESCRIPTION)
+3. Set defaults for missing optional keys
 
-**Process**:
+### Phase 2: Create Documents
+For each document (CLAUDE.md, docs/README.md, documentation_standards.md, principles.md):
+1. Check if file exists (idempotent)
+2. If exists: skip with log
+3. If not exists:
+   - Copy template from `references/templates/`
+   - **Check LEGACY_CONTENT for this document type:**
+     - For `principles.md`: If `LEGACY_CONTENT.legacy_principles` exists:
+       - Use `legacy_principles.principles[]` as base for "## Core Principles" section
+       - Use `legacy_principles.anti_patterns[]` for "## Anti-Patterns" section
+       - Use `legacy_principles.conventions[]` for code style rules
+       - Augment with template structure (add missing sections)
+       - Mark: `<!-- Migrated from legacy documentation -->` at top of relevant sections
+     - For other documents: Use template as-is (no legacy content applicable)
+   - Replace `{{PLACEHOLDER}}` with Context Store values
+   - Mark `[TBD: X]` for missing data (never leave empty placeholders)
+   - Write file
 
-**1.1 Create CLAUDE.md**:
-- Check if CLAUDE.md exists in project root
-- If exists:
-  - Read first 50 lines
-  - Check for link to `docs/README.md`
-  - If missing:
-    - Use Edit tool to add Documentation section:
-      ```markdown
-      ## Documentation
+### Phase 3: Self-Validate
+For each created document:
+1. Check SCOPE tag in first 10 lines
+2. Check required sections (from questions_root.md)
+3. Check Maintenance section (Update Triggers, Verification, Last Updated)
+4. Check POSIX endings (single newline at end)
+5. Auto-fix issues where possible
 
-      Project documentation: [docs/README.md](docs/README.md)
-      ```
-    - Log: "✓ Added docs link to existing CLAUDE.md"
-  - If present:
-    - Log: "✓ CLAUDE.md already has docs link"
-- If NOT exists:
-  - Ask user: "Project name?"
-  - Ask user: "Brief project description (1-2 sentences)?"
-  - Copy template: `references/claude_md_template.md` → `CLAUDE.md`
-  - Replace placeholders:
-    - `{{PROJECT_NAME}}` — user input
-    - `{{PROJECT_DESCRIPTION}}` — user input
-    - `{{DATE}}` — current date (YYYY-MM-DD)
-  - Log: "✓ Created CLAUDE.md"
-
-**1.2 Create docs/README.md**:
-- Check if docs/README.md exists
-- If exists:
-  - Skip creation
-  - Log: "✓ docs/README.md already exists"
-- If NOT exists:
-  - Create docs/ directory if missing
-  - Copy template: `references/docs_root_readme_template.md` → `docs/README.md`
-  - Ask user: "Documentation status? (Draft/Active)"
-  - Replace placeholders:
-    - `{{VERSION}}` — "1.0.0"
-    - `{{DATE}}` — current date (YYYY-MM-DD)
-    - `{{STATUS}}` — user input
-  - Log: "✓ Created docs/README.md"
-
-**1.3 Create docs/documentation_standards.md**:
-- Check if docs/documentation_standards.md exists
-- If exists:
-  - Skip creation
-  - Log: "✓ docs/documentation_standards.md already exists"
-- If NOT exists:
-  - Copy template: `references/documentation_standards_template.md` → `docs/documentation_standards.md`
-  - Replace placeholders:
-    - `{{DATE}}` — current date (YYYY-MM-DD)
-    - `{{PROJECT_NAME}}` — from 1.1 (if collected)
-  - Log: "✓ Created docs/documentation_standards.md"
-
-**1.4 Create docs/principles.md**:
-- Check if docs/principles.md exists
-- If exists:
-  - Skip creation
-  - Log: "✓ docs/principles.md already exists"
-- If NOT exists:
-  - Copy template: `references/principles_template.md` → `docs/principles.md`
-  - Replace placeholders:
-    - `{{DATE}}` — current date (YYYY-MM-DD)
-  - Log: "✓ Created docs/principles.md"
-
-**1.5 Output**:
-```
-CLAUDE.md           # Created or updated with docs link
-docs/
-├── README.md                    # Created or existing
-├── documentation_standards.md   # Created or existing
-└── principles.md                # Created or existing
+### Phase 4: Return Status
+Return to coordinator:
+```json
+{
+  "created": ["CLAUDE.md", "docs/README.md", ...],
+  "skipped": [],
+  "tbd_count": 3,
+  "validation": "OK"
+}
 ```
 
----
-
-### Phase 2: Validate Structure
-
-**Objective**: Ensure all 4 files comply with structural requirements and auto-fix violations.
-
-**Process**:
-
-**2.1 Check SCOPE tags**:
-- Read first 10 lines of CLAUDE.md
-- Check for `> **SCOPE:**` or `<!-- SCOPE: ... -->` tag
-- If missing:
-  - Use Edit tool to add SCOPE tag after first heading:
-    ```markdown
-    > **SCOPE:** Entry point with project overview and navigation ONLY.
-    ```
-  - Track violation: `scope_tag_added_claude = True`
-- Read first 10 lines of docs/README.md
-- Check for `<!-- SCOPE: ... -->` tag
-- If missing:
-  - Use Edit tool to add SCOPE tag after version info:
-    ```markdown
-    <!-- SCOPE: Root documentation hub with general standards and navigation ONLY. -->
-    ```
-  - Track violation: `scope_tag_added_docs_readme = True`
-- Read first 10 lines of docs/principles.md
-- Check for `> **SCOPE:**` or `<!-- SCOPE: ... -->` tag
-- If missing:
-  - Use Edit tool to add SCOPE tag
-  - Track violation: `scope_tag_added_principles = True`
-
-**2.2 Check required sections (parametric loop)**:
-
-Define file parameters:
-```
-files = [
-  {
-    "path": "CLAUDE.md",
-    "sections": ["Documentation", "Documentation Maintenance Rules", "Maintenance"]
-  },
-  {
-    "path": "docs/README.md",
-    "sections": ["General Documentation Standards", "Writing Guidelines", "Maintenance"]
-  },
-  {
-    "path": "docs/documentation_standards.md",
-    "sections": ["Quick Reference", "Maintenance"]
-  },
-  {
-    "path": "docs/principles.md",
-    "sections": ["Decision-Making Framework", "Verification Checklist", "Maintenance"]
-  }
-]
-```
-
-For each file in files:
-1. Read file content
-2. For each required section:
-   - Check if `## [Section Name]` header exists
-   - If missing:
-     - Use Edit tool to add section with placeholder:
-       ```markdown
-       ## [Section Name]
-
-       {{PLACEHOLDER}}
-       ```
-     - Track violation: `missing_sections[file] += 1`
-
-**2.3 Check Maintenance sections**:
-- For each file in [CLAUDE.md, docs/README.md, docs/documentation_standards.md, docs/principles.md]:
-  - Search for `## Maintenance` header
-  - If missing:
-    - Use Edit tool to add at end of file:
-      ```markdown
-      ## Maintenance
-
-      **Update Triggers:**
-      - [To be defined]
-
-      **Verification:**
-      - [ ] All links resolve to existing files
-      - [ ] All placeholders replaced with content
-
-      **Last Updated:** [current date]
-      ```
-    - Track violation: `maintenance_added[file] = True`
-
-**2.4 Check POSIX file endings**:
-- For each file:
-  - Check if file ends with single blank line
-  - If missing:
-    - Use Edit tool to add final newline
-    - Track fix: `posix_fixed[file] = True`
-
-**2.5 Report validation**:
-- Log summary:
-  ```
-  ✅ Structure validation complete:
-    - SCOPE tags: [count] files fixed
-    - Missing sections: [count] sections added across [count] files
-    - Maintenance sections: [count] files fixed
-    - POSIX endings: [count] files fixed
-  ```
-- If violations found: "⚠️ Auto-fixed [total] structural violations"
-
----
-
-### Phase 3: Validate Content
-
-**Objective**: Ensure each file answers its questions with meaningful content.
-
-**Process**:
-
-**3.1 Load validation spec**:
-- Read `references/questions.md`
-- Parse questions and validation heuristics for all 4 files
-
-**3.2 Validate files (parametric loop)**:
-
-Define file parameters:
-```
-files = [
-  {
-    "path": "CLAUDE.md",
-    "question": "Where is project documentation located and how to navigate it?",
-    "heuristics": [
-      "Contains link: [docs/README.md](docs/README.md)",
-      "Has SCOPE tag in first 10 lines",
-      "Contains 'Documentation Navigation Rules' section",
-      "Length > 80 words"
-    ],
-    "auto_discovery": ["Check package.json for name/description"]
-  },
-  {
-    "path": "docs/README.md",
-    "question": "What is the documentation structure and what are general standards?",
-    "heuristics": [
-      "Contains SCOPE tag",
-      "Has 'General Documentation Standards' section",
-      "Has 'Writing Guidelines' section",
-      "Mentions SCOPE Tags, Maintenance Sections, Sequential Numbering",
-      "Length > 100 words"
-    ],
-    "auto_discovery": ["Scan docs/ structure for subdirectories"]
-  },
-  {
-    "path": "docs/documentation_standards.md",
-    "question": "What are the comprehensive documentation requirements?",
-    "heuristics": [
-      "Contains 'Quick Reference' section with table",
-      "Has 12+ main sections (##)",
-      "File size > 300 lines",
-      "Mentions ISO/IEC/IEEE, DIATAXIS, arc42"
-    ],
-    "auto_discovery": []
-  },
-  {
-    "path": "docs/principles.md",
-    "question": "What are the development principles and decision framework?",
-    "heuristics": [
-      "Contains SCOPE tag",
-      "Lists 11 principles",
-      "Has 'Decision-Making Framework' section",
-      "Has 'Verification Checklist' section",
-      "File size > 300 lines"
-    ],
-    "auto_discovery": []
-  }
-]
-```
-
-For each file in files:
-
-1. **Read file content**:
-   - Extract full file content
-
-2. **Check if content answers question**:
-   - Apply validation heuristics
-   - If ANY heuristic passes → content valid, skip to next file
-   - If ALL fail → content invalid, continue
-
-3. **Auto-discovery** (if content invalid or placeholder present):
-   - **CLAUDE.md**:
-     - Check package.json for "name" and "description"
-     - If found, suggest to user: "Would you like to use '{name}' and '{description}' from package.json?"
-   - **docs/README.md**:
-     - Scan docs/ directory for subdirectories (project/, reference/, tasks/)
-     - Generate navigation links dynamically
-   - **docs/documentation_standards.md**, **docs/principles.md**:
-     - Use template as-is (universal standards)
-     - No auto-discovery needed
-
-4. **Skip external API calls**:
-   - Templates already complete with universal standards
-   - No MCP Ref needed
-
-**3.3 Report content validation**:
-- Log summary:
-  ```
-  ✅ Content validation complete:
-    - Files checked: 4
-    - Already valid: [count]
-    - Auto-discovery applied: [count]
-    - Template content used: [count]
-  ```
-
----
-
-## Complete Output Structure
-
-```
-project_root/
-├── CLAUDE.md                         # ← Project entry point with link to docs/
-└── docs/
-    ├── README.md                     # ← Root documentation hub (general standards)
-    ├── documentation_standards.md    # ← Documentation requirements (60 universal requirements)
-    └── principles.md                 # ← Development principles (11 principles + Decision Framework + Verification Checklist)
-```
-
-**Note**: Other documentation (project/, reference/, tasks/, presentation/) created by other workers in ln-110-documents-pipeline workflow.
-
----
-
-## Reference Files Used
-
-### Templates
-
-**CLAUDE.md Template**:
-- `references/claude_md_template.md` - Minimal CLAUDE.md with documentation link
-
-**Root README Template**:
-- `references/docs_root_readme_template.md` (v1.1.0) - Root documentation hub with:
-  - Overview (documentation system organization)
-  - General Documentation Standards (SCOPE Tags, Maintenance Sections, Sequential Numbering, Placeholder Conventions)
-  - Writing Guidelines (Progressive Disclosure Pattern)
-  - Maintenance section (Update Triggers, Verification, Last Updated)
-
-**Documentation Standards Template**:
-- `references/documentation_standards_template.md` (v1.0.0) - Documentation requirements with:
-  - Quick Reference (60 universal requirements in 12 categories)
-  - Claude Code Integration (#26-30)
-  - AI-Friendly Writing Style (#31-36)
-  - Markdown Best Practices (#37-42)
-  - Code Examples Quality (#43-47)
-  - DIATAXIS Framework (#48-52)
-  - Project Files (#53-58)
-  - Visual Documentation (#67-71)
-  - Conventional Commits & Changelog (#72-75)
-  - Security & Compliance (#76-79)
-  - Performance & Optimization (#80-82)
-  - Project-Specific Customization Guide
-  - References (industry sources)
-  - Maintenance section
-
-**Development Principles Template**:
-- `references/principles_template.md` (v1.0.0) - Development principles with:
-  - 11 Core Principles (Standards First, YAGNI, KISS, DRY, Consumer-First Design, Task Granularity, Value-Based Testing, No Legacy Code, Token Efficiency, Documentation-as-Code, Security by Design)
-  - Decision-Making Framework (7 steps: Security → Standards → Correctness → Simplicity → Necessity → Maintainability → Performance)
-  - Trade-offs (when principles conflict)
-  - Anti-Patterns to Avoid
-  - Verification Checklist (11 items)
-  - Maintenance section
-
-**Validation Specification**:
-- `references/questions.md` (v1.0) - Question-driven validation:
-  - Questions each file must answer
-  - Validation heuristics
-  - Auto-discovery hints
-
----
-
-## Best Practices
-
-- **No premature validation**: Phase 1 creates structure, Phase 2 validates it (no duplicate checks)
-- **Parametric validation**: Phases 2-3 use loops for 4 files (no code duplication)
-- **Auto-discovery first**: Check package.json and docs/ structure before asking user
-- **Idempotent**: ✅ Can run multiple times safely (checks existence before creation)
-- **Separation of concerns**: CREATE → VALIDATE STRUCTURE → VALIDATE CONTENT
-- **CLAUDE.md**: Keep minimal - only project name, description, and docs link
-- **docs/README.md**: General standards only - NO project-specific content
-- **SCOPE Tags**: Include in first 3-10 lines of all documentation files
-
----
-
-## Prerequisites
-
-**Invoked by**: ln-110-documents-pipeline orchestrator
-
-**Requires**: None (first worker in chain)
-
-**Creates**:
-- CLAUDE.md (project entry point)
-- docs/README.md (documentation hub)
-- docs/documentation_standards.md (60 requirements)
-- docs/principles.md (11 principles + Decision Framework)
-- Validated structure and content
-
----
+## Critical Notes
+- **Idempotent:** Never overwrite existing files; skip and log
+- **No context gathering:** All data comes from coordinator's Context Store
+- **TBD markers:** Use `[TBD: placeholder_name]` for missing data, never `{{PLACEHOLDER}}`
+- **Language:** All root docs in English (universal standards)
+- **SCOPE tags:** Required in first 10 lines of each file
 
 ## Definition of Done
+- Context Store received and validated
+- 4 root documents created (or skipped if exist)
+- All placeholders replaced (or marked TBD)
+- Self-validation passed (SCOPE, sections, Maintenance, POSIX)
+- Status returned to coordinator
 
-Before completing work, verify ALL checkpoints:
-
-**✅ Structure Created:**
-- [ ] CLAUDE.md exists in project root
-- [ ] docs/ directory exists
-- [ ] docs/README.md exists
-- [ ] docs/documentation_standards.md exists
-- [ ] docs/principles.md exists
-
-**✅ Structure Validated:**
-- [ ] SCOPE tags present in CLAUDE.md, docs/README.md, docs/principles.md
-- [ ] Required sections present in all 4 files
-- [ ] Maintenance sections present in all 4 files
-- [ ] POSIX file endings compliant
-
-**✅ Content Validated:**
-- [ ] All files checked against questions.md
-- [ ] CLAUDE.md has docs link
-- [ ] docs/README.md has General Standards + Writing Guidelines
-- [ ] docs/documentation_standards.md has Quick Reference + 12 sections
-- [ ] docs/principles.md has 11 principles + Decision Framework + Verification Checklist
-
-**✅ Reporting:**
-- [ ] Phase 1 logged: creation summary
-- [ ] Phase 2 logged: structural fixes (if any)
-- [ ] Phase 3 logged: content validation (if any)
+## Reference Files
+- Templates: `references/templates/claude_md_template.md`, `docs_root_readme_template.md`, `documentation_standards_template.md`, `principles_template.md`
+- Questions: `references/questions_root.md` (Q1-Q22)
 
 ---
-
-## Technical Details
-
-**Standards**:
-- ISO/IEC/IEEE 29148:2018 (Documentation standards)
-- Progressive Disclosure Pattern (token efficiency)
-
-**Language**: English only
-
----
-
-**Version:** 10.0.0 (MAJOR: Applied ln-112 pattern - 4 phases → 3 phases, added questions.md for semantic validation, parametric validation loop, removed workflow coupling. No functionality change, pure architectural refactoring for consistency with ln-112 PoC.)
-**Last Updated:** 2025-11-18
+**Version:** 2.0.0 (MAJOR: Added LEGACY_CONTENT handling for principles.md. Uses legacy_principles from migration as base content. Priority: Legacy > Template defaults.)
+**Last Updated:** 2025-12-19

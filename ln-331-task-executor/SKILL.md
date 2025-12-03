@@ -18,7 +18,7 @@ Executes a single implementation (or refactor) task from Todo to To Review using
 1) **Load context:** Fetch full task description; read linked guides/manuals/ADRs; auto-discover team/config if needed.
 2) **Pick task:** If ID provided, use it; otherwise list Todo tasks and select one.
 3) **Start work:** Update this task to In Progress in Linear; move it in kanban (keep Epic/Story indent).
-4) **Implement:** Follow checkboxes/plan; keep it simple; avoid hardcoded values; reuse existing components; update docs noted in Affected Components; update existing tests if impacted (no new tests here).
+4) **Implement:** Follow checkboxes/plan; keep it simple; avoid hardcoded values; reuse existing components; add Task ID comment (`// See PROJ-123`) to new code blocks; update docs noted in Affected Components; update existing tests if impacted (no new tests here).
 5) **Quality:** Run typecheck and lint (or project equivalents); ensure instructions in Existing Code Impact are addressed.
 6) **Finish:** Mark task To Review in Linear; update kanban to To Review; add summary comment (what changed, tests run, docs touched).
 
@@ -28,6 +28,7 @@ Executes a single implementation (or refactor) task from Todo to To Review using
 - No code snippets in the description; code lives in repo, not in Linear.
 - No new test creation; only update existing tests if required.
 - Preserve Foundation-First ordering from orchestrator; do not reorder tasks.
+- Add Task ID comments to new code blocks for traceability (`// See PROJ-123` or `# See PROJ-123`).
 
 ## Definition of Done
 - Task selected and set to In Progress; kanban updated accordingly.
@@ -42,5 +43,5 @@ Executes a single implementation (or refactor) task from Todo to To Review using
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-Version: 5.1.0 (Condensed executor flow and single-task safety)
-Last Updated: 2025-11-26
+**Version:** 10.1.0
+**Last Updated:** 2025-12-20

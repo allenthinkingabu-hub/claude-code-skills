@@ -66,48 +66,21 @@ Use **Given-When-Then** format:
 Tasks created separately (parentId → this Story):
 - [API-XX: Task Name](link) - Brief description
 - [API-YY: Task Name](link) - Brief description
-- [API-ZZ: Tests for Story](link) - **Final Task:** All tests (Unit/Integration/E2E)
 
 > [!NOTE]
 > Order tasks Consumer → Service → Provider (API endpoint → Service → Repository → Database). Consumer Tasks may mock provider layers until implemented.
+> Test task is NOT created here — it will be added later by ln-350-story-test-planner after manual testing passes.
 
 ---
 
 ## Test Strategy
 
 > [!NOTE]
-> All tests implemented in final Task of this Story (created by ln-350-story-test-planner after manual testing).
+> This section is intentionally **empty** at Story creation.
+> Tests are planned later by **ln-350-story-test-planner** after manual testing passes (ln-340-story-quality-gate Pass 1).
+> Reference: `ln-350-story-test-planner/references/risk_based_testing_guide.md`
 
-**Approach:** Risk-Based Testing with enforced limits (2-5 E2E, 3-8 Integration, 5-15 Unit per Story)
-
-**Reference:** See `ln-350-story-test-planner/references/risk_based_testing_guide.md` for complete Risk-Based Testing methodology.
-
-### E2E Tests (2-5 max)
-Test complete user journeys. **ONLY Priority ≥15 scenarios** (money, security, core flows):
-- [Critical AC or Edge Case]: [Priority score] - [Full business flow]
-- [Critical AC or Edge Case]: [Priority score] - [Full business flow]
-
-**Type:** API E2E / UI E2E (depending on application type)
-**Based on:** ACTUAL manual testing results from ln-343-manual-tester (delegated by ln-340-story-quality-gate Pass 1)
-
-### Integration Tests (3-8 max)
-Test layer interactions with real dependencies. **ONLY Priority ≥15 interactions NOT covered by E2E:**
-- [Integration Point]: [Priority score] - [What E2E doesn't cover: rollback/error/concurrency]
-- [Integration Point]: [Priority score] - [What data flow to verify]
-
-**Use Real:** Database (test), filesystem, internal services
-**Use Mocks:** External APIs, payment systems, email services
-
-### Unit Tests (5-15 max)
-Test complex business logic in isolation. **ONLY Priority ≥15 logic NOT covered by E2E:**
-- [Complex Function]: [Priority score] - [Financial calculation / Security logic / Algorithm]
-- [Complex Function]: [Priority score] - [Edge cases from manual testing]
-
-**SKIP:** Simple CRUD, framework code, trivial conditionals, getters/setters
-
-**Test Limits:** 10-28 tests total per Story (enforced by ln-350-story-test-planner)
-
-**Focus:** Critical path coverage (all Priority ≥15 scenarios), NOT coverage percentage
+*Test planning deferred to execution phase.*
 
 ---
 
@@ -139,6 +112,35 @@ Test complex business logic in isolation. **ONLY Priority ≥15 logic NOT covere
 > [!NOTE]
 > This section populated by ln-220-story-coordinator Phase 0 (Library & Standards Research). Tasks reference these specifications in their Technical Approach sections.
 
+### API Technical Aspects
+
+> [!NOTE]
+> Fill for Stories with API endpoints. Skip for internal/non-API Stories.
+
+#### Rate Limiting
+- **Policy:** [e.g., 100 requests/minute per API key, 1000/hour per user]
+- **Strategy:** [Token bucket / Sliding window / Fixed window]
+- **Headers:** [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset]
+- **429 Response:** [Retry-After header, error message format]
+
+#### Authentication & Authorization
+- **Auth pattern:** [Bearer token / API key / OAuth 2.0 flow]
+- **Token management:** [Expiration, refresh strategy, revocation]
+- **Authorization:** [RBAC / ABAC / Scope-based permissions]
+- **Project-specific:** [Beyond RFC requirements specific to this project]
+
+#### Error Handling Strategy
+- **Error format:** [RFC 7807 Problem Details / Custom JSON schema]
+- **Error codes:** [Business error codes taxonomy, HTTP status mapping]
+- **Retry strategy:** [Which errors retryable, backoff parameters]
+- **Circuit breaker:** [Failure thresholds, recovery timeout]
+
+#### Logging & Observability
+- **Log levels:** [DEBUG/INFO/WARN/ERROR usage guidelines]
+- **Structured format:** [JSON fields: timestamp, level, service, correlation_id, message]
+- **Audit trail:** [What events to track, retention policy]
+- **Tracing:** [Correlation IDs, distributed tracing headers (X-Request-ID)]
+
 ### Integration Points
 - **External Systems**: Which external APIs/services?
 - **Internal Services**: Which app services interact?
@@ -154,7 +156,7 @@ Test complex business logic in isolation. **ONLY Priority ≥15 logic NOT covere
 - [Guide YY: Pattern Name](../guides/guide_YYY_pattern_name.md) - [when to use this pattern]
 
 > [!NOTE]
-> Guide links inserted by ln-320-story-validator Phase 3 (auto-creates missing guides via ln-321-guide-creator, then links them here).
+> Guide links inserted by ln-320-story-validator Phase 3 (auto-creates missing guides via ln-321-best-practices-researcher, then links them here).
 
 ---
 
@@ -165,9 +167,9 @@ Test complex business logic in isolation. **ONLY Priority ≥15 logic NOT covere
 - [ ] Logging added appropriately
 
 ### Testing
-- [ ] All implementation tasks completed (including final test task)
-- [ ] All tests passing (E2E 2-5, Integration 3-8, Unit 5-15, total 10-28)
-- [ ] All Priority ≥15 scenarios tested
+- [ ] All implementation tasks completed
+- [ ] Test task created and completed (by ln-350-story-test-planner)
+- [ ] All tests passing
 
 ### Code Quality
 - [ ] Code reviewed and approved
@@ -191,5 +193,5 @@ Test complex business logic in isolation. **ONLY Priority ≥15 logic NOT covere
 
 ---
 
-**Template Version:** 7.0.0 (Added Library Research + Related Guides subsections in Technical Notes)
-**Last Updated:** 2025-11-12
+**Template Version:** 8.0.0 (Added API Technical Aspects: Rate Limiting, Auth, Error Handling, Logging)
+**Last Updated:** 2025-12-12
