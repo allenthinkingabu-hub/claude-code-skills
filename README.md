@@ -160,6 +160,12 @@ Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-de
 |:------|:--------|:-------:|:--------:|
 | **[ln-350-story-test-planner](ln-350-story-test-planner/)** | **Coordinator** that creates test task for Story after manual testing passes. Analyzes Story, generates comprehensive test task with 11 sections. **Delegates to ln-311-task-creator (CREATE) or ln-312-task-replanner (REPLAN)** with `taskType: "test"`. Supports existing test task updates. Uses 1X workers for task creation/replanning. | 7.2.0 | ✅ |
 
+#### 3.6 Codebase Audit (ln-360-codebase-auditor)
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-360-codebase-auditor](ln-360-codebase-auditor/)** | Full codebase quality audit across 9 categories (Security, Build, Architecture, Design, Complexity, Algorithms, Dependencies, Wheel Reinvention, Unused Code). Creates consolidated refactoring task in Linear Epic 0. Manual invocation for technical debt assessment. | 1.0.0 | ✅ |
+
 ---
 
 ## 📥 Installation
@@ -170,10 +176,10 @@ Select the plugin that matches your team's needs:
 
 | Plugin | Skills | Use Case | Dependencies |
 |--------|--------|----------|--------------|
-| **complete** ⭐ | 32 | Full workflow automation (docs + planning + execution) | Linear + Context7 + Ref |
+| **complete** ⭐ | 33 | Full workflow automation (docs + planning + execution) | Linear + Context7 + Ref |
 | **docs** | 10 | Documentation automation only | None (standalone) |
 | **planning** | 4 | Epic/Story decomposition | Linear + Context7 + Ref |
-| **execution** | 18 | Story execution pipeline | Linear + Context7 + Ref |
+| **execution** | 19 | Story execution pipeline | Linear + Context7 + Ref |
 
 ---
 

@@ -46,7 +46,8 @@
         "./ln-341-code-quality-checker",
         "./ln-342-regression-checker",
         "./ln-343-manual-tester",
-        "./ln-350-story-test-planner"
+        "./ln-350-story-test-planner",
+        "./ln-360-codebase-auditor"
       ]
     }
   ]

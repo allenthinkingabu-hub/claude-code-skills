@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ln-360-codebase-auditor Workflow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="../shared/css/diagram.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ln-360-codebase-auditor Workflow</h1>
+            <p class="subtitle">Standalone Worker v1.0.0</p>
+        </header>
+        <div class="info-box">
+        <h3>Overview</h3>
+        <p><strong>Purpose:</strong> Full codebase quality audit across 9 categories with consolidated refactoring task creation.</p>
+        <p><strong>Type:</strong> Linear Workflow (5 sequential phases)</p>
+        <p><strong>Single Responsibility:</strong> Audit codebase and create ONE refactoring task in Epic 0.</p>
+        <p><strong>Invocation:</strong> Manual - user runs when needed for technical debt assessment.</p>
+    </div>
+
+    <div class="mermaid">
+graph TD
+    Start([START]) --> Phase1[Phase 1: Discovery<br/>Load tech_stack.md<br/>Load principles.md<br/>Load package manifests]
+
+    Phase1 --> Phase2[Phase 2: Static Analysis<br/>9 audit categories<br/>Priority order<br/>Security first]
+
+    Phase2 --> Phase3[Phase 3: Collect Issues<br/>Severity levels<br/>File locations<br/>Recommendations]
+
+    Phase3 --> Phase4[Phase 4: Generate Report<br/>Group by category<br/>Calculate totals<br/>Priority actions]
+
+    Phase4 --> Phase5[Phase 5: Create Task<br/>Linear Epic 0<br/>Full report<br/>Severity summary]
+
+    Phase5 --> End([END:<br/>Refactoring task created])
+
+    classDef phase fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    classDef endpoint fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
+
+    class Phase1,Phase2,Phase3,Phase4,Phase5 phase
+    class Start,End endpoint
+    </div>
+
+    <h2>Audit Categories (Priority Order)</h2>
+
+    <div class="mermaid">
+graph LR
+    subgraph Critical
+        C1[1. Security<br/>Secrets, Injection, XSS]
+        C2[2. Build Health<br/>Errors, Warnings]
+    end
+
+    subgraph High
+        H1[3. Architecture<br/>DRY/KISS/YAGNI]
+        H2[4. Design Issues<br/>TODO/FIXME/HACK]
+    end
+
+    subgraph Medium
+        M1[5. Code Complexity<br/>Cyclomatic, Nesting]
+        M2[6. Algorithms<br/>O n2, N+1 queries]
+        M3[7. Dependencies<br/>Outdated packages]
+    end
+
+    subgraph Low
+        L1[8. Wheel Reinvention<br/>Custom vs library]
+        L2[9. Unused Code<br/>Dead code, shims]
+    end
+
+    C1 --> C2 --> H1 --> H2 --> M1 --> M2 --> M3 --> L1 --> L2
+
+    classDef critical fill:#FFCDD2,stroke:#D32F2F,stroke-width:2px
+    classDef high fill:#FFE0B2,stroke:#F57C00,stroke-width:2px
+    classDef medium fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px
+    classDef low fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
+
+    class C1,C2 critical
+    class H1,H2 high
+    class M1,M2,M3 medium
+    class L1,L2 low
+    </div>
+
+    <h2>Category Details</h2>
+
+    <div class="violation-type">
+        <div class="violation-title">1. Security (Critical)</div>
+        <p><strong>Detects:</strong> Hardcoded secrets, SQL injection, XSS, insecure dependencies, missing input validation</p>
+        <p><strong>Example:</strong> API key in source code: <code>const API_KEY = "sk-abc123..."</code></p>
+        <p><strong>Fix:</strong> Move to environment variables or secret manager</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">2. Build Health (Critical)</div>
+        <p><strong>Detects:</strong> Compiler errors, linter errors, deprecation warnings, type errors, failed tests</p>
+        <p><strong>Example:</strong> TypeScript strict mode: 12 type errors</p>
+        <p><strong>Fix:</strong> Fix type annotations, update deprecated APIs</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">3. Architecture Principles (High)</div>
+        <p><strong>Detects:</strong> DRY violations, KISS violations, YAGNI violations, layer boundary breaks</p>
+        <p><strong>Example:</strong> Same validation logic in 4 different files</p>
+        <p><strong>Fix:</strong> Extract to shared utility, follow layer hierarchy</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">4. Design Issues (High)</div>
+        <p><strong>Detects:</strong> TODO/FIXME/HACK/XXX comments, workarounds, temporary solutions</p>
+        <p><strong>Example:</strong> <code>// HACK: temporary fix until API v2</code></p>
+        <p><strong>Fix:</strong> Implement proper solution or create tracked task</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">5. Code Complexity (Medium)</div>
+        <p><strong>Detects:</strong> High cyclomatic complexity (>10), deep nesting (>4), long methods (>50 lines), god classes</p>
+        <p><strong>Example:</strong> Function with cyclomatic complexity 18</p>
+        <p><strong>Fix:</strong> Extract methods, use early returns, apply SRP</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">6. Algorithms (Medium)</div>
+        <p><strong>Detects:</strong> O(n^2) in loops, N+1 queries, missing indexes, inefficient data structures</p>
+        <p><strong>Example:</strong> Nested loop over two arrays: O(n*m)</p>
+        <p><strong>Fix:</strong> Use hash map for O(n), add eager loading, create index</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">7. Dependencies (Medium)</div>
+        <p><strong>Detects:</strong> Outdated packages, unused dependencies, available features not used</p>
+        <p><strong>Example:</strong> axios@0.21 (3 major versions behind)</p>
+        <p><strong>Fix:</strong> Update to latest, remove unused, use native features</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">8. Wheel Reinvention (Low)</div>
+        <p><strong>Detects:</strong> Custom implementations of standard library, hand-rolled utilities</p>
+        <p><strong>Example:</strong> Custom date formatter when dayjs available</p>
+        <p><strong>Fix:</strong> Replace with standard library or popular package</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">9. Unused Code (Low)</div>
+        <p><strong>Detects:</strong> Dead code, unused imports/variables, backward compatibility shims, commented-out code</p>
+        <p><strong>Example:</strong> <code>if (legacyMode) { ... }</code> after migration complete</p>
+        <p><strong>Fix:</strong> Delete unused code, remove legacy branches</p>
+    </div>
+
+    <h2>Output: Linear Task in Epic 0</h2>
+    <pre style="background: #F5F5F5; padding: 15px; border-radius: 4px; overflow-x: auto;">
+Title: Codebase Refactoring: 2025-12-09
+
+## Summary
+| Severity | Count |
+|----------|-------|
+| Critical | 3 |
+| High | 7 |
+| Medium | 12 |
+| Low | 5 |
+
+## Priority Actions
+1. [CRITICAL] Fix hardcoded secrets in src/config.ts
+2. [CRITICAL] Resolve 3 TypeScript errors
+3. [HIGH] Refactor duplicated validation logic
+
+## Findings by Category
+(Full detailed report with file:line references)
+    </pre>
+
+    <h2>Key Characteristics</h2>
+    <ul>
+        <li><strong>Standalone:</strong> Not part of Story pipeline - manual invocation</li>
+        <li><strong>Comprehensive:</strong> 9 audit categories covering all quality aspects</li>
+        <li><strong>Priority-Ordered:</strong> Critical issues first (Security, Build)</li>
+        <li><strong>Actionable:</strong> Each finding has severity + location + recommendation</li>
+        <li><strong>Single Output:</strong> One consolidated task in Epic 0</li>
+    </ul>
+
+    <footer>
+        <p>ln-360-codebase-auditor v1.0.0 | Standalone Worker | 9 Audit Categories</p>
+    </footer>
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default', flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' } });
+    </script>
+</body>
+</html>
