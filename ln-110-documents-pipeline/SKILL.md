@@ -388,7 +388,7 @@ project_root/
 
 **When to use manual approach instead:**
 - Need only HTML rebuild → use [ln-115-presentation-creator](../ln-115-presentation-creator/SKILL.md)
-- Need one specific ADR → use [ln-322-adr-creator](../ln-322-adr-creator/SKILL.md)
+- Need one specific ADR/guide/manual → use [ln-321-best-practices-researcher](../ln-321-best-practices-researcher/SKILL.md)
 
 ---
 

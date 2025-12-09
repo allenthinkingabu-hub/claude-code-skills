@@ -117,9 +117,7 @@ Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-de
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-321-guide-creator](ln-321-guide-creator/)** | Research and create minimal project guides (6 sections, 300-500 words) documenting reusable patterns. AUTO-RESEARCH via MCP Ref/Context7. Returns guide path for linking. | 5.0.0 | ✅ |
-| **[ln-322-adr-creator](ln-322-adr-creator/)** | Create minimal Architecture Decision Records (ADRs) through 5-question dialog. Categorizes as Strategic or Technical. Nygard format with 7 sections (~300-500 words). | 6.0.0 | ✅ |
-| **[ln-323-manual-creator](ln-323-manual-creator/)** | Create minimal Package API reference manuals (~300-500 words, OpenAPI-inspired format). AUTO-RESEARCH via MCP Context7 + Ref. Neutral, factual tone. Version-specific (package-version.md). Returns manual path for linking. | 2.0.0 | ✅ |
+| **[ln-321-best-practices-researcher](ln-321-best-practices-researcher/)** | Research best practices via MCP Ref/Context7 and create documentation (guide/manual/ADR). Single research, multiple output types. Replaces ln-321/322/323. | 1.0.0 | ❌ |
 
 #### 3.3 Story Execution (ln-330-story-executor)
 
@@ -352,7 +350,7 @@ shared/
 - Each skill owns its templates in its own `references/` directory (Single Source of Truth)
 - Templates are NOT copied to project during setup
 - Skills use templates directly from their `references/` when generating documents
-- Example: ln-322-adr-creator uses `ln-322-adr-creator/references/adr_template.md` when creating ADRs
+- Example: ln-321-best-practices-researcher uses `ln-321-best-practices-researcher/references/adr_template.md` when creating ADRs
 
 ---
 

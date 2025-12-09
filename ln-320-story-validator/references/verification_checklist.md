@@ -301,15 +301,15 @@ For each Task with structure violations:
    - Scan `docs/manuals/` for library/API references
    - Scan `docs/adrs/` for architectural decisions
 
-2. **IF documentation gap found → MUST invoke workers:**
-   - Missing pattern guide → MUST invoke `ln-321-guide-creator`
-   - Missing library manual → MUST invoke `ln-323-manual-creator`
-   - Missing architectural decision → MUST invoke `ln-322-adr-creator`
-   - Workers perform research via MCP Ref/Context7 internally
+2. **IF documentation gap found → MUST invoke unified worker:**
+   - Missing pattern guide → MUST invoke `ln-321-best-practices-researcher(doc_type="guide", topic="...")`
+   - Missing library manual → MUST invoke `ln-321-best-practices-researcher(doc_type="manual", topic="...")`
+   - Missing architectural decision → MUST invoke `ln-321-best-practices-researcher(doc_type="adr", topic="...")`
+   - Worker performs research via MCP Ref/Context7 internally (single research for all doc types)
 
 3. **Document compliance (REQUIRED evidence):**
    - Document path (existing or created): `docs/guides/XX-pattern.md`
-   - OR Worker invocation result: "Created via ln-321-guide-creator"
+   - OR Worker invocation result: "Created via ln-321-best-practices-researcher"
    - OR Explicit skip reason: "No applicable standards - Story is internal refactoring only"
 
 4. **IF no applicable standards:**
@@ -332,7 +332,7 @@ If answer is blank or generic → CANNOT mark ✅ → MUST perform verification 
 
 **Auto-fix actions (#15):**
 - Check existing docs in `docs/guides/`, `docs/manuals/`, `docs/adrs/`
-- IF gap found → Invoke ln-321/ln-322/ln-323 workers (they perform research internally)
+- IF gap found → Invoke ln-321-best-practices-researcher(doc_type="guide/manual/adr", topic="...")
 - Add document links to Story Technical Notes
 - Update Tasks with standard-compliant implementation
 - Add RFC/spec references in Technical Notes

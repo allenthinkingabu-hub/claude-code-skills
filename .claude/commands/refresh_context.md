@@ -80,9 +80,7 @@ allowed-tools: Read, Edit
 - [ ] Read `ln-311-task-creator/SKILL.md` + `references/` – CREATE tasks (implementation/refactoring/test templates)
 - [ ] Read `ln-312-task-replanner/SKILL.md` – REPLAN tasks (KEEP/UPDATE/OBSOLETE/CREATE)
 - [ ] Read `ln-320-story-validator/SKILL.md` + `references/verification_checklist.md` – auto-fix Stories/Tasks (Backlog → Todo)
-- [ ] Read `ln-321-guide-creator/SKILL.md` + `references/guide_template.md` – create minimal guides (300-500 words)
-- [ ] Read `ln-322-adr-creator/SKILL.md` – create ADRs (Strategic/Technical, Nygard format)
-- [ ] Read `ln-323-manual-creator/SKILL.md` – create package API reference manuals
+- [ ] Read `ln-321-best-practices-researcher/SKILL.md` + `references/` – research best practices and create guides/manuals/ADRs (doc_type parameter)
 - [ ] Read `ln-330-story-executor/SKILL.md` – L2 coordinator (orchestrate child tasks Todo → Done)
 - [ ] Read `ln-331-task-executor/SKILL.md` – L3 worker (execute implementation tasks)
 - [ ] Read `ln-332-task-reviewer/SKILL.md` – L3 worker (review tasks To Review → Done/Rework)

@@ -154,7 +154,7 @@ Test complex business logic in isolation. **ONLY Priority ≥15 logic NOT covere
 - [Guide YY: Pattern Name](../guides/guide_YYY_pattern_name.md) - [when to use this pattern]
 
 > [!NOTE]
-> Guide links inserted by ln-320-story-validator Phase 3 (auto-creates missing guides via ln-321-guide-creator, then links them here).
+> Guide links inserted by ln-320-story-validator Phase 3 (auto-creates missing guides via ln-321-best-practices-researcher, then links them here).
 
 ---
 

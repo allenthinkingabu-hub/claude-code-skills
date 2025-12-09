@@ -384,11 +384,11 @@ Orchestrator automatically creates fix tasks when quality checks fail, then rest
 | **Rarely Used Independently** | Functions almost always used together |
 | **Small Total Size** | Combined SKILL.md < 500 lines, < 3 major workflow steps |
 
-### Example: ln-322-adr-creator
+### Example: ln-321-best-practices-researcher (doc_type="adr")
 
 **Functions:** Ask 5 questions → Generate ADR document (7 sections) → Create file in docs/adrs/
 
-**Verdict:** ✅ ONE skill (single user workflow, common tools, small size ~300 lines, not used independently)
+**Verdict:** ✅ ONE skill (single user workflow, common tools, small size ~120 lines, supports 3 doc types)
 
 ---
 
@@ -409,7 +409,7 @@ Phase 4: Output/Save
 **Examples:**
 - `ln-111-docs-creator` - generates documentation sequentially
 - `ln-112-html-builder` - builds HTML presentation
-- `ln-321-guide-creator` - creates guides
+- `ln-321-best-practices-researcher` - creates guides/manuals/ADRs
 
 **Diagram Type:** `graph TD` (top-down linear)
 

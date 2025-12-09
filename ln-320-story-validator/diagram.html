@@ -35,9 +35,9 @@ graph TD
         S2 --> S3{Documentation<br/>gaps detected?}
 
         S3 -->|None| S9[Continue to Phase 3]
-        S3 -->|Pattern<br/>trigger| S6[Auto-create Guide<br/>ln-321-guide-creator<br/>HOW to implement]
-        S3 -->|Package+version<br/>trigger| S7[Auto-create Manual<br/>ln-323-manual-creator<br/>HOW to use library]
-        S3 -->|Decision<br/>trigger| S8[Auto-create ADR<br/>ln-322-adr-creator<br/>WHY we decided]
+        S3 -->|Pattern<br/>trigger| S6[Auto-create Guide<br/>ln-321-best-practices-researcher<br/>doc_type=guide]
+        S3 -->|Package+version<br/>trigger| S7[Auto-create Manual<br/>ln-321-best-practices-researcher<br/>doc_type=manual]
+        S3 -->|Decision<br/>trigger| S8[Auto-create ADR<br/>ln-321-best-practices-researcher<br/>doc_type=adr]
 
         S6 --> S10[Save doc paths<br/>for Phase 3 #13]
         S7 --> S10

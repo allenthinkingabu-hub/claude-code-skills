@@ -24,7 +24,7 @@ This repository contains 3 distinct levels of documentation, each serving differ
 - **No duplication** - Same concepts in different files serve different contexts
 - **CLAUDE.md** - Context for working WITH skills (editing, maintaining)
 - **README.md** - Context for working USING skills (installing, learning)
-- **Templates** - Context for projects CREATED BY skills (ln-111, ln-114, ln-322, etc.)
+- **Templates** - Context for projects CREATED BY skills (ln-111, ln-114, ln-321, etc.)
 
 **Example:**
 - Development Principles in CLAUDE.md → for Claude Code maintaining skills
@@ -47,7 +47,7 @@ All skills have state diagrams in `diagram.html` files for visualizing workflows
 
 ### Available Skills
 
-**34 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
+**32 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
 
 **Key workflow:** ln-110-documents-pipeline → ln-200-scope-decomposer → ln-300-story-pipeline → ln-340-story-quality-gate
 

@@ -248,9 +248,7 @@ Single hierarchical view: **Status → Epic → User Story → Tasks**
 | | ln-342-regression-checker | Run existing test suite |
 | | ln-343-manual-tester | Perform manual testing via curl/puppeteer |
 | **Documentation** | ln-114-project-docs-creator | Create project docs (requirements, architecture, specs) |
-| | ln-322-adr-creator | Create ADRs (architecture decisions) |
-| | ln-321-guide-creator | Create guides (reusable patterns) |
-| | ln-323-manual-creator | Create manuals (API references) |
+| | ln-321-best-practices-researcher | Create ADRs, guides, manuals (doc_type parameter) |
 
 ---
 

@@ -17,7 +17,7 @@
 
 ## Patterns
 
-| Do This ✅ | Don't Do This ❌ | When to Use |
+| Do This | Don't Do This | When to Use |
 |-----------|------------------|-------------|
 | {{PATTERN_1_DO}} | {{PATTERN_1_DONT}} | {{PATTERN_1_WHEN}} |
 | {{PATTERN_2_DO}} | {{PATTERN_2_DONT}} | {{PATTERN_2_WHEN}} |

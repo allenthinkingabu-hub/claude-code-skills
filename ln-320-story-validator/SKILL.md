@@ -48,7 +48,7 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 - **Research using MCP Ref:** call `ref_search_documentation(query="[story domain] RFC standard 2025")` for each technology in Story
 - **Verify versions via Context7:** call `get-library-docs` to check library versions mentioned in Technical Notes
 - Challenge approach: prefer proven standards over custom work; cite specific RFC/standard in Linear comment when fixing
-- Documentation check and creation triggers (pattern keywords, package versions, technology choices); invoke ln-321-guide-creator / ln-323-manual-creator / ln-322-adr-creator if missing
+- Documentation check and creation triggers (pattern keywords, package versions, technology choices); invoke ln-321-best-practices-researcher(doc_type="guide/manual/adr", topic="...") if missing
 - Verify against codebase reality before edits; if Story is outdated, auto-correct via Linear update
 - Reporting rule: when principles are violated, explain why with best-practice references and propose concrete fixes, not just list names
 
