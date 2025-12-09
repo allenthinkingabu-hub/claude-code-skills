@@ -83,7 +83,6 @@ Existing:
 - ⚠️ AC changed (new AC added, existing modified, AC removed)
 - ⚠️ Story Statement refined (same capability, clearer phrasing)
 - ⚠️ Technical Notes changed (new guide links, integration approach)
-- ⚠️ Test Strategy changed (different E2E/Integration/Unit distribution)
 
 **Constraints:**
 - Status: Backlog or Todo ONLY

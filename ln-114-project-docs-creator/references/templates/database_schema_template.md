@@ -209,6 +209,10 @@ Purpose: Optimize common query patterns (published products by category, recent 
 
 ### 6.2 Migration Strategy
 {{MIGRATION_STRATEGY}}
+
+> ⚠️ **CRITICAL RULE:** Never create migrations manually! Always use ORM auto-generation feature.
+> Manual migrations lead to schema drift and inconsistencies between code models and database.
+
 <!-- Example:
 - Versioned migrations (001_initial_schema.sql, 002_add_reviews.sql)
 - Up/Down scripts for rollback capability

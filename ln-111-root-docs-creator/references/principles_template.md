@@ -18,6 +18,7 @@
 | **6** | **No Legacy Code** | code | Remove backward compatibility shims immediately after migration | **Rules:** Deprecated features deleted in NEXT release (not "someday"), NO commented-out code (use git history), NO `if legacy_mode:` branches |
 | **7** | **Documentation-as-Code** | docs | Documentation lives WITH code, updated WITH code changes | **Rules:** Documentation in same commit as code, NO separate "docs update" tasks, Outdated docs = bug (same severity as code bug) |
 | **8** | **Security by Design** | code | Security integrated from design phase, not bolted on later | **Practices:** Never commit secrets → env vars/secret managers, Validate at boundaries → Pydantic models, Least Privilege → minimum permissions, Fail Securely → don't leak info in errors, Defense in Depth → multiple security layers |
+| **9** | **Auto-Generated Migrations Only** | code | Never create DB migrations manually - use ORM auto-generation | **Reason:** Manual migrations cause schema drift between code models and database. Always use your ORM's migration generation feature |
 
 ---
 
@@ -81,6 +82,7 @@ Before submitting code, verify compliance with principles:
 - [ ] **No Legacy Code:** No deprecated code, no commented-out code
 - [ ] **Documentation-as-Code:** Docs updated in same commit as code
 - [ ] **Security by Design:** No secrets committed, input validated, least privilege
+- [ ] **Auto-Generated Migrations Only:** DB migrations created via ORM auto-generation, not manually
 
 ---
 
@@ -94,11 +96,11 @@ Before submitting code, verify compliance with principles:
 - Annual review (Q1 each year)
 
 **Verification:**
-- [ ] All 8 principles documented
+- [ ] All 9 principles documented
 - [ ] Decision Framework clear (7 steps)
 - [ ] Trade-offs explained (3 conflicts)
 - [ ] Anti-patterns listed (5 patterns)
-- [ ] Verification Checklist complete (8 items)
+- [ ] Verification Checklist complete (9 items)
 - [ ] Links to external resources valid
 - [ ] Table format demonstrates principles clearly
 
@@ -106,5 +108,5 @@ Before submitting code, verify compliance with principles:
 
 ---
 
-**Template Version:** 3.0.0 (MAJOR: Removed domain-specific principles (Task Granularity→ln-113, Value-Based Testing→ln-116, Token Efficiency→documentation_standards.md), converted to table format (8 universal principles only), removed all detailed sections with examples for Progressive Disclosure)
+**Template Version:** 3.1.0 (Added principle #9: Auto-Generated Migrations Only)
 **Template Last Updated:** {{DATE}}
