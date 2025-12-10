@@ -34,6 +34,17 @@ Coordinates creation or replanning of implementation tasks for a Story. Builds t
 | Count > 0 AND replan keywords | REPLAN | ln-312-task-replanner | taskType=implementation, Story data, IDEAL plan, guideLinks, existingTaskIds |
 | Count > 0 AND ambiguous | ASK | Clarify with user | — |
 
+**TodoWrite format (mandatory):**
+Add phases to todos before starting:
+```
+- Phase 1: Discovery (in_progress)
+- Phase 2: Decompose & Build IDEAL Plan (pending)
+- Phase 3: Check Existing & Detect Mode (pending)
+- Phase 4: Delegate to ln-311/ln-312 (pending)
+- Phase 5: Verify worker result (pending)
+```
+Mark each as in_progress when starting, completed when done.
+
 ## Critical Rules
 - Decompose-first: always build IDEAL plan before looking at existing tasks.
 - Foundation-First execution order: DB -> Repository -> Service -> API -> Frontend.

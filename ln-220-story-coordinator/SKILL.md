@@ -333,6 +333,18 @@ Skill(
 
 **Output:** Created Story URL + summary from worker
 
+**TodoWrite format (mandatory):**
+Add phases to todos before starting:
+```
+- Phase 1: Context Assembly (in_progress)
+- Phase 2: Standards Research via ln-221 (pending)
+- Phase 3: Build IDEAL Story Plan (pending)
+- Phase 4: Check Existing Stories (pending)
+- Phase 5: Delegate to ln-222/ln-223 (pending)
+- Wait for worker result (pending)
+```
+Mark each as in_progress when starting, completed when done.
+
 ---
 
 ## Integration with Ecosystem

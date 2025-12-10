@@ -31,6 +31,22 @@ Two-pass Story review that fails fast, creates needed fix/refactor/test tasks, a
   3) Ensure Priority ≤15 scenarios and Story AC are covered by tests; infra/docs updates present.
   4) If pass -> mark Story Done in Linear; minimal kanban cleanup if needed. If fail -> create fix tasks (Backlog) and stop; ln-330 will loop.
 
+**TodoWrite format (mandatory):**
+Add pass steps to todos before starting:
+```
+Pass 1:
+- Invoke ln-341-code-quality-checker (in_progress)
+- Run linters from tech_stack.md (pending)
+- Invoke ln-342-regression-checker (pending)
+- Invoke ln-343-manual-tester (pending)
+- Create/verify test task via ln-350 (pending)
+
+Pass 2:
+- Verify test task coverage (in_progress)
+- Mark Story Done (pending)
+```
+Mark each as in_progress when starting, completed when done. On failure, mark remaining as skipped.
+
 ## Critical Rules
 - Early-exit: any failure creates a specific task and stops Pass 1/2.
 - Single source of truth: rely on Linear metadata for tasks; kanban is updated by workers/ln-330.

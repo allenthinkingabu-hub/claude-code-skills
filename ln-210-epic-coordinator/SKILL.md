@@ -393,6 +393,20 @@ Next Steps:
 
 **Output:** Created Epic URLs + summary
 
+**TodoWrite format (mandatory):**
+Add phases to todos before starting:
+```
+- Phase 1: Discovery & Research (in_progress)
+- Phase 2: Scope Analysis & Epic Planning (pending)
+- Phase 3: Check Existing Epics (pending)
+- Phase 4: Epic Preparation (pending)
+- Phase 5a: Create Epic 0 in Linear (pending)
+- Phase 5a: Create Epic 1 in Linear (pending)
+... (one todo per Epic)
+- Update kanban_board.md (pending)
+```
+Mark each as in_progress when starting, completed when done.
+
 ---
 
 ### Phase 5b: Replan Mode (Existing Epics Found)

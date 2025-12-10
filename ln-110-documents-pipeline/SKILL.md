@@ -117,6 +117,19 @@ The skill follows a 5-phase orchestration workflow: User confirmation → Invoke
 
 **Output**: Complete documentation system with all 6 workers completed and validated
 
+**TodoWrite format (mandatory):**
+Add ALL worker invocations to todos before starting:
+```
+- Invoke ln-111-root-docs-creator (pending)
+- Invoke ln-112-reference-docs-creator (pending)
+- Invoke ln-113-tasks-docs-creator (pending)
+- Invoke ln-114-project-docs-creator (pending)
+- Invoke ln-115-presentation-creator (pending)
+- Invoke ln-116-test-docs-creator (pending)
+- Run Global Cleanup (Phase 4) (pending)
+```
+Mark each as in_progress when starting, completed when worker returns success.
+
 ---
 
 ### Phase 4: Global Cleanup and Consolidation

@@ -237,6 +237,19 @@ Story successfully processed from planning to Done without manual intervention.
 
 **Result**: Story fully automated from task planning to Done status.
 
+**TodoWrite format (mandatory):**
+Add phases and delegations to todos before starting:
+```
+- Phase 1: Discovery (in_progress)
+- Phase 2: Delegate to ln-310-story-decomposer (pending)
+- Phase 3: Delegate to ln-320-story-validator (pending)
+- Phase 3: Delegate to ln-330-story-executor (pending)
+- Phase 3: ln-340 Pass 1 (automatic via ln-330) (pending)
+- Phase 3: ln-340 Pass 2 (automatic via ln-330) (pending)
+- Phase 4: Completion Report (pending)
+```
+Mark each as in_progress when starting, completed when worker returns success.
+
 ---
 
 ## Critical Rules
