@@ -24,6 +24,19 @@ Executes a Story end-to-end by looping through its tasks in priority order and d
   1) To Review -> ln-332-task-reviewer (one task). Reload metadata after worker.
   2) To Rework -> ln-333-task-rework (one task). After worker, verify status = To Review, then immediately call ln-332-task-reviewer on that same task. Reload metadata.
   3) Todo -> pick first Todo; if label "tests" use ln-334-test-executor else ln-331-task-executor. After worker, verify status = To Review (not Done/In Progress), then immediately call ln-332-task-reviewer on that same task. Reload metadata. Repeat loop; never queue multiple tasks in To Review—review right after each execution/rework.
+
+**TodoWrite format (mandatory):**
+For each task, add BOTH steps to todos before starting execution:
+1. `Execute [Task-ID]: [Title]` — mark in_progress when starting executor
+2. `Review [Task-ID]: [Title]` — mark in_progress after executor completes, completed after ln-332
+
+**Kanban board sync (mandatory):**
+Update `docs/tasks/kanban_board.md` after EVERY status change:
+- After executor: move task from Todo to To Review
+- After reviewer (Done): move task from To Review to Done
+- After reviewer (To Rework): move task from To Review to To Rework
+- After rework: move task from To Rework to To Review
+
 - **Phase 4 Quality Delegation:** Ensure all implementation tasks Done, then call ln-340-story-quality-gate Pass 1. If it creates tasks (test/refactor/fix), auto-validate (ln-320) and return to Phase 3. When test task is Done, set Story In Progress -> To Review and call ln-340 Pass 2. If Pass 2 fails and creates tasks, loop to Phase 3; if Pass 2 passes, Story goes To Review -> Done via ln-340.
 
 ## Critical Rules
