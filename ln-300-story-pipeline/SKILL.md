@@ -488,14 +488,5 @@ After ln-300-story-pipeline completes:
 
 ---
 
-## Chat Output Prefix
-
-Use emoji prefix for visual differentiation:
-- 🔄 [PROCESSOR] - ln-300-story-pipeline (orchestrator)
-
-**Purpose**: Helps users track orchestrator progress when multiple workers are invoked.
-
----
-
-**Version:** 2.1.0 (Fixed Writing Style: "Use this skill when" → "This skill should be used when" for skill-creator compliance.)
+**Version:** 2.1.0
 **Last Updated:** 2025-11-16

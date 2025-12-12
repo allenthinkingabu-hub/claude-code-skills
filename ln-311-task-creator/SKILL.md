@@ -65,5 +65,5 @@ Worker that generates task documents and creates Linear issues for implementatio
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-Version: 5.0.0 (Condensed workflow, tabled type rules)
-Last Updated: 2025-11-26
+**Version:** 5.0.0
+**Last Updated:** 2025-11-26

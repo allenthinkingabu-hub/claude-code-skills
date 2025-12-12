@@ -68,5 +68,5 @@ Mark each as in_progress when starting, completed when done.
 - Auto-discovery notes: `CLAUDE.md`, `docs/tasks/kanban_board.md`
 
 ---
-Version: 8.0.0 (Condensed orchestrator flow and mode matrix)
-Last Updated: 2025-11-26
+**Version:** 8.0.0
+**Last Updated:** 2025-11-26

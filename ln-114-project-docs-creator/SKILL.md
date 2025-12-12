@@ -1,6 +1,6 @@
 ---
 name: ln-114-project-docs-creator
-description: Creates and validates 7 project docs (requirements, architecture, tech_stack, api_spec, database_schema, design_guidelines, runbook). Fourth worker in ln-110-documents-pipeline.
+description: Creates and validates 7 project docs (requirements, architecture, tech_stack, api_spec, database_schema, design_guidelines, runbook). Use when starting new project, documenting existing codebase, or validating project documentation. Fourth worker in ln-110-documents-pipeline.
 ---
 
 # Project Documentation Creator

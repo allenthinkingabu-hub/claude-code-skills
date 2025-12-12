@@ -173,112 +173,20 @@ Log summary:
 
 ## Phase 3: Validate Source Content Quality
 
-**Objective**: Verify that source docs contain sufficient content for presentation generation. Warn about incomplete content but don't block execution.
+**Objective**: Verify source docs contain sufficient content. Warn about incomplete content but don't block execution.
 
 **When to execute**: After Phase 2 (source files exist)
 
-**Process**:
+**Checks performed** (warnings only, non-blocking):
+1. **Mermaid diagrams**: architecture.md must have ≥1 diagram, database_schema.md must have ER diagram
+2. **Placeholders**: Detect `{{PLACEHOLDER}}`, `[Add your ...]`, `TODO:` patterns
+3. **Content length**: requirements.md >500 words, architecture.md >1000 words, tech_stack.md >200 words
 
-### 3.1 Check for Mermaid diagrams
+**Auto-fix**: None - ln-115 is read-only. Run ln-114-project-docs-creator to fix issues.
 
-**Required diagrams:**
-- `architecture.md` MUST have at least 1 Mermaid diagram (preferably C4 Context)
-- `database_schema.md` (if exists) MUST have ER diagram
+**Output**: Content quality report with warnings
 
-For each file:
-1. Read file content
-2. Search for Mermaid code blocks: ` ```mermaid`
-3. Count diagrams
-
-**If diagrams missing:**
-```
-⚠ WARN: Missing diagrams in architecture.md
-  Expected: At least 1 Mermaid diagram (C4 Context, Container, or Component)
-  Found: 0 diagrams
-
-  Presentation Architecture tab will have incomplete visualization.
-  Suggestion: Add C4 diagrams to architecture.md before building.
-```
-
-### 3.2 Check for placeholders
-
-**Placeholder patterns to detect:**
-- `{{PLACEHOLDER}}` (template placeholder)
-- `[Add your ...]` (instruction placeholder)
-- `TODO:` (incomplete content marker)
-
-For each source file:
-1. Read file content
-2. Search for placeholder patterns (case-insensitive)
-3. Collect matches with line numbers
-
-**If placeholders found:**
-```
-⚠ WARN: Source docs contain placeholders:
-  - requirements.md:42 - {{PROJECT_DESCRIPTION}}
-  - tech_stack.md:15 - [Add your technology rationale]
-  - api_spec.md:8 - TODO: Add authentication endpoints
-
-  Presentation will show incomplete content.
-  Suggestion: Complete placeholders before building for professional result.
-```
-
-### 3.3 Check content length
-
-**Minimum expected lengths:**
-- `requirements.md` > 500 words
-- `architecture.md` > 1000 words
-- `tech_stack.md` > 200 words
-
-For each file:
-1. Read file content
-2. Count words (split by whitespace, exclude code blocks)
-3. Compare to threshold
-
-**If content too short:**
-```
-⚠ WARN: Sparse content detected:
-  - requirements.md: 320 words (expected >500)
-  - tech_stack.md: 150 words (expected >200)
-
-  Presentation may look incomplete with thin content.
-  Suggestion: Expand documentation before building.
-```
-
-### 3.4 Auto-fix opportunities
-
-**None** - ln-115 is **read-only** for source docs:
-- ❌ Does NOT edit markdown documentation
-- ✅ Only READS and TRANSFORMS to HTML
-
-**If issues found:**
-```
-💡 To fix content issues:
-  - Run ln-114-project-docs-creator to complete documentation
-  - Manually edit source files in docs/project/
-  - Re-run ln-115-presentation-creator after fixes
-```
-
-### 3.5 Report content quality summary
-
-Log summary:
-```
-✓ Content quality validation completed:
-  Diagrams:
-    - ✅ architecture.md: 3 Mermaid diagrams found (C4 Context, Container, Component)
-    - ⚠️ database_schema.md: No ER diagram found
-  Placeholders:
-    - ⚠️ Found 2 placeholders in 2 files (see details above)
-  Content length:
-    - ✅ requirements.md: 1,250 words
-    - ✅ architecture.md: 2,100 words
-    - ⚠️ tech_stack.md: 180 words (expected >200)
-
-  Warnings: 3 (non-blocking)
-  Recommendation: Address warnings for professional result, or continue with current content.
-```
-
-**Output**: Content quality report (warnings only, does not block execution)
+📖 **Detailed workflow**: See [references/phases_detailed.md](references/phases_detailed.md#phase-3-validate-source-content-quality)
 
 ---
 
@@ -374,137 +282,22 @@ Log summary:
 
 ## Phase 6: Content Injection & Example Cleanup
 
-**Objective**: Parse MD documentation, inject into HTML templates, and remove example blocks to create project-specific presentation.
+**Objective**: Parse MD docs, inject into HTML templates, remove example blocks.
 
 **When to execute**: After Phase 5 (templates exist in assets/)
 
 **Process**:
+1. **Parse MD docs** (10 sources): requirements, architecture, tech_stack, api_spec, database_schema, design_guidelines, runbook, adrs/*.md, kanban_board, guides/*.md
+2. **Inject content**: Replace `{{PLACEHOLDER}}` in 6 tab files with parsed content
+3. **Delete examples**: Remove `<!-- EXAMPLE START -->...<!-- EXAMPLE END -->` blocks from all tabs
 
-### 6.1 Read and Parse MD Documents
+**Tab placeholders**: Overview (5), Requirements (4 + NFR ban), Architecture (5), Technical Spec (4), Roadmap (3), Guides (6)
 
-Read and parse the following documentation files (from Phase 1):
+**Validation**: No example markers, no hardcoded e-commerce data, only project-specific content
 
-1. **requirements.md**: Project name, tagline, business goal, functional requirements, constraints, success criteria
-2. **architecture.md**: Architecture diagrams (C4 Context/Container/Component), solution strategy, quality attributes
-3. **tech_stack.md**: Technology Stack table (with versions, rationale, ADR links), Docker configuration
-4. **api_spec.md** (if exists): API endpoints, authentication methods, error codes
-5. **database_schema.md** (if exists): ER diagrams, data dictionary (tables/columns/types)
-6. **design_guidelines.md** (if exists): Typography, colors, component library, accessibility
-7. **runbook.md** (if exists): Development setup, deployment procedures, troubleshooting
-8. **adrs/*.md**: All ADR files (parse title, status, category, content)
-9. **kanban_board.md** (if exists): Epic Story Counters table for Roadmap progress
-10. **guides/*.md** (if exist): How-to guides for Guides tab
+**Output**: Clean, project-specific tab files ready for build
 
-### 6.2 Inject Content into Templates
-
-Replace placeholders in copied template files with parsed content from project documentation.
-
-**Key Placeholders (in tab templates):**
-
-**Overview Tab** (`tab_overview.html`):
-- `{{PROJECT_SUMMARY}}` — Problem/Solution/Business Value structure (3 sections)
-- `{{TECH_STACK}}` — Technology badges (brief list only)
-- `{{STAKEHOLDERS}}` — Stakeholder cards with names and roles
-- `{{QUICK_FACTS}}` — Project Status, Total Epics, Deployment Model, Target Platforms
-- `{{NAVIGATION_GUIDE}}` — Documentation guide with tab descriptions
-
-**Requirements Tab** (`tab_requirements.html`):
-- `{{FUNCTIONAL_REQUIREMENTS}}` — FRs table (ID, Priority, Requirement, Acceptance Criteria)
-- `{{ADR_STRATEGIC}}` — Strategic ADRs grouped section with accordion
-- `{{ADR_TECHNICAL}}` — Technical ADRs grouped section with accordion
-- `{{SUCCESS_CRITERIA}}` — Project success metrics
-- **Non-Functional Requirements are banned**: Drop any NFR content found in source docs instead of converting it into tables or IDs
-
-**Architecture Tab** (`tab_architecture.html`):
-- `{{C4_CONTEXT}}` — System Context diagram (C4 Level 1)
-- `{{C4_CONTAINER}}` — Container diagram (C4 Level 2)
-- `{{C4_COMPONENT}}` — Component diagram (C4 Level 3)
-- `{{DEPLOYMENT_DIAGRAM}}` — Infrastructure deployment diagram
-- `{{ARCHITECTURE_NOTES}}` — Key architecture highlights table
-
-**Technical Spec Tab** (`tab_technical_spec.html`):
-- `{{TECH_STACK_TABLE}}` — Full technology stack table with versions and purposes
-- `{{API_ENDPOINTS}}` — API endpoints tables (Authentication, Products, Cart, etc.)
-- `{{DATA_MODELS}}` — ER diagram + Data dictionary table
-- `{{TESTING_STRATEGY}}` — Risk-Based Testing approach and test pyramid
-
-**Roadmap Tab** (`tab_roadmap.html`):
-- `{{EPIC_CARDS}}` — All Epic cards with In/Out Scope, Dependencies, Success Criteria, Progress
-- `{{OUT_OF_SCOPE_ITEMS}}` — Project-level out-of-scope items with reasons
-- `{{ROADMAP_LEGEND}}` — Status badges explanation
-
-**Guides Tab** (`tab_guides.html`):
-- `{{GETTING_STARTED}}` — Prerequisites, Installation, Verification
-- `{{HOW_TO_GUIDES}}` — Step-by-step how-to guides (from guides/*.md)
-- `{{BEST_PRACTICES}}` — Code style, Testing approach, Design patterns
-- `{{TROUBLESHOOTING}}` — Common problems and solutions
-- `{{CONTRIBUTING}}` — Contributing guidelines
-- `{{EXTERNAL_RESOURCES}}` — Links to external documentation
-
-**Placeholder Replacement Logic:**
-- Use **Edit** tool to replace `{{PLACEHOLDER}}` → actual content from project docs
-- For lists/arrays: generate HTML dynamically (e.g., loop through ADRs, create `<details>` elements)
-- For Kanban: parse kanban_board.md → calculate progress % → generate Epic card HTML
-- Preserve SCOPE tags in tab files (HTML comments at top)
-- Escape special characters to prevent XSS
-- Generate valid Mermaid syntax
-
-### 6.3 Delete Example Blocks
-
-**CRITICAL**: Remove all example content blocks to create project-specific presentation.
-
-**Process**:
-1. **Search for example markers** in all 6 tab files:
-   - Look for `<!-- EXAMPLE START: Remove this block after replacing placeholder -->`
-   - Look for `<!-- EXAMPLE END -->`
-
-2. **Delete example blocks** using Edit tool:
-   - Remove everything between `<!-- EXAMPLE START -->` and `<!-- EXAMPLE END -->` (inclusive)
-   - Do this for ALL occurrences across all 6 tab files
-   - Leave only the actual project content that replaced `{{PLACEHOLDER}}` comments
-
-3. **Validate cleanup**:
-   - ✅ NO `<!-- EXAMPLE START -->` markers should remain
-   - ✅ NO `<!-- EXAMPLE END -->` markers should remain
-   - ✅ NO hardcoded e-commerce examples (John Smith, React 18 badges, Stripe, etc.)
-   - ✅ Only actual project data should be visible in tab files
-
-**Example transformation:**
-
-**Before (dual-content template):**
-```html
-<!-- PLACEHOLDER: {{PROJECT_SUMMARY}} -->
-<!-- EXAMPLE START: Remove this block after replacing placeholder -->
-<div class="project-summary">
-    <h3>The Problem</h3>
-    <p>Traditional e-commerce platforms struggle...</p>
-</div>
-<!-- EXAMPLE END -->
-```
-
-**After Step 6.2 (placeholder replaced):**
-```html
-<div class="project-summary">
-    <h3>The Problem</h3>
-    <p>Our healthcare system needs unified patient records...</p>
-</div>
-<!-- EXAMPLE START: Remove this block after replacing placeholder -->
-<div class="project-summary">
-    <h3>The Problem</h3>
-    <p>Traditional e-commerce platforms struggle...</p>
-</div>
-<!-- EXAMPLE END -->
-```
-
-**After Step 6.3 (examples deleted):**
-```html
-<div class="project-summary">
-    <h3>The Problem</h3>
-    <p>Our healthcare system needs unified patient records...</p>
-</div>
-```
-
-**Output**: Clean, project-specific tab files with NO example content, ready for build
+📖 **Placeholder reference & example transformation**: See [references/phases_detailed.md](references/phases_detailed.md#phase-6-content-injection--example-cleanup)
 
 ---
 
@@ -630,43 +423,13 @@ docs/
 
 ## Best Practices
 
-### Idempotent Operation
-- ✅ Checks file existence before creation (presentation/README.md)
-- ✅ Auto-rebuild: Always rebuilds presentation_final.html (generated file)
-- ✅ Assets preservation: Skips copying templates if assets/ exists (preserves customizations)
-- ✅ Safe re-runs: Can invoke multiple times without data loss
+**Idempotent operation**: Preserves README.md, preserves assets/ (user customizations), auto-rebuilds presentation_final.html.
 
-### During Documentation Reading (Phase 1)
-- Validate paths: Check docs/ exists before reading
-- Graceful degradation: Continue if some files missing (warn user)
-- Extract metadata: Pull project name, date, version
-- Parse Mermaid blocks: Preserve diagram syntax
-
-### During Source Validation (Phase 2/3)
-- **Phase 2**: STOP execution if required files missing (requirements.md, architecture.md, tech_stack.md)
-- **Phase 3**: WARN about quality issues but don't block (missing diagrams, placeholders, sparse content)
-- Provide actionable suggestions: "Run ln-114 to complete docs"
-- Read-only: Never edit source docs
-
-### During Template Copying (Phase 5)
-- Check existing assets: Don't overwrite user-customized templates
-- Verify directory structure: Ensure tabs/ subdirectory created
-- Preserve permissions: Maintain executable permissions for build script
-
-### During Content Injection & Cleanup (Phase 6)
-- Preserve Markdown formatting: Convert MD → HTML correctly
-- Generate valid Mermaid syntax: Test all diagram syntax
-- Escape special characters: Prevent XSS vulnerabilities
-- Use semantic HTML: Proper heading hierarchy, ARIA labels
-- Preserve SCOPE tags: Keep HTML comments in tab files
-- **Complete example cleanup**: Ensure ALL example blocks deleted
-- **Verify project-specific content**: NO hardcoded e-commerce examples in final tabs
-
-### During Build (Phase 7)
-- Validate Node.js availability: Check `node --version` before running
-- Handle errors gracefully: Provide clear error messages
-- Test output: Open presentation_final.html to verify rendering
-- Size check: Warn if file >200 KB (may indicate issues)
+**Key rules by phase**:
+- **Phase 2**: STOP if required files missing; **Phase 3**: WARN only (non-blocking)
+- **Phase 5**: Don't overwrite existing assets (user customizations)
+- **Phase 6**: Delete ALL example blocks, escape XSS, valid Mermaid syntax
+- **Phase 7**: Warn if output >200 KB
 
 ---
 
@@ -686,39 +449,12 @@ node build-presentation.js
 
 ## Prerequisites
 
-**Orchestrator**: ln-110-documents-pipeline (invokes this worker in final step)
+**Orchestrator**: ln-110-documents-pipeline | **Standalone**: Yes (rebuild/validate existing docs)
 
-**Standalone usage**: Can also be invoked directly for:
-- Rebuilding HTML presentation after documentation updates
-- Creating standalone presentation for existing docs
-- Validating source documentation readiness
+**Required files**: requirements.md, architecture.md, tech_stack.md (in docs/project/)
+**Optional files**: api_spec, database_schema, design_guidelines, runbook, adrs/*.md, guides/*.md, kanban_board.md
 
-**Source Documentation Requirements**:
-- **Required files** (must exist):
-  - docs/project/requirements.md
-  - docs/project/architecture.md
-  - docs/project/tech_stack.md
-- **Optional files** (enhance presentation):
-  - docs/project/api_spec.md, database_schema.md, design_guidelines.md, runbook.md
-  - docs/reference/adrs/*.md (with Category field)
-  - docs/reference/guides/*.md
-  - docs/tasks/kanban_board.md
-
-**Quality Recommendations** (warnings only, not blocking):
-- architecture.md should have Mermaid diagrams (C4 Context/Container/Component)
-- database_schema.md should have ER diagram
-- Source docs should NOT contain placeholders (`{{PLACEHOLDER}}`, `[Add your...]`)
-- Minimum content length: requirements.md >500 words, architecture.md >1000 words, tech_stack.md >200 words
-
-**Dependencies**:
-- Node.js v18+ (for build-presentation.js)
-- Modern browser (Chrome/Firefox/Safari/Edge last 2 versions)
-- Internet connection (Mermaid.js CDN, optional)
-
-**Idempotent**: Yes - can be invoked multiple times without side effects:
-- Preserves existing README.md
-- Preserves existing assets/ (user customizations)
-- Always rebuilds presentation_final.html (generated file)
+**Dependencies**: Node.js v18+, Modern browser, Internet (Mermaid CDN)
 
 ---
 
@@ -738,23 +474,6 @@ node build-presentation.js
 
 ---
 
-## Example Usage
-
-User: "Build HTML presentation"
-
-Process:
-1. **READ DOCS** - Load documentation from docs/project/, docs/reference/, docs/tasks/
-2. **VALIDATE SOURCE EXISTS** - Check requirements.md, architecture.md, tech_stack.md exist (ERROR if missing)
-3. **VALIDATE SOURCE QUALITY** - Check diagrams, placeholders, content length (WARN if issues, but continue)
-4. **CREATE DIR** - Create docs/presentation/ + README.md navigation hub
-5. **COPY TEMPLATES** - Copy HTML/CSS/JS templates to assets/ (or preserve existing)
-6. **INJECT CONTENT** - Parse MD docs → replace placeholders in tabs → delete example blocks
-7. **BUILD HTML** - Assemble modular components → standalone presentation_final.html (~120-150 KB)
-
-Output: docs/presentation/presentation_final.html (6 tabs: Overview, Requirements, Architecture, Technical Spec, Roadmap, Guides) + docs/presentation/README.md (navigation hub) + docs/presentation/assets/ (modular source files)
-
----
-
 ## Troubleshooting
 
 - **ERROR: Missing required files**: Run ln-114-project-docs-creator to create requirements.md, architecture.md, tech_stack.md
@@ -768,18 +487,5 @@ Output: docs/presentation/presentation_final.html (6 tabs: Overview, Requirement
 
 ---
 
-## Technical Details
-
-**Standards**: HTML5, CSS3 (Flexbox/Grid/Variables), ES6+, WCAG 2.1 Level AA, Mobile-first responsive design, Progressive enhancement, Mermaid.js v11
-
-**Dependencies**:
-- Node.js v18+ (build script)
-- Modern browser (Chrome/Firefox/Safari/Edge last 2 versions)
-- Internet connection (Mermaid.js CDN, optional)
-
-**Language**: English only (all presentation content)
-
----
-
-**Version:** 7.0.0 (MAJOR: Added Phase 2/3 validation (source docs existence + content quality). Removed ln-120-docs-validator references. Renumbered phases (2-5 → 4-7). Unified READ+VALIDATE+CREATE workflow. Read-only source validation.)
-**Last Updated:** 2025-11-18
+**Version:** 8.0.0
+**Last Updated:** 2025-12-12

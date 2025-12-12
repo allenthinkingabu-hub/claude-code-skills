@@ -419,18 +419,9 @@ docs/
 
 **Orchestrator**: ln-110-documents-pipeline (invokes this worker in Phase 3, Step 3.3)
 
-**Standalone usage**: Can also be invoked directly for:
-- Creating only task management documentation
-- Re-validating existing task documentation
-- Setting up Linear Configuration interactively
+**Standalone usage**: Creating task docs, re-validating, setting up Linear Configuration
 
-**Idempotent**: Yes - can be invoked multiple times without side effects. The skill:
-- Checks file existence before creation (preserves existing files)
-- Re-validates structure and content on each run
-- Auto-fixes structural violations (SCOPE tags, sections, Maintenance, POSIX)
-- Updates Linear Configuration if placeholders detected
-
-**Dependencies**: None (standalone worker)
+**Idempotent**: Yes - checks file existence, re-validates, auto-fixes, updates Linear Configuration if placeholders detected
 
 ---
 
@@ -497,13 +488,5 @@ Before completing work, verify ALL checkpoints:
 
 ---
 
-## Technical Details
-
-**Standards**: Story-Level Test Task Pattern, Epic Grouping Pattern (Status → Epic → Story → Tasks), Linear MCP integration
-
-**Language**: English only
-
----
-
-**Version:** 7.0.0 (MAJOR: Added Phase 2/3 validation. Merged CREATE+VALIDATE into unified worker. Special Linear Configuration handling with UUID/Team Key validation, user prompts for placeholders. Idempotent.)
+**Version:** 7.0.0
 **Last Updated:** 2025-11-18

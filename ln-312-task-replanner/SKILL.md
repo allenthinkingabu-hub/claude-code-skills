@@ -61,5 +61,5 @@ Worker that re-syncs existing tasks to the latest requirements for any task type
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-Version: 6.0.0 (Condensed replan flow and validation table)
-Last Updated: 2025-11-26
+**Version:** 6.0.0
+**Last Updated:** 2025-11-26
