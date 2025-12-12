@@ -83,6 +83,10 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 |14 Foundation-First Order|Task order DB -> Repo -> Service -> API -> Frontend|Reorder Implementation Tasks and note execution order; update Linear and comment|-|
 |15 Code Quality Basics|No magic values; config approach defined|Add TODOs for constants/config/env creds; describe config management in Technical Notes; update Linear|Warn in summary if TODOs remain|
 |16 Industry Standards|MCP Ref verification mandatory|Call `ref_search_documentation(query="[domain] RFC OWASP standard")` BEFORE checking local docs; if RFC applies, verify Story complies; if local doc missing, invoke creators; add Linear comment with RFC reference or explicit "no standards apply" with reasoning|Evidence: MCP Ref query result or explicit skip reason|
+|17 Rate Limiting|API Stories must have Rate Limiting subsection|If API Story (keywords: endpoint, API, REST, GraphQL): check Rate Limiting in Technical Notes; if missing, add placeholder with TODO (Policy, Strategy, Headers, 429 Response); update Linear|Skip if internal service, no external API|
+|18 Auth/Security Pattern|Auth Stories must have Auth subsection|If Auth Story (keywords: auth, login, token, JWT, OAuth): check Authentication & Authorization in Technical Notes; if missing or generic, add TODO for token management, authorization model; update Linear|Skip if non-auth Story|
+|19 Error Handling Strategy|Story + all Tasks must have Error Handling|Check Story Technical Notes for Error Handling Strategy; check each Task for Error Handling Strategy section; add TODO placeholders if missing (error format, codes, retry, circuit breaker); update Linear|Mandatory for API Stories|
+|20 Logging & Observability|Story + all Tasks must have Logging|Check Story Technical Notes for Logging & Observability; check each Task for Logging Requirements section; add TODO placeholders if missing (log levels, format, audit trail, tracing); update Linear|Mandatory for all Stories|
 
 ## Self-Audit Protocol (Mandatory)
 
@@ -106,13 +110,17 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 |14|Tasks ordered DB->Repo->Service->API?|Task order list|
 |15|Hardcoded values handled?|TODO/config evidence|
 |16|Standards verified via MCP Ref?|MCP Ref query or explicit skip reason|
+|17|Rate Limiting documented for API Story?|Rate Limiting subsection or skip reason|
+|18|Auth/Security pattern fully documented?|Auth subsection or skip reason|
+|19|Error Handling Strategy in Story AND all Tasks?|Evidence path for each|
+|20|Logging requirements in Story AND all Tasks?|Evidence path for each|
 
 ## Definition of Done
 
-- Verification log created from template with answered Self-Audit for all 16 criteria and evidence
+- Verification log created from template with answered Self-Audit for all 20 criteria and evidence
 - Phase 1: auto-discovery done; Story + Tasks metadata loaded; task count checked
 - Phase 2: full Story parsed; standards researched; doc gaps filled via creators; codebase reality verified; reports explain violations with best-practice references and fixes
-- Phase 3: criteria 1-16 auto-fixed in order; Test Strategy section present but empty; test tasks removed; guide links inserted
+- Phase 3: criteria 1-20 auto-fixed in order; Test Strategy section present but empty; test tasks removed; guide links inserted; API Technical Aspects validated (#17-#20)
 - Phase 4: Story/Tasks set to Todo; kanban_board.md updated with APPROVED marker and hierarchy; Linear comment added with fixes, docs, ADRs/manuals/guides, TODO warnings; summary table shown
 
 ## Example Workflows
@@ -130,5 +138,5 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 
 ---
 
-Version: 12.1.0 (Condensed guidance, tabled auto-fix actions, clarified testing deferral and violation reporting)
-Last Updated: 2025-11-26
+Version: 13.0.0 (Added criteria #17-#20: Rate Limiting, Auth/Security, Error Handling, Logging & Observability)
+Last Updated: 2025-12-12

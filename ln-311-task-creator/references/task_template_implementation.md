@@ -81,6 +81,39 @@
 - [Limitation 1: e.g., no async support, memory constraints] - [workaround or mitigation if any]
 - [Limitation 2: e.g., compatibility issue, deprecated feature] - [impact on implementation]
 
+### Error Handling Strategy
+
+**Expected errors (this task):**
+| Error Type | HTTP Status | When Occurs | User Message |
+|------------|-------------|-------------|--------------|
+| [ValidationError] | 400 | [Invalid input] | [Friendly message] |
+| [AuthError] | 401/403 | [Token expired/No permission] | [Friendly message] |
+| [NotFoundError] | 404 | [Resource missing] | [Friendly message] |
+
+**Retry logic:**
+- Retryable: [List transient errors: 503, timeout, connection reset]
+- Backoff: [exponential with jitter, max 3 retries, initial 1s]
+
+**Validation approach:**
+- Input validation: [Pydantic/Zod schema, fail-fast]
+- Error response: [Match Story Error Handling Strategy format]
+
+### Logging Requirements
+
+**Log events (this task):**
+| Event | Level | Data Fields | Purpose |
+|-------|-------|-------------|---------|
+| [request_received] | INFO | [correlation_id, user_id, endpoint] | [Audit] |
+| [validation_failed] | WARN | [correlation_id, field, error] | [Debug] |
+| [operation_completed] | INFO | [correlation_id, duration_ms] | [Metrics] |
+| [unexpected_error] | ERROR | [correlation_id, stack_trace] | [Alerting] |
+
+**Audit trail:**
+- Track: [Who, What, When, Outcome for sensitive operations]
+
+**Performance logging:**
+- Threshold: [Log WARN if operation > 500ms]
+
 ### Alternatives Considered
 - **Alternative 1:** [name] - [why rejected: outdated/over-engineered/non-standard/lacking feature]
 - **Alternative 2:** [name] - [why rejected: performance/complexity/compatibility]
@@ -142,5 +175,5 @@ DO NOT create new tests here. New tests are created by ln-350-story-test-planner
 
 ---
 
-**Template Version:** 6.0.1 (Renamed from task_template_universal.md to clarify scope: implementation tasks only)
-**Last Updated:** 2025-11-13
+**Template Version:** 7.0.0 (Added Error Handling Strategy + Logging Requirements sections)
+**Last Updated:** 2025-12-12

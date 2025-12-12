@@ -343,6 +343,126 @@ If answer is blank or generic → CANNOT mark ✅ → MUST perform verification 
 
 ---
 
+### 16. Rate Limiting (API Stories)
+**Check:** Story Technical Notes contain Rate Limiting subsection (if API Story)
+
+**Trigger:** Story involves API endpoints (keywords: endpoint, API, REST, GraphQL)
+
+✅ Rate Limiting subsection present with: Policy, Strategy, Headers, 429 Response
+✅ Rate limits documented per endpoint type (public/private/admin)
+❌ Missing Rate Limiting subsection → **Auto-fix:** Add placeholder with TODO
+❌ Incomplete Rate Limiting (missing fields) → **Auto-fix:** Add TODO for missing fields
+
+**Skip when:** Story is internal service, no external API exposure
+
+**Self-Audit Question:** "Rate Limiting documented for API endpoints? Evidence: ___"
+
+**Auto-fix actions (#16):**
+1. Check if Story contains API keywords (endpoint, API, REST, GraphQL, route, controller)
+2. If API Story and Rate Limiting subsection missing:
+   - Add Rate Limiting subsection with TODO placeholders
+   - Update Story in Linear via `mcp__linear-server__update_issue()`
+   - Add comment: "Rate Limiting section added - please fill policy details"
+3. If Rate Limiting exists but incomplete:
+   - Add TODO for missing fields (Policy, Strategy, Headers, 429 Response)
+   - Update Linear
+
+---
+
+### 17. Auth/Security Pattern (Auth Stories)
+**Check:** Story Technical Notes contain Authentication & Authorization subsection
+
+**Trigger:** Story involves authentication (keywords: auth, login, token, JWT, OAuth, permission, session)
+
+✅ Auth pattern documented (not just "use OAuth")
+✅ Token management specified (expiration, refresh, revocation)
+✅ Authorization model documented (RBAC/ABAC/Scopes)
+✅ Project-specific security requirements noted
+❌ Missing Auth subsection → **Auto-fix:** Add placeholder with TODO
+❌ Generic auth description ("use OAuth") → **Auto-fix:** Add TODO for implementation details
+
+**Skip when:** Story doesn't involve authentication/authorization
+
+**Self-Audit Question:** "Auth/Security pattern fully documented? Evidence: ___"
+
+**Auto-fix actions (#17):**
+1. Check if Story contains auth keywords (auth, login, token, JWT, OAuth, permission, session, bearer)
+2. If Auth Story and Authentication & Authorization subsection missing:
+   - Add subsection with TODO placeholders
+   - Update Story in Linear
+   - Add comment: "Auth/Security section added - please specify auth pattern details"
+3. If subsection exists but generic (e.g., just "use OAuth"):
+   - Add TODO: "Specify: token expiration, refresh strategy, authorization model"
+   - Update Linear
+
+---
+
+### 18. Error Handling Strategy (All API Stories)
+**Check:** Story has Error Handling Strategy + Each Task has Error Handling Strategy section
+
+**Story level:**
+✅ Error format documented (RFC 7807 or custom schema)
+✅ Error codes taxonomy defined
+✅ Retry strategy specified
+✅ Circuit breaker parameters (if external dependencies)
+
+**Task level:**
+✅ Each Task has "Error Handling Strategy" section
+✅ Expected errors listed with HTTP status and user messages
+✅ Retry logic documented for transient errors
+
+❌ Missing at Story level → **Auto-fix:** Add Error Handling Strategy placeholder
+❌ Missing at Task level → **Auto-fix:** Add section to each Task with TODO
+
+**Self-Audit Question:** "Error Handling Strategy in Story AND all Tasks? Evidence: ___"
+
+**Auto-fix actions (#18):**
+1. Check Story Technical Notes for Error Handling Strategy subsection
+2. If missing at Story level:
+   - Add Error Handling Strategy subsection with TODO placeholders
+   - Fields: Error format, Error codes, Retry strategy, Circuit breaker
+   - Update Story in Linear
+3. Check each child Task for "Error Handling Strategy" section
+4. For each Task missing the section:
+   - Add Error Handling Strategy section with TODO table
+   - Update Task in Linear via `mcp__linear-server__update_issue()`
+   - Add comment: "Error Handling Strategy section added per template v7.0.0"
+
+---
+
+### 19. Logging & Observability (All Stories)
+**Check:** Story has Logging subsection + Each Task has Logging Requirements section
+
+**Story level:**
+✅ Log levels usage documented
+✅ Structured logging format defined
+✅ Audit trail requirements specified
+✅ Tracing strategy (correlation IDs)
+
+**Task level:**
+✅ Each Task has "Logging Requirements" section
+✅ Log events table with Level, Data Fields, Purpose
+✅ Audit trail for sensitive operations
+
+❌ Missing at Story level → **Auto-fix:** Add Logging & Observability placeholder
+❌ Missing at Task level → **Auto-fix:** Add section to each Task with TODO
+
+**Self-Audit Question:** "Logging requirements in Story AND all Tasks? Evidence: ___"
+
+**Auto-fix actions (#19):**
+1. Check Story Technical Notes for Logging & Observability subsection
+2. If missing at Story level:
+   - Add Logging & Observability subsection with TODO placeholders
+   - Fields: Log levels, Structured format, Audit trail, Tracing
+   - Update Story in Linear
+3. Check each child Task for "Logging Requirements" section
+4. For each Task missing the section:
+   - Add Logging Requirements section with TODO table
+   - Update Task in Linear
+   - Add comment: "Logging Requirements section added per template v7.0.0"
+
+---
+
 ## Quick Verification Matrix
 
 | Criterion | Pass | Notes | Evidence Required |
@@ -363,6 +483,10 @@ If answer is blank or generic → CANNOT mark ✅ → MUST perform verification 
 | Guides referenced? | ☐ | Links to patterns | Guide paths |
 | Foundation-first? | ☐ | Task order: DB→Repo→Service→API | Task order |
 | No hardcoded values? | ☐ | Config management, no magic numbers | TODO placeholders |
+| **Rate Limiting?** | ☐ | Policy, Strategy, Headers, 429 | Skip reason if N/A |
+| **Auth/Security pattern?** | ☐ | Auth + Token + Authorization | Skip reason if N/A |
+| **Error Handling Strategy?** | ☐ | Story + all Tasks | Evidence path |
+| **Logging & Observability?** | ☐ | Story + all Tasks | Evidence path |
 
 ---
 
@@ -453,5 +577,5 @@ If answer is blank or generic → CANNOT mark ✅ → MUST perform verification 
 
 ---
 
-**Version:** 7.0.0 (Added Evidence-Based Verification Protocol, Self-Audit Questions, Verification Log requirement)
-**Last Updated:** 2025-11-23
+**Version:** 8.0.0 (Added criteria #16-#19: Rate Limiting, Auth/Security, Error Handling, Logging & Observability)
+**Last Updated:** 2025-12-12

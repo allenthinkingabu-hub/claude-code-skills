@@ -112,6 +112,35 @@ Tasks created separately (parentId → this Story):
 > [!NOTE]
 > This section populated by ln-220-story-coordinator Phase 0 (Library & Standards Research). Tasks reference these specifications in their Technical Approach sections.
 
+### API Technical Aspects
+
+> [!NOTE]
+> Fill for Stories with API endpoints. Skip for internal/non-API Stories.
+
+#### Rate Limiting
+- **Policy:** [e.g., 100 requests/minute per API key, 1000/hour per user]
+- **Strategy:** [Token bucket / Sliding window / Fixed window]
+- **Headers:** [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset]
+- **429 Response:** [Retry-After header, error message format]
+
+#### Authentication & Authorization
+- **Auth pattern:** [Bearer token / API key / OAuth 2.0 flow]
+- **Token management:** [Expiration, refresh strategy, revocation]
+- **Authorization:** [RBAC / ABAC / Scope-based permissions]
+- **Project-specific:** [Beyond RFC requirements specific to this project]
+
+#### Error Handling Strategy
+- **Error format:** [RFC 7807 Problem Details / Custom JSON schema]
+- **Error codes:** [Business error codes taxonomy, HTTP status mapping]
+- **Retry strategy:** [Which errors retryable, backoff parameters]
+- **Circuit breaker:** [Failure thresholds, recovery timeout]
+
+#### Logging & Observability
+- **Log levels:** [DEBUG/INFO/WARN/ERROR usage guidelines]
+- **Structured format:** [JSON fields: timestamp, level, service, correlation_id, message]
+- **Audit trail:** [What events to track, retention policy]
+- **Tracing:** [Correlation IDs, distributed tracing headers (X-Request-ID)]
+
 ### Integration Points
 - **External Systems**: Which external APIs/services?
 - **Internal Services**: Which app services interact?
@@ -164,5 +193,5 @@ Tasks created separately (parentId → this Story):
 
 ---
 
-**Template Version:** 7.0.0 (Added Library Research + Related Guides subsections in Technical Notes)
-**Last Updated:** 2025-11-12
+**Template Version:** 8.0.0 (Added API Technical Aspects: Rate Limiting, Auth, Error Handling, Logging)
+**Last Updated:** 2025-12-12
