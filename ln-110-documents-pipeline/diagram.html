@@ -10,16 +10,16 @@
 <body>
     <div class="container">
         <header>
-            <h1>🎯 ln-110-documents-pipeline</h1>
+            <h1>ln-110-documents-pipeline</h1>
             <p class="subtitle">Documentation Pipeline Orchestrator - State Diagram</p>
         </header>
 
         <div class="info-box">
-            <h3>📋 Workflow Overview</h3>
+            <h3>Workflow Overview</h3>
             <ul>
                 <li><strong>Purpose:</strong> Create complete documentation system (CLAUDE.md + docs/ + presentation/) in one command</li>
-                <li><strong>Orchestrates:</strong> 6 workers (ln-111 → ln-112 → ln-113 → ln-114 → ln-115 → ln-116)</li>
-                <li><strong>Phases:</strong> 5 phases (Phase 1 User Confirmation → Phase 2 Worker Invocation → Phase 4 Global Cleanup → Phase 5 Summary)</li>
+                <li><strong>Orchestrates:</strong> 5 workers (ln-111 → ln-112 → ln-113 → ln-114 → ln-115)</li>
+                <li><strong>Phases:</strong> 4 phases (User Confirmation → Worker Invocation → Global Cleanup → Summary)</li>
                 <li><strong>Error handling:</strong> Stops if any invoked worker fails</li>
             </ul>
         </div>
@@ -46,7 +46,9 @@ graph TD
 
     Phase1 --> Approved{User<br/>approved?}
     Approved -->|No| Cancelled([Cancelled by user])
-    Approved -->|Yes| W1[Phase 2.1: Invoke ln-111-root-docs-creator<br/>CLAUDE.md + docs/README.md]
+    Approved -->|Yes| TestDocs{Include test<br/>docs?}
+
+    TestDocs --> W1[Phase 2.1: Invoke ln-111-project-docs-creator<br/>Root docs + Project docs]
 
     W1 --> W1Check{ln-111<br/>completed?}
     W1Check -->|No| Error[Error: Worker failed]
@@ -58,7 +60,10 @@ graph TD
 
     W3 --> W3Check{ln-113<br/>completed?}
     W3Check -->|No| Error
-    W3Check -->|Yes| W4[Phase 2.4: Invoke ln-114-project-docs-creator<br/>docs/project/ documentation]
+    W3Check -->|Yes| CheckTest{Test docs<br/>enabled?}
+
+    CheckTest -->|Yes| W4[Phase 2.4: Invoke ln-114-test-docs-creator<br/>tests/README.md]
+    CheckTest -->|No| W5
 
     W4 --> W4Check{ln-114<br/>completed?}
     W4Check -->|No| Error
@@ -66,11 +71,7 @@ graph TD
 
     W5 --> W5Check{ln-115<br/>completed?}
     W5Check -->|No| Error
-    W5Check -->|Yes| W6[Phase 2.6: Invoke ln-116-test-docs-creator<br/>tests/README.md optional]
-
-    W6 --> W6Check{ln-116<br/>completed?}
-    W6Check -->|No| Error
-    W6Check -->|Yes| Phase4[Phase 4: Global Cleanup<br/>Deduplication + Orphan removal<br/>Consolidation + Cross-link validation]
+    W5Check -->|Yes| Phase4[Phase 4: Global Cleanup<br/>Deduplication + Orphan removal<br/>Consolidation + Cross-links]
 
     Phase4 --> Phase4Check{Phase 4<br/>completed?}
     Phase4Check -->|No| Error
@@ -85,26 +86,26 @@ graph TD
     classDef decision fill:#FFE0B2,stroke:#E64A19,stroke-width:2px
     classDef error fill:#FFCDD2,stroke:#C62828,stroke-width:2px
 
-    class Phase1,W1,W2,W3,W4,W5,W6,Phase4,Summary action
-    class Approved,W1Check,W2Check,W3Check,W4Check,W5Check,W6Check,Phase4Check decision
+    class Phase1,W1,W2,W3,W4,W5,Phase4,Summary action
+    class Approved,TestDocs,W1Check,W2Check,W3Check,W4Check,W5Check,Phase4Check,CheckTest decision
     class Error error
             </div>
         </div>
 
         <div class="info-box">
-            <h3>🔑 Key Features</h3>
+            <h3>Key Features</h3>
             <ul>
                 <li><strong>One Command:</strong> Creates entire documentation system in single invocation</li>
-                <li><strong>Sequential Execution:</strong> 6 workers invoked in order (15-20 minutes total)</li>
-                <li><strong>Global Cleanup:</strong> Phase 4 removes duplicates, orphaned files, consolidates knowledge, validates cross-links</li>
-                <li><strong>Domain Separation:</strong> Each worker creates specific documentation area</li>
+                <li><strong>Sequential Execution:</strong> 5 workers invoked in order (15-20 minutes total)</li>
+                <li><strong>Optional Test Docs:</strong> ln-114-test-docs-creator can be skipped</li>
+                <li><strong>Global Cleanup:</strong> Phase 4 removes duplicates, orphaned files, validates cross-links</li>
                 <li><strong>Error Handling:</strong> Stops execution if any worker fails, shows partial progress</li>
             </ul>
         </div>
 
         <footer>
             <p>Generated for ln-110-documents-pipeline skill | Version 6.0.0</p>
-            <p>Diagram format: Mermaid.js | Last updated: 2025-11-18</p>
+            <p>Diagram format: Mermaid.js | Last updated: 2025-12-18</p>
         </footer>
     </div>
 

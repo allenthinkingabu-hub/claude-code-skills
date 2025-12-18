@@ -2,13 +2,13 @@
 
 > A comprehensive collection of skills for Claude Code, providing end-to-end Agile workflow automation integrated with Linear for modern software development teams.
 
-![Version](https://img.shields.io/badge/version-10.1.0-blue) ![Skills](https://img.shields.io/badge/skills-29-green) ![Updated](https://img.shields.io/badge/updated-Nov%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
+![Version](https://img.shields.io/badge/version-10.1.0-blue) ![Skills](https://img.shields.io/badge/skills-28-green) ![Updated](https://img.shields.io/badge/updated-Nov%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
 
 ---
 
 ## 📖 About
 
-This repository contains **29 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From initial documentation to story execution and quality assurance, these skills work together to create a complete Agile development workflow.
+This repository contains **28 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From initial documentation to story execution and quality assurance, these skills work together to create a complete Agile development workflow.
 
 **What You Get:**
 - 🎯 **Complete Agile Workflow** - From Epic decomposition to task execution and review
@@ -35,18 +35,17 @@ This repository contains **29 production-ready skills** for [Claude Code](https:
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-110-documents-pipeline](ln-110-documents-pipeline/)** | **CREATE Orchestrator** that creates complete documentation system in one command. Sequentially invokes 6 workers: ln-111 (root) → ln-112 (reference) → ln-113 (tasks) → ln-114 (project) → ln-115 (presentation) → ln-116 (test, optional). Each worker validates own output (Phase 2/3). **Phase 4**: Global cleanup (deduplication, orphaned files, consolidation, cross-links). **Idempotent**: Pre-flight check shows existing/missing files. | 6.0.0 | ✅ |
+| **[ln-110-documents-pipeline](ln-110-documents-pipeline/)** | **CREATE Orchestrator** that creates complete documentation system in one command. Sequentially invokes 5 workers: ln-111 (root + project) → ln-112 (reference) → ln-113 (tasks) → ln-114 (test, optional) → ln-115 (presentation). Each worker validates own output (Phase 2/3). **Phase 4**: Global cleanup (deduplication, orphaned files, consolidation, cross-links). **Idempotent**: Pre-flight check shows existing/missing files. | 6.0.0 | ✅ |
 
 **Workers (CREATE path - ln-110):**
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-111-root-docs-creator](ln-111-root-docs-creator/)** | Create root documentation entry points: CLAUDE.md + docs/README.md (root hub with general standards) + documentation_standards.md (60 universal requirements). First worker in CREATE path. **Idempotent**: Preserves existing files. | 9.0.0 | ✅ |
+| **[ln-111-project-docs-creator](ln-111-project-docs-creator/)** | Create complete project documentation (11 docs): root docs (CLAUDE.md, docs/README.md, documentation_standards.md, principles.md) + project docs (requirements.md, architecture.md, tech_stack.md + 4 conditional). First worker in CREATE path. **Idempotent**: Preserves existing files. | 1.0.0 | ✅ |
 | **[ln-112-reference-docs-creator](ln-112-reference-docs-creator/)** | Create reference documentation structure: docs/reference/README.md + adrs/, guides/, manuals/ directories. Second worker in CREATE path. **Idempotent**: Checks 4 items. | 6.0.0 | ✅ |
 | **[ln-113-tasks-docs-creator](ln-113-tasks-docs-creator/)** | Create task management documentation: docs/tasks/README.md (task system rules) + kanban_board.md (Linear integration). Third worker in CREATE path. **Idempotent**: Critical kanban_board.md protection. | 6.0.0 | ✅ |
-| **[ln-114-project-docs-creator](ln-114-project-docs-creator/)** | Create project documentation BEFORE development: requirements.md, architecture.md, tech_stack.md + 4 optional documents (api_spec, database_schema, design_guidelines, runbook). Fourth worker in CREATE path. **Idempotent**: Tracks created files, edits only new ones. | 11.0.0 | ✅ |
+| **[ln-114-test-docs-creator](ln-114-test-docs-creator/)** | Create test documentation: testing-strategy.md (universal testing philosophy) + tests/README.md (organization with Story-Level Pattern). Optional fourth worker in CREATE path. **Idempotent**: Checks 4 items. | 7.0.0 | ✅ |
 | **[ln-115-presentation-creator](ln-115-presentation-creator/)** | Build interactive HTML presentation from project documentation with 6 tabs (Overview, Requirements+ADRs, Architecture, Technical Spec, Roadmap, Guides). Fifth worker in CREATE path. **Idempotent**: User confirmation for rebuild. | 6.0.0 | ✅ |
-| **[ln-116-test-docs-creator](ln-116-test-docs-creator/)** | Create test documentation: testing-strategy.md (universal testing philosophy) + tests/README.md (organization with Story-Level Pattern). Optional sixth worker in CREATE path. **Idempotent**: Checks 4 items. | 6.0.0 | ✅ |
 
 ---
 
@@ -240,7 +239,7 @@ Every skill includes workflow diagrams (`diagram.html`) that visualize execution
 **Creating Project Documentation:**
 ```bash
 # In Claude Code, invoke the skill
-ln-114-project-docs-creator
+ln-111-project-docs-creator
 # Follow the interactive prompts to generate comprehensive documentation
 ```
 

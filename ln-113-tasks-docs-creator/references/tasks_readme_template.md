@@ -247,7 +247,7 @@ Single hierarchical view: **Status → Epic → User Story → Tasks**
 | | ln-341-code-quality-checker | Analyze code for DRY/KISS/YAGNI violations |
 | | ln-342-regression-checker | Run existing test suite |
 | | ln-343-manual-tester | Perform manual testing via curl/puppeteer |
-| **Documentation** | ln-114-project-docs-creator | Create project docs (requirements, architecture, specs) |
+| **Documentation** | ln-111-project-docs-creator | Create project docs (requirements, architecture, specs) |
 | | ln-321-best-practices-researcher | Create ADRs, guides, manuals (doc_type parameter) |
 
 ---

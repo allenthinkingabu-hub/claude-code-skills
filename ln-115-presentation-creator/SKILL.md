@@ -17,7 +17,7 @@ Use this skill when:
 - Creating standalone presentation for sharing (no full documentation setup needed)
 - Validating that source documentation is ready for presentation generation
 
-**Part of workflow**: ln-110-documents-pipeline → ln-111-root-docs-creator → ln-112-reference-docs-creator → ln-113-tasks-docs-creator → ln-114-project-docs-creator → **ln-115-presentation-creator**
+**Part of workflow**: ln-110-documents-pipeline → ln-111-project-docs-creator → ln-112-reference-docs-creator → ln-113-tasks-docs-creator → ln-114-test-docs-creator (optional) → **ln-115-presentation-creator**
 
 **Prerequisites**: Existing documentation in `docs/` directory with **required files**:
 - `docs/project/requirements.md` (REQUIRED)
@@ -111,7 +111,7 @@ For each required file:
   - docs/project/requirements.md [missing/empty]
   - docs/project/architecture.md [missing/empty]
 
-Suggestion: Run ln-114-project-docs-creator to create missing files.
+Suggestion: Run ln-111-project-docs-creator to create missing files.
 
 STOP execution.
 ```
@@ -182,7 +182,7 @@ Log summary:
 2. **Placeholders**: Detect `{{PLACEHOLDER}}`, `[Add your ...]`, `TODO:` patterns
 3. **Content length**: requirements.md >500 words, architecture.md >1000 words, tech_stack.md >200 words
 
-**Auto-fix**: None - ln-115 is read-only. Run ln-114-project-docs-creator to fix issues.
+**Auto-fix**: None - ln-115 is read-only. Run ln-111-project-docs-creator to fix issues.
 
 **Output**: Content quality report with warnings
 
@@ -476,7 +476,7 @@ node build-presentation.js
 
 ## Troubleshooting
 
-- **ERROR: Missing required files**: Run ln-114-project-docs-creator to create requirements.md, architecture.md, tech_stack.md
+- **ERROR: Missing required files**: Run ln-111-project-docs-creator to create requirements.md, architecture.md, tech_stack.md
 - **WARN: Missing diagrams**: Add Mermaid diagrams to architecture.md (C4 Context/Container/Component) and database_schema.md (ER diagram)
 - **WARN: Placeholders found**: Complete documentation in source MD files before building
 - **WARN: Sparse content**: Expand documentation (requirements.md >500 words, architecture.md >1000 words, tech_stack.md >200 words)

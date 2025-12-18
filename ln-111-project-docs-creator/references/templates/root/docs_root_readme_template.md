@@ -120,7 +120,7 @@ Key highlights:
 
 ### 1. [Project Documentation](project/README.md)
 
-Core project documentation created by ln-114-project-docs-creator skill:
+Core project documentation created by ln-111-project-docs-creator skill:
 
 - **[README.md](project/README.md)** - Project documentation hub
 - **[requirements.md](project/requirements.md)** - Functional requirements (FR-XXX-NNN) with MoSCoW prioritization
@@ -129,7 +129,7 @@ Core project documentation created by ln-114-project-docs-creator skill:
 
 **Purpose**: Define WHAT we build and WHY.
 
-**Created by**: ln-114-project-docs-creator
+**Created by**: ln-111-project-docs-creator
 
 ---
 
@@ -194,8 +194,8 @@ When updating documentation:
 
 | Area | Key Documents | Skills |
 |------|---------------|--------|
-| **Standards** | [documentation_standards.md](documentation_standards.md) | ln-111-root-docs-creator, ln-121-structure-validator |
-| **Project** | [requirements.md](project/requirements.md), [architecture.md](project/architecture.md), [technical_specification.md](project/technical_specification.md) | ln-114-project-docs-creator, ln-122-content-updater |
+| **Standards** | [documentation_standards.md](documentation_standards.md) | ln-111-project-docs-creator, ln-121-structure-validator |
+| **Project** | [requirements.md](project/requirements.md), [architecture.md](project/architecture.md), [technical_specification.md](project/technical_specification.md) | ln-111-project-docs-creator, ln-122-content-updater |
 | **Reference** | [ADRs](reference/adrs/), [Guides](reference/guides/), [Manuals](reference/manuals/) | ln-321-best-practices-researcher |
 | **Tasks** | [kanban_board.md](tasks/kanban_board.md), [README.md](tasks/README.md) | ln-210-epic-coordinator, ln-220-story-coordinator, ln-310-story-decomposer |
 

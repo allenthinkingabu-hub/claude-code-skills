@@ -24,12 +24,12 @@ This repository contains 3 distinct levels of documentation, each serving differ
 - **No duplication** - Same concepts in different files serve different contexts
 - **CLAUDE.md** - Context for working WITH skills (editing, maintaining)
 - **README.md** - Context for working USING skills (installing, learning)
-- **Templates** - Context for projects CREATED BY skills (ln-111, ln-114, ln-321, etc.)
+- **Templates** - Context for projects CREATED BY skills (ln-111, ln-321, etc.)
 
 **Example:**
 - Development Principles in CLAUDE.md → for Claude Code maintaining skills
 - Development Principles in README.md → for users understanding skill philosophy
-- Development Principles in principles_template.md → copied to target projects by ln-111-root-docs-creator
+- Development Principles in principles_template.md → copied to target projects by ln-111-project-docs-creator
 
 ## Writing Guidelines
 
@@ -47,7 +47,7 @@ All skills have state diagrams in `diagram.html` files for visualizing workflows
 
 ### Available Skills
 
-**33 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
+**28 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
 
 **Key workflow:** ln-110-documents-pipeline → ln-200-scope-decomposer → ln-300-story-pipeline → ln-340-story-quality-gate
 
@@ -65,7 +65,7 @@ Three levels: Scope → Epics (ln-210) → Stories (ln-220) → Tasks (ln-310). 
 
 ## Skill Workflows
 
-All 33 skills documented in [README.md](README.md#-features) feature tables with workflows in each skill's SKILL.md file. Follow Orchestrator-Worker Pattern per [SKILL_ARCHITECTURE_GUIDE.md](docs/SKILL_ARCHITECTURE_GUIDE.md).
+All 28 skills documented in [README.md](README.md#-features) feature tables with workflows in each skill's SKILL.md file. Follow Orchestrator-Worker Pattern per [SKILL_ARCHITECTURE_GUIDE.md](docs/SKILL_ARCHITECTURE_GUIDE.md).
 
 ## Important Details
 
@@ -135,7 +135,7 @@ const qRegex = /<!-- QUESTION_START: 2 -->([\s\S]*?)<!-- QUESTION_END: 2 -->/;
 const question = section.match(qRegex)[1];
 ```
 
-**Example:** [ln-111-root-docs-creator/references/questions.md](ln-111-root-docs-creator/references/questions.md) uses this format for 4 documents (CLAUDE.md, docs/README.md, docs/documentation_standards.md, docs/principles.md) with 22 total questions.
+**Example:** [ln-111-project-docs-creator/references/questions.md](ln-111-project-docs-creator/references/questions.md) uses this format for 11 documents (4 root + 7 project) with 48 total questions.
 
 ## Versioning
 

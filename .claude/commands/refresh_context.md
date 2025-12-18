@@ -59,14 +59,13 @@ allowed-tools: Read, Edit
 - [ ] Read `docs/PLUGIN_MARKETPLACE_GUIDE.md` (427 lines) – plugin marketplace guide
 - [ ] Read `README.md` (section: Installation, lines 160-216) – installation instructions
 
-**When working with Documentation Pipeline (ln-110-116):**
-- [ ] Read `ln-110-documents-pipeline/SKILL.md` – L1 orchestrator (7 documents via 6 workers)
-- [ ] Read `ln-111-root-docs-creator/SKILL.md` + `references/questions.md` – root docs (CLAUDE.md, docs/README.md, standards, principles)
+**When working with Documentation Pipeline (ln-110-115):**
+- [ ] Read `ln-110-documents-pipeline/SKILL.md` – L1 orchestrator (11 documents via 5 workers)
+- [ ] Read `ln-111-project-docs-creator/SKILL.md` + `references/questions.md` – root + project docs (CLAUDE.md, docs/README.md, standards, principles, requirements, architecture, tech_stack, etc.)
 - [ ] Read `ln-112-reference-docs-creator/SKILL.md` – reference structure (adrs/, guides/, manuals/)
 - [ ] Read `ln-113-tasks-docs-creator/SKILL.md` – task management (kanban_board.md, Linear integration)
-- [ ] Read `ln-114-project-docs-creator/SKILL.md` + `references/` – 7 project docs (requirements, architecture, tech_stack, etc.)
+- [ ] Read `ln-114-test-docs-creator/SKILL.md` – testing strategy, Story-Level Test Task Pattern
 - [ ] Read `ln-115-presentation-creator/SKILL.md` – interactive HTML presentation
-- [ ] Read `ln-116-test-docs-creator/SKILL.md` – testing strategy, Story-Level Test Task Pattern
 
 **When working with Planning (ln-200-220):**
 - [ ] Read `ln-200-scope-decomposer/SKILL.md` – L1 orchestrator (Scope → Epics → Stories)

@@ -53,7 +53,7 @@ For each file:
 - ❌ Does NOT edit markdown documentation
 - ✅ Only READS and TRANSFORMS to HTML
 
-**If issues found:** Run ln-114-project-docs-creator to complete documentation.
+**If issues found:** Run ln-111-project-docs-creator to complete documentation.
 
 ### 3.5 Report content quality summary
 

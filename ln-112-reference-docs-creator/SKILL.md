@@ -274,7 +274,7 @@ docs/
 **Invoked by**: ln-110-documents-pipeline orchestrator
 
 **Requires**:
-- `docs/` directory (created by ln-111-root-docs-creator)
+- `docs/` directory (created by ln-111-project-docs-creator)
 
 **Creates**:
 - `docs/reference/` directory structure with README hub

@@ -1,5 +1,5 @@
 ---
-name: ln-116-test-docs-creator
+name: ln-114-test-docs-creator
 description: Creates test documentation (testing-strategy.md + tests/README.md). Establishes testing philosophy and Story-Level Test Task Pattern. Part of ln-110-documents-pipeline workflow.
 ---
 
@@ -40,7 +40,7 @@ The skill follows a 3-phase workflow: **CREATE** → **VALIDATE STRUCTURE** → 
   - Skip creation
   - Log: "✓ testing-strategy.md already exists, proceeding to validation"
 - If NOT exists:
-  - Copy template: `ln-116-test-docs-creator/references/testing_strategy_template.md` → `docs/reference/guides/testing-strategy.md`
+  - Copy template: `ln-114-test-docs-creator/references/testing_strategy_template.md` → `docs/reference/guides/testing-strategy.md`
   - Replace placeholders:
     - `[CURRENT_DATE]` — current date (YYYY-MM-DD)
   - Log: "✓ Created testing-strategy.md from template"
@@ -50,7 +50,7 @@ The skill follows a 3-phase workflow: **CREATE** → **VALIDATE STRUCTURE** → 
   - Skip creation
   - Log: "✓ tests/README.md already exists, proceeding to validation"
 - If NOT exists:
-  - Copy template: `ln-116-test-docs-creator/references/tests_readme_template.md` → `tests/README.md`
+  - Copy template: `ln-114-test-docs-creator/references/tests_readme_template.md` → `tests/README.md`
   - Replace placeholders:
     - `{{DATE}}` — current date (YYYY-MM-DD)
   - Log: "✓ Created tests/README.md from template"

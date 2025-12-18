@@ -17,7 +17,7 @@ Use this skill when:
 - Validating existing task documentation structure and content
 - Configuring Linear team settings (Team Name, UUID, Key)
 
-**Part of workflow**: ln-110-documents-pipeline → ln-111-root-docs-creator → ln-112-reference-docs-creator → **ln-113-tasks-docs-creator** → ln-114-project-docs-creator → ln-115-presentation-creator
+**Part of workflow**: ln-110-documents-pipeline → ln-111-project-docs-creator → ln-112-reference-docs-creator → **ln-113-tasks-docs-creator** → ln-114-test-docs-creator (optional) → ln-115-presentation-creator
 
 ## How It Works
 
