@@ -24,12 +24,12 @@ This repository contains 3 distinct levels of documentation, each serving differ
 - **No duplication** - Same concepts in different files serve different contexts
 - **CLAUDE.md** - Context for working WITH skills (editing, maintaining)
 - **README.md** - Context for working USING skills (installing, learning)
-- **Templates** - Context for projects CREATED BY skills (ln-111, ln-321, etc.)
+- **Templates** - Context for projects CREATED BY skills (ln-111-115, ln-321, etc.)
 
 **Example:**
 - Development Principles in CLAUDE.md → for Claude Code maintaining skills
 - Development Principles in README.md → for users understanding skill philosophy
-- Development Principles in principles_template.md → copied to target projects by ln-111-project-docs-creator
+- Development Principles in principles_template.md → copied to target projects by ln-111-root-docs-creator (via ln-110 coordinator)
 
 ## Writing Guidelines
 
@@ -47,14 +47,14 @@ All skills have state diagrams in `diagram.html` files for visualizing workflows
 
 ### Available Skills
 
-**28 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
+**34 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
 
-**Key workflow:** ln-110-documents-pipeline → ln-200-scope-decomposer → ln-300-story-pipeline → ln-340-story-quality-gate
+**Key workflow:** ln-100-documents-pipeline → ln-200-scope-decomposer → ln-300-story-pipeline → ln-340-story-quality-gate
 
 ## Key Concepts
 
 ### Configuration Auto-Discovery
-All skills automatically find settings from `docs/tasks/kanban_board.md`: Team ID, Next Epic Number, Next Story Number. Create via ln-113-tasks-docs-creator or ln-110-documents-pipeline orchestrator. If file is missing, skills request data directly from user.
+All skills automatically find settings from `docs/tasks/kanban_board.md`: Team ID, Next Epic Number, Next Story Number. Create via ln-130-tasks-docs-creator or ln-100-documents-pipeline orchestrator. If file is missing, skills request data directly from user.
 
 ### Task Hierarchy, Kanban Board, Development Principles, Task Templates, DAG Support
 See [README.md](README.md#-key-concepts) for detailed structure, principles, and template references.
@@ -135,7 +135,7 @@ const qRegex = /<!-- QUESTION_START: 2 -->([\s\S]*?)<!-- QUESTION_END: 2 -->/;
 const question = section.match(qRegex)[1];
 ```
 
-**Example:** [ln-111-project-docs-creator/references/questions.md](ln-111-project-docs-creator/references/questions.md) uses this format for 11 documents (4 root + 7 project) with 48 total questions.
+**Example:** [ln-111-root-docs-creator/references/questions_root.md](ln-111-root-docs-creator/references/questions_root.md) uses this format for 4 root documents with 22 questions (split from original 48 across 5 L3 workers).
 
 ## Versioning
 

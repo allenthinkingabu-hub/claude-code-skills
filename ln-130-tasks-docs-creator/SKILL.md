@@ -1,6 +1,6 @@
 ---
-name: ln-113-tasks-docs-creator
-description: Creates task management documentation (docs/tasks/README.md + kanban_board.md). Third worker in ln-110-documents-pipeline. Sets up Linear integration and task tracking rules.
+name: ln-130-tasks-docs-creator
+description: Creates task management documentation (docs/tasks/README.md + kanban_board.md). L2 Worker in ln-100-documents-pipeline. Sets up Linear integration and task tracking rules.
 ---
 
 # Tasks Documentation Creator
@@ -9,7 +9,7 @@ This skill creates task management documentation: docs/tasks/README.md (task man
 
 ## When to Use This Skill
 
-**This skill is a WORKER** invoked by **ln-110-documents-pipeline** orchestrator OR used standalone.
+**This skill is a L2 WORKER** invoked by **ln-100-documents-pipeline** orchestrator OR used standalone.
 
 Use this skill when:
 - Creating task management documentation (docs/tasks/)
@@ -17,7 +17,7 @@ Use this skill when:
 - Validating existing task documentation structure and content
 - Configuring Linear team settings (Team Name, UUID, Key)
 
-**Part of workflow**: ln-110-documents-pipeline → ln-111-project-docs-creator → ln-112-reference-docs-creator → **ln-113-tasks-docs-creator** → ln-114-test-docs-creator (optional) → ln-115-presentation-creator
+**Part of workflow**: ln-100-documents-pipeline → ln-110-project-docs-coordinator → ln-120-reference-docs-creator → **ln-130-tasks-docs-creator** → ln-140-test-docs-creator (optional) → ln-150-presentation-creator
 
 ## How It Works
 

@@ -1,33 +1,49 @@
 ---
-name: ln-110-documents-pipeline
-description: Orchestrates complete doc system via 5 workers (ln-111→ln-115). Each worker self-validates. Phase 4: global cleanup. Idempotent.
+name: ln-100-documents-pipeline
+description: Top orchestrator for complete doc system. Delegates to ln-110 coordinator (project docs via 5 L3 workers) + ln-120-150 workers. Phase 4: global cleanup. Idempotent.
 ---
 
 # Documentation Pipeline (Orchestrator)
 
-This skill orchestrates the creation of a complete documentation system by invoking 5 specialized documentation workers in sequence. Each worker handles one domain (project/reference/tasks/presentation/test) and validates its own output, eliminating Worker→Worker coupling.
+This skill orchestrates the creation of a complete documentation system by invoking L2 coordinator + 4 L2 workers. The coordinator (ln-110) delegates to 5 L3 workers for project docs; other L2 workers handle reference/tasks/test/presentation domains. Each component validates its own output.
+
+## Architecture
+
+```
+ln-100-documents-pipeline (L1 Top Orchestrator - this skill)
+├── ln-110-project-docs-coordinator (L2 Coordinator)
+│   ├── ln-111-root-docs-creator (L3 Worker) → 4 docs
+│   ├── ln-112-project-core-creator (L3 Worker) → 3 docs
+│   ├── ln-113-backend-docs-creator (L3 Worker) → 2 conditional
+│   ├── ln-114-frontend-docs-creator (L3 Worker) → 1 conditional
+│   └── ln-115-devops-docs-creator (L3 Worker) → 1 conditional
+├── ln-120-reference-docs-creator (L2 Worker)
+├── ln-130-tasks-docs-creator (L2 Worker)
+├── ln-140-test-docs-creator (L2 Worker - optional)
+└── ln-150-presentation-creator (L2 Worker)
+```
 
 ## When to Use This Skill
 
 This skill should be used when:
 - Start a new IT project and need complete documentation system at once
-- Use automated workflow instead of manually invoking 6 workers
+- Use automated workflow instead of manually invoking multiple workers
 - Create entire documentation structure (CLAUDE.md → docs/ → presentation/) in one go
 - Prefer orchestrated CREATE path over manual skill chaining
 - Need automatic global cleanup (deduplication, orphaned files, consolidation)
 
 **Alternative**: If you prefer granular control, invoke workers manually:
-1. [ln-111-project-docs-creator](../ln-111-project-docs-creator/SKILL.md) - Root docs (CLAUDE.md, docs/README.md, documentation_standards.md, principles.md) + Project docs (requirements, architecture, tech_stack + conditional)
-2. [ln-112-reference-docs-creator](../ln-112-reference-docs-creator/SKILL.md) - reference/ structure
-3. [ln-113-tasks-docs-creator](../ln-113-tasks-docs-creator/SKILL.md) - tasks/README.md + kanban
-4. [ln-114-test-docs-creator](../ln-114-test-docs-creator/SKILL.md) - tests/README.md (optional)
-5. [ln-115-presentation-creator](../ln-115-presentation-creator/SKILL.md) - HTML presentation
+1. [ln-110-project-docs-coordinator](../ln-110-project-docs-coordinator/SKILL.md) - Root + Project docs (coordinates 5 L3 workers)
+2. [ln-120-reference-docs-creator](../ln-120-reference-docs-creator/SKILL.md) - reference/ structure
+3. [ln-130-tasks-docs-creator](../ln-130-tasks-docs-creator/SKILL.md) - tasks/README.md + kanban
+4. [ln-140-test-docs-creator](../ln-140-test-docs-creator/SKILL.md) - tests/README.md (optional)
+5. [ln-150-presentation-creator](../ln-150-presentation-creator/SKILL.md) - HTML presentation
 
 **Note**: Each worker now validates its own output in Phase 2/3. Orchestrator handles global operations only.
 
 ## How It Works
 
-The skill follows a 5-phase orchestration workflow: User confirmation → Invoke 5 workers sequentially → Global cleanup → Summary. Phase 3 (validation) is intentionally skipped - each worker validates its own output.
+The skill follows a 5-phase orchestration workflow: User confirmation → Invoke coordinator + 4 workers sequentially → Global cleanup → Summary. Phase 3 (validation) is intentionally skipped - each component validates its own output.
 
 ### Phase 1: User Confirmation
 
@@ -55,11 +71,11 @@ The skill follows a 5-phase orchestration workflow: User confirmation → Invoke
      ```
 
 2. Show user what will be created:
-   - Root + Project documentation (CLAUDE.md + docs/README.md + documentation_standards.md + principles.md + docs/project/ via ln-111-project-docs-creator)
-   - Reference structure (docs/reference/ via ln-112-reference-docs-creator)
-   - Task management docs (docs/tasks/ via ln-113-tasks-docs-creator)
-   - Test documentation (tests/ via ln-114-test-docs-creator - optional)
-   - HTML presentation (docs/presentation/ via ln-115-presentation-creator)
+   - Root + Project documentation (CLAUDE.md + docs/README.md + documentation_standards.md + principles.md + docs/project/ via ln-110-project-docs-coordinator)
+   - Reference structure (docs/reference/ via ln-120-reference-docs-creator)
+   - Task management docs (docs/tasks/ via ln-130-tasks-docs-creator)
+   - Test documentation (tests/ via ln-140-test-docs-creator - optional)
+   - HTML presentation (docs/presentation/ via ln-150-presentation-creator)
    - Estimated time: 15-20 minutes with interactive dialog
 
 3. Ask: "Proceed with creating missing files? (yes/no)"
@@ -70,53 +86,59 @@ The skill follows a 5-phase orchestration workflow: User confirmation → Invoke
 
 ---
 
-### Phase 2: Invoke Workers Sequentially
+### Phase 2: Invoke Coordinator + Workers Sequentially
 
-**Objective**: Create complete documentation system by invoking 5 workers in order.
+**Objective**: Create complete documentation system by invoking L2 coordinator + 4 L2 workers in order.
 
 **Process** (AUTOMATIC invocations with Skill tool):
 
 **2.1 Create Root + Project Documentation**:
-- **Invocation**: `Skill(skill: "ln-111-project-docs-creator")` → AUTOMATIC (requires user interaction for 48 questions)
+- **Invocation**: `Skill(skill: "ln-110-project-docs-coordinator")` → AUTOMATIC
+- **Behavior**: Coordinator gathers context ONCE, then delegates to 5 L3 workers:
+  - ln-111-root-docs-creator → 4 root docs
+  - ln-112-project-core-creator → 3 core docs
+  - ln-113-backend-docs-creator → 2 conditional (if hasBackend/hasDatabase)
+  - ln-114-frontend-docs-creator → 1 conditional (if hasFrontend)
+  - ln-115-devops-docs-creator → 1 conditional (if hasDocker)
 - **Output**: Root docs (`CLAUDE.md` + `docs/README.md` + `docs/documentation_standards.md` + `docs/principles.md`) + Project docs (`docs/project/requirements.md`, `architecture.md`, `tech_stack.md` + conditional: `api_spec.md`, `database_schema.md`, `design_guidelines.md`, `runbook.md`)
-- **Validation**: ln-111 validates output in Phase 2/3 (SCOPE tags, Maintenance sections)
-- **Verify**: All 11 documents exist before continuing
+- **Validation**: Each L3 worker validates output (SCOPE tags, Maintenance sections)
+- **Verify**: All documents exist before continuing
 
 **2.2 Create Reference Structure**:
-- **Invocation**: `Skill(skill: "ln-112-reference-docs-creator")` → AUTOMATIC
+- **Invocation**: `Skill(skill: "ln-120-reference-docs-creator")` → AUTOMATIC
 - **Output**: `docs/reference/README.md` + `adrs/`, `guides/`, `manuals/` directories + ADR template
-- **Validation**: ln-112 validates output in Phase 2/3
+- **Validation**: ln-120 validates output in Phase 2/3
 - **Verify**: Reference hub exists before continuing
 
 **2.3 Create Task Management Docs**:
-- **Invocation**: `Skill(skill: "ln-113-tasks-docs-creator")` → AUTOMATIC
+- **Invocation**: `Skill(skill: "ln-130-tasks-docs-creator")` → AUTOMATIC
 - **Output**: `docs/tasks/README.md` + optionally `kanban_board.md` (if user provides Linear config)
-- **Validation**: ln-113 validates output in Phase 2/3
+- **Validation**: ln-130 validates output in Phase 2/3
 - **Verify**: Tasks README exists before continuing
 
 **2.4 Create Test Documentation (Optional)**:
 - **Condition**: If user approved test docs in Phase 1
-- **Invocation**: `Skill(skill: "ln-114-test-docs-creator")` → AUTOMATIC
+- **Invocation**: `Skill(skill: "ln-140-test-docs-creator")` → AUTOMATIC
 - **Output**: `tests/README.md` (test documentation with Story-Level Test Task Pattern)
-- **Validation**: ln-114 validates output in Phase 2/3
-- **Skip**: If "no" → can run ln-114-test-docs-creator later manually
+- **Validation**: ln-140 validates output in Phase 2/3
+- **Skip**: If "no" → can run ln-140-test-docs-creator later manually
 
 **2.5 Create HTML Presentation**:
-- **Invocation**: `Skill(skill: "ln-115-presentation-creator")` → AUTOMATIC
+- **Invocation**: `Skill(skill: "ln-150-presentation-creator")` → AUTOMATIC
 - **Output**: `docs/presentation/README.md` + `presentation_final.html` + `assets/`
-- **Validation**: ln-115 validates output in Phase 2/3
+- **Validation**: ln-150 validates output in Phase 2/3
 - **Verify**: Presentation files exist before continuing
 
-**Output**: Complete documentation system with all 5 workers completed and validated
+**Output**: Complete documentation system with coordinator + 4 workers completed and validated
 
 **TodoWrite format (mandatory):**
-Add ALL worker invocations to todos before starting:
+Add ALL invocations to todos before starting:
 ```
-- Invoke ln-111-project-docs-creator (pending)
-- Invoke ln-112-reference-docs-creator (pending)
-- Invoke ln-113-tasks-docs-creator (pending)
-- Invoke ln-114-test-docs-creator (pending)
-- Invoke ln-115-presentation-creator (pending)
+- Invoke ln-110-project-docs-coordinator (pending)
+- Invoke ln-120-reference-docs-creator (pending)
+- Invoke ln-130-tasks-docs-creator (pending)
+- Invoke ln-140-test-docs-creator (pending)
+- Invoke ln-150-presentation-creator (pending)
 - Run Global Cleanup (Phase 4) (pending)
 ```
 Mark each as in_progress when starting, completed when worker returns success.
@@ -362,7 +384,7 @@ project_root/
 
 **Recommended workflow for new projects:**
 
-1. **ln-110-documents-pipeline** (this skill) - Create complete documentation system
+1. **ln-100-documents-pipeline** (this skill) - Create complete documentation system
 2. **ln-210-epic-coordinator** - Decompose scope into Epics (Linear Projects)
 3. **ln-220-story-coordinator** - Create User Stories for each Epic (automatic decomposition + replan)
 4. **ln-310-story-decomposer** - Break down Stories into implementation tasks (automatic decomposition + replan)
@@ -386,12 +408,12 @@ project_root/
 - ✅ **Validated cross-links**: No broken links in documentation
 
 **Trade-offs:**
-- ⚠️ Less granular control (can't skip ln-111-docs-creator phases)
+- ⚠️ Less granular control (can't skip coordinator phases)
 - ⚠️ Longer execution time (15-20 minutes)
 - ⚠️ Global cleanup runs even if only one file was created
 
 **When to use manual approach instead:**
-- Need only HTML rebuild → use [ln-115-presentation-creator](../ln-115-presentation-creator/SKILL.md)
+- Need only HTML rebuild → use [ln-150-presentation-creator](../ln-150-presentation-creator/SKILL.md)
 - Need one specific ADR/guide/manual → use [ln-321-best-practices-researcher](../ln-321-best-practices-researcher/SKILL.md)
 
 ---
@@ -437,17 +459,17 @@ If any invoked skill fails:
 Before completing work, verify ALL checkpoints:
 
 **✅ User Confirmation (Phase 1):**
-- [ ] Workflow explained to user (5 workers: ln-111 → ln-112 → ln-113 → ln-114 → ln-115)
+- [ ] Workflow explained to user (coordinator + 4 workers: ln-110 → ln-120 → ln-130 → ln-140 → ln-150)
 - [ ] User approved: "Proceed with complete documentation system creation? (yes/no)"
 - [ ] Test docs preference captured: "Include test documentation? (yes/no)"
 
-**✅ Workers Invoked Sequentially (Phase 2):**
-- [ ] ln-111-project-docs-creator invoked → Output verified: Root docs (`CLAUDE.md` + `docs/README.md` + `docs/documentation_standards.md` + `docs/principles.md`) + Project docs (`docs/project/requirements.md`, `architecture.md`, `tech_stack.md` + conditional 3-7 files)
-- [ ] ln-112-reference-docs-creator invoked → Output verified: `docs/reference/README.md` + directories (adrs/, guides/, manuals/)
-- [ ] ln-113-tasks-docs-creator invoked → Output verified: `docs/tasks/README.md` + optionally `kanban_board.md`
-- [ ] ln-114-test-docs-creator invoked (if enabled) → Output verified: `tests/README.md`
-- [ ] ln-115-presentation-creator invoked → Output verified: `docs/presentation/README.md` + `presentation_final.html` + `assets/`
-- [ ] Each worker validated its own output (SCOPE tags, Maintenance sections, POSIX compliance)
+**✅ Coordinator + Workers Invoked Sequentially (Phase 2):**
+- [ ] ln-110-project-docs-coordinator invoked → Output verified: Root docs (`CLAUDE.md` + `docs/README.md` + `docs/documentation_standards.md` + `docs/principles.md`) + Project docs (`docs/project/requirements.md`, `architecture.md`, `tech_stack.md` + conditional 3-7 files)
+- [ ] ln-120-reference-docs-creator invoked → Output verified: `docs/reference/README.md` + directories (adrs/, guides/, manuals/)
+- [ ] ln-130-tasks-docs-creator invoked → Output verified: `docs/tasks/README.md` + optionally `kanban_board.md`
+- [ ] ln-140-test-docs-creator invoked (if enabled) → Output verified: `tests/README.md`
+- [ ] ln-150-presentation-creator invoked → Output verified: `docs/presentation/README.md` + `presentation_final.html` + `assets/`
+- [ ] Each component validated its own output (SCOPE tags, Maintenance sections, POSIX compliance)
 
 **✅ File Verification Complete:**
 - [ ] All expected files exist (Glob tool used to verify structure)
@@ -474,5 +496,5 @@ Before completing work, verify ALL checkpoints:
 
 ---
 
-**Version:** 6.0.0 (MAJOR: Removed Phase 3 validation - delegated to workers Phase 2/3. Added Phase 4 Global Cleanup: deduplication, orphaned files, consolidation, cross-link validation. Orchestrator now coordinates workers (Phase 2) + global operations (Phase 4). All workers are idempotent.)
-**Last Updated:** 2025-11-18
+**Version:** 7.0.0 (MAJOR: Renamed ln-110→ln-100. New 3-tier architecture: L1 Orchestrator → L2 Coordinator (ln-110) with 5 L3 workers (ln-111-115) → L2 Workers (ln-120-150). Context Store passed explicitly to solve "context loss" problem.)
+**Last Updated:** 2025-12-19

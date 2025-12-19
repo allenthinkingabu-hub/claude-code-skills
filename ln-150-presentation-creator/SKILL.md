@@ -1,6 +1,6 @@
 ---
-name: ln-115-presentation-creator
-description: Builds interactive HTML presentation with 6 tabs (Overview, Requirements, Architecture/C4, Tech Spec, Roadmap, Guides). Creates presentation/README.md hub. Worker under ln-110-documents-pipeline.
+name: ln-150-presentation-creator
+description: Builds interactive HTML presentation with 6 tabs (Overview, Requirements, Architecture/C4, Tech Spec, Roadmap, Guides). Creates presentation/README.md hub. L2 Worker under ln-100-documents-pipeline.
 ---
 
 # HTML Presentation Builder
@@ -9,7 +9,7 @@ This skill creates an interactive, self-contained HTML presentation from existin
 
 ## When to Use This Skill
 
-**This skill is a WORKER** invoked by **ln-110-documents-pipeline** orchestrator OR used standalone.
+**This skill is a L2 WORKER** invoked by **ln-100-documents-pipeline** orchestrator OR used standalone.
 
 Use this skill when:
 - Building HTML presentation from existing documentation
@@ -17,7 +17,7 @@ Use this skill when:
 - Creating standalone presentation for sharing (no full documentation setup needed)
 - Validating that source documentation is ready for presentation generation
 
-**Part of workflow**: ln-110-documents-pipeline → ln-111-project-docs-creator → ln-112-reference-docs-creator → ln-113-tasks-docs-creator → ln-114-test-docs-creator (optional) → **ln-115-presentation-creator**
+**Part of workflow**: ln-100-documents-pipeline → ln-110-project-docs-coordinator → ln-120-reference-docs-creator → ln-130-tasks-docs-creator → ln-140-test-docs-creator (optional) → **ln-150-presentation-creator**
 
 **Prerequisites**: Existing documentation in `docs/` directory with **required files**:
 - `docs/project/requirements.md` (REQUIRED)

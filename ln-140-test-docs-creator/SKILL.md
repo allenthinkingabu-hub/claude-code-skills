@@ -1,6 +1,6 @@
 ---
-name: ln-114-test-docs-creator
-description: Creates test documentation (testing-strategy.md + tests/README.md). Establishes testing philosophy and Story-Level Test Task Pattern. Part of ln-110-documents-pipeline workflow.
+name: ln-140-test-docs-creator
+description: Creates test documentation (testing-strategy.md + tests/README.md). Establishes testing philosophy and Story-Level Test Task Pattern. L2 Worker in ln-100-documents-pipeline workflow.
 ---
 
 # Test Documentation Creator
@@ -9,13 +9,13 @@ This skill creates and validates test documentation: testing-strategy.md (univer
 
 ## When to Use This Skill
 
-**This skill is a WORKER** invoked by **ln-110-documents-pipeline** orchestrator.
+**This skill is a L2 WORKER** invoked by **ln-100-documents-pipeline** orchestrator.
 
 This skill should be used directly when:
 - Creating only test documentation (testing-strategy.md + tests/README.md)
 - Validating existing test documentation structure and content
 - Setting up test philosophy and structure documentation for existing project
-- NOT creating full documentation structure (use ln-110-documents-pipeline for complete setup)
+- NOT creating full documentation structure (use ln-100-documents-pipeline for complete setup)
 
 ## How It Works
 

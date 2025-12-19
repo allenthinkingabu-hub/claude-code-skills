@@ -1,6 +1,6 @@
 ---
-name: ln-112-reference-docs-creator
-description: Creates reference documentation structure (docs/reference/ with README, adrs/, guides/, manuals/ directories). Second worker in ln-110-documents-pipeline.
+name: ln-120-reference-docs-creator
+description: Creates reference documentation structure (docs/reference/ with README, adrs/, guides/, manuals/ directories). L2 Worker in ln-100-documents-pipeline.
 ---
 
 # Reference Documentation Creator
@@ -9,12 +9,12 @@ This skill creates the reference documentation structure: docs/reference/README.
 
 ## When to Use This Skill
 
-**This skill is a WORKER** invoked by **ln-110-documents-pipeline** orchestrator.
+**This skill is a L2 WORKER** invoked by **ln-100-documents-pipeline** orchestrator.
 
 This skill should be used directly when:
 - Creating only reference documentation structure (docs/reference/)
 - Setting up directories for ADRs, guides, and manuals
-- NOT creating full documentation structure (use ln-110-documents-pipeline for complete setup)
+- NOT creating full documentation structure (use ln-100-documents-pipeline for complete setup)
 
 ## How It Works
 
