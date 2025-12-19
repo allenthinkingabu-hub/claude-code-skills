@@ -25,7 +25,11 @@ From coordinator:
   - TECH_STACK_SUMMARY
   - DEV_COMMANDS (from package.json scripts)
   - DATE (current date)
+  - **LEGACY_CONTENT** (optional, from ln-100 Phase 0 migration):
+    - `legacy_principles`: { principles[], anti_patterns[], conventions[] }
 - `targetDir`: Project root directory
+
+**LEGACY_CONTENT** is used as base content when creating principles.md. Priority: **Legacy > Template defaults**.
 
 ## Documents Created (4)
 
@@ -49,6 +53,14 @@ For each document (CLAUDE.md, docs/README.md, documentation_standards.md, princi
 2. If exists: skip with log
 3. If not exists:
    - Copy template from `references/templates/`
+   - **Check LEGACY_CONTENT for this document type:**
+     - For `principles.md`: If `LEGACY_CONTENT.legacy_principles` exists:
+       - Use `legacy_principles.principles[]` as base for "## Core Principles" section
+       - Use `legacy_principles.anti_patterns[]` for "## Anti-Patterns" section
+       - Use `legacy_principles.conventions[]` for code style rules
+       - Augment with template structure (add missing sections)
+       - Mark: `<!-- Migrated from legacy documentation -->` at top of relevant sections
+     - For other documents: Use template as-is (no legacy content applicable)
    - Replace `{{PLACEHOLDER}}` with Context Store values
    - Mark `[TBD: X]` for missing data (never leave empty placeholders)
    - Write file
@@ -91,5 +103,5 @@ Return to coordinator:
 - Questions: `references/questions_root.md` (Q1-Q22)
 
 ---
-**Version:** 1.0.0
+**Version:** 2.0.0 (MAJOR: Added LEGACY_CONTENT handling for principles.md. Uses legacy_principles from migration as base content. Priority: Legacy > Template defaults.)
 **Last Updated:** 2025-12-19

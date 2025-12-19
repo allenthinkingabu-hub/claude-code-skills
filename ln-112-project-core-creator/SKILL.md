@@ -29,7 +29,13 @@ From coordinator:
   - EXTERNAL_SYSTEMS (from .env.example)
   - CODE_CONVENTIONS (from eslint, prettier)
   - ADR_LIST (from docs/reference/adrs/)
+  - **LEGACY_CONTENT** (optional, from ln-100 Phase 0 migration):
+    - `legacy_architecture`: { layers[], components[], diagrams[], data_flow }
+    - `legacy_requirements`: { functional[], non_functional[], user_stories[] }
+    - `legacy_tech_stack`: { frontend, backend, database, versions }
 - `targetDir`: Project root directory
+
+**LEGACY_CONTENT** is used as base content when creating documents. Priority: **Legacy > Auto-discovery > Template defaults**.
 
 ## Documents Created (3)
 
@@ -52,8 +58,24 @@ For each document (requirements.md, architecture.md, tech_stack.md):
 2. If exists: skip with log
 3. If not exists:
    - Copy template from `references/templates/`
+   - **Check LEGACY_CONTENT for this document type:**
+     - For `architecture.md`: If `LEGACY_CONTENT.legacy_architecture` exists:
+       - Use `legacy_architecture.layers[]` for "## Building Block View" (Section 5)
+       - Use `legacy_architecture.components[]` for component descriptions
+       - Use `legacy_architecture.diagrams[]` for existing diagrams (preserve mermaid/images)
+       - Use `legacy_architecture.data_flow` for "## Runtime View" (Section 6)
+       - Merge with auto-discovered SRC_STRUCTURE (legacy takes priority)
+       - Mark: `<!-- Migrated from legacy documentation -->` at top of merged sections
+     - For `requirements.md`: If `LEGACY_CONTENT.legacy_requirements` exists:
+       - Use `legacy_requirements.functional[]` as base for FR-XXX requirements
+       - Use `legacy_requirements.user_stories[]` if FR format not found
+       - Augment with template structure (add MoSCoW labels if missing)
+     - For `tech_stack.md`: If `LEGACY_CONTENT.legacy_tech_stack` exists:
+       - Use `legacy_tech_stack.versions` as base for technology versions
+       - Merge with auto-discovered TECH_STACK (legacy versions take priority)
+       - Use `legacy_tech_stack.rationale` for decision explanations
    - Replace `{{PLACEHOLDER}}` with Context Store values
-   - Generate C4 diagrams from SRC_STRUCTURE (for architecture.md)
+   - Generate C4 diagrams from SRC_STRUCTURE (for architecture.md, if no legacy diagrams)
    - Insert ADR links (for architecture.md Section 8)
    - Mark `[TBD: X]` for missing data
 
@@ -101,5 +123,5 @@ Return to coordinator:
 - Questions: `references/questions_core.md` (Q23-Q38)
 
 ---
-**Version:** 1.0.0
+**Version:** 2.0.0 (MAJOR: Added LEGACY_CONTENT handling for architecture.md, requirements.md, tech_stack.md. Uses legacy content from migration as base. Priority: Legacy > Auto-discovery > Template defaults.)
 **Last Updated:** 2025-12-19

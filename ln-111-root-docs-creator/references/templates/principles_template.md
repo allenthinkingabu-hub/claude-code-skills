@@ -2,7 +2,7 @@
 
 **Last Updated:** {{DATE}}
 
-<!-- SCOPE: Universal development principles for THIS project ONLY. Contains 8 core principles with rationale, Decision Framework, and Verification Checklist. NO implementation details (→ Architecture.md), NO project-specific requirements (→ Requirements.md), NO testing philosophy (→ docs/reference/guides/testing-strategy.md). -->
+<!-- SCOPE: Universal development principles for THIS project ONLY. Contains 9 core principles with rationale, Decision Framework, and Verification Checklist. NO implementation details (→ Architecture.md), NO project-specific requirements (→ Requirements.md), NO testing philosophy (→ docs/reference/guides/testing-strategy.md), NO code examples (keep language-agnostic). -->
 
 ---
 
@@ -61,12 +61,12 @@ When principles conflict, use the Decision-Making Framework hierarchy:
 - ✅ Simple solution now, refactor if complexity justified later
 
 ### Magic Numbers/Strings
-- ❌ `if status == 200:` hardcoded everywhere
-- ✅ `if status == HTTPStatus.OK:` or `STATUS_OK = 200` as constant
+- ❌ Hardcoded values scattered throughout codebase
+- ✅ Named constants or enums defined in one place
 
 ### Leaky Abstractions
-- ❌ Service layer exposes database models to API layer
-- ✅ Service layer returns DTOs/Pydantic schemas, hides ORM details
+- ❌ Service layer exposes internal data structures to consumers
+- ✅ Service layer returns consumer-facing data contracts, hides implementation details
 
 ---
 

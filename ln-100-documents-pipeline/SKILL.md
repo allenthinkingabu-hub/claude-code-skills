@@ -43,13 +43,131 @@ This skill should be used when:
 
 ## How It Works
 
-The skill follows a 5-phase orchestration workflow: User confirmation → Invoke coordinator + 4 workers sequentially → Global cleanup → Summary. Phase 3 (validation) is intentionally skipped - each component validates its own output.
+The skill follows a 6-phase orchestration workflow: **Legacy Migration (optional)** → User confirmation → Invoke coordinator + 4 workers sequentially → Global cleanup → Summary. Phase 3 (validation) is intentionally skipped - each component validates its own output.
+
+---
+
+### Phase 0: Legacy Migration (OPTIONAL)
+
+**Objective**: Detect existing documentation in non-standard formats, extract valuable content, and prepare for migration.
+
+**Trigger**: Always runs at pipeline start. User can skip if no legacy docs or wants to keep existing structure.
+
+**Process**:
+
+**0.1 Legacy Detection**:
+- Scan project for non-standard documentation using patterns from `references/legacy_detection_patterns.md`:
+  - **Root .md files**: `ARCHITECTURE.md`, `REQUIREMENTS.md`, `STACK.md`, `API.md`, `DATABASE.md`, `DEPLOYMENT.md`
+  - **Legacy folders**: `documentation/`, `doc/`, `wiki/`, `docs/` with wrong structure
+  - **README.md sections**: `## Architecture`, `## Tech Stack`, `## Requirements`, etc.
+  - **CONTRIBUTING.md sections**: `## Development`, `## Code Style`, `## Coding Standards`
+- Build `legacy_manifest`: list of { path, detected_type, target_doc, confidence }
+- If no legacy docs found → skip to Phase 1
+
+**0.2 Content Extraction**:
+- For each detected legacy file:
+  - Parse markdown structure (headers, lists, code blocks)
+  - Apply type-specific extractor (see `legacy_detection_patterns.md`):
+    - `architecture_extractor` → { layers[], components[], diagrams[] }
+    - `requirements_extractor` → { functional[], non_functional[] }
+    - `tech_stack_extractor` → { frontend, backend, database, versions }
+    - `principles_extractor` → { principles[], anti_patterns[] }
+    - `api_spec_extractor` → { endpoints[], authentication }
+    - `database_schema_extractor` → { tables[], relationships[] }
+    - `runbook_extractor` → { prerequisites[], install_steps[], env_vars[] }
+  - Score content quality (0.0-1.0)
+- Store in `extracted_content` object
+
+**0.3 User Confirmation**:
+- Display detected legacy files:
+  ```
+  📂 Legacy Documentation Detected:
+
+  | File | Type | Confidence | Target |
+  |------|------|------------|--------|
+  | README.md (## Architecture) | architecture | HIGH | docs/project/architecture.md |
+  | docs/ARCHITECTURE.md | architecture | HIGH | docs/project/architecture.md |
+  | CONTRIBUTING.md (## Development) | principles | MEDIUM | docs/principles.md |
+
+  🔄 Migration Options:
+  1. MIGRATE (recommended): Extract → Inject → Archive → Delete
+  2. ARCHIVE ONLY: Backup without extraction
+  3. SKIP: Leave legacy as-is (may cause duplication)
+
+  Choose option (1/2/3): _
+  ```
+- If user selects "1" (MIGRATE):
+  - Optional: "Review extracted content before injection? (yes/no)"
+  - Confirm: "Proceed with migration and archive legacy files?"
+- If user selects "2" (ARCHIVE ONLY):
+  - Confirm: "Archive legacy files to .archive/? Content will NOT be extracted."
+- If user selects "3" (SKIP):
+  - Warn: "Legacy files will remain. This may cause duplication issues."
+  - Proceed to Phase 1
+
+**0.4 Backup and Archive**:
+- Create `.archive/legacy-{timestamp}/` directory
+- Structure:
+  ```
+  .archive/
+  └── legacy-YYYY-MM-DD-HHMMSS/
+      ├── README_migration.md        # Rollback instructions
+      ├── original/                  # Exact copies of legacy files
+      │   ├── README.md
+      │   ├── ARCHITECTURE.md
+      │   └── documentation/
+      └── extracted/                 # Extracted content (for reference)
+          ├── architecture_content.md
+          └── principles_content.md
+  ```
+- Copy all legacy files to `original/`
+- Save extracted content to `extracted/`
+- Generate `README_migration.md` with rollback instructions
+
+**0.5 Content Injection**:
+- Build `migration_context` from extracted content:
+  ```json
+  {
+    "LEGACY_CONTENT": {
+      "legacy_architecture": { "sections": [...], "diagrams": [...] },
+      "legacy_requirements": { "functional": [...] },
+      "legacy_principles": { "principles": [...] },
+      "legacy_tech_stack": { "frontend": "...", "backend": "..." },
+      "legacy_api": { "endpoints": [...] },
+      "legacy_database": { "tables": [...] },
+      "legacy_runbook": { "install_steps": [...] }
+    }
+  }
+  ```
+- Merge into Context Store for ln-110:
+  - `contextStore.LEGACY_CONTENT = migration_context`
+  - Workers use LEGACY_CONTENT as base content (priority over template defaults)
+- Priority order: **Legacy content > Auto-discovery > Template defaults**
+
+**0.6 Cleanup (Legacy Files)**:
+- For root-level files (README.md, CONTRIBUTING.md):
+  - Do NOT delete
+  - Remove migrated sections using Edit tool
+  - Add links to new locations:
+    - `## Architecture` → `See [Architecture](docs/project/architecture.md)`
+    - `## Tech Stack` → `See [Tech Stack](docs/project/tech_stack.md)`
+- For standalone legacy files (ARCHITECTURE.md, documentation/):
+  - Delete files (already backed up)
+  - Log: "Deleted: ARCHITECTURE.md (migrated to docs/project/architecture.md)"
+- Clean empty legacy directories
+
+**Output**: `migration_summary` { migrated_count, archived_count, skipped_count, legacy_content }
 
 ### Phase 1: User Confirmation
 
 **Objective**: Check existing files, explain workflow, and get user approval.
 
 **Process**:
+
+0. **Migration Summary** (if Phase 0 ran):
+   - Show: "✓ Migrated {N} legacy documents"
+   - Show: "✓ Archived to .archive/legacy-{date}/"
+   - Show: "✓ LEGACY_CONTENT prepared for workers"
 
 1. **Pre-flight Check** (scan existing documentation):
    - Use Glob tool to check all potential files:
@@ -94,19 +212,23 @@ The skill follows a 5-phase orchestration workflow: User confirmation → Invoke
 
 **2.1 Create Root + Project Documentation**:
 - **Invocation**: `Skill(skill: "ln-110-project-docs-coordinator")` → AUTOMATIC
+- **Input**: Pass `LEGACY_CONTENT` from Phase 0 (if migration was performed)
 - **Behavior**: Coordinator gathers context ONCE, then delegates to 5 L3 workers:
-  - ln-111-root-docs-creator → 4 root docs
-  - ln-112-project-core-creator → 3 core docs
-  - ln-113-backend-docs-creator → 2 conditional (if hasBackend/hasDatabase)
+  - ln-111-root-docs-creator → 4 root docs (uses LEGACY_CONTENT.legacy_principles if available)
+  - ln-112-project-core-creator → 3 core docs (uses LEGACY_CONTENT.legacy_architecture, legacy_requirements, legacy_tech_stack)
+  - ln-113-backend-docs-creator → 2 conditional (uses LEGACY_CONTENT.legacy_api, legacy_database)
   - ln-114-frontend-docs-creator → 1 conditional (if hasFrontend)
-  - ln-115-devops-docs-creator → 1 conditional (if hasDocker)
+  - ln-115-devops-docs-creator → 1 conditional (uses LEGACY_CONTENT.legacy_runbook)
 - **Output**: Root docs (`CLAUDE.md` + `docs/README.md` + `docs/documentation_standards.md` + `docs/principles.md`) + Project docs (`docs/project/requirements.md`, `architecture.md`, `tech_stack.md` + conditional: `api_spec.md`, `database_schema.md`, `design_guidelines.md`, `runbook.md`)
+- **Store**: Save `context_store` from ln-110 result (contains TECH_STACK for ln-120)
 - **Validation**: Each L3 worker validates output (SCOPE tags, Maintenance sections)
 - **Verify**: All documents exist before continuing
 
-**2.2 Create Reference Structure**:
+**2.2 Create Reference Structure + Smart Documents**:
 - **Invocation**: `Skill(skill: "ln-120-reference-docs-creator")` → AUTOMATIC
-- **Output**: `docs/reference/README.md` + `adrs/`, `guides/`, `manuals/` directories + ADR template
+- **Input**: Pass `context_store` from ln-110 (TECH_STACK enables smart document creation)
+- **Output**: `docs/reference/README.md` + `adrs/`, `guides/`, `manuals/` directories + **justified ADRs/Guides/Manuals**
+- **Smart Creation**: Creates documents only for nontrivial technology choices (see ln-120 justification rules)
 - **Validation**: ln-120 validates output in Phase 2/3
 - **Verify**: Reference hub exists before continuing
 
@@ -458,14 +580,26 @@ If any invoked skill fails:
 
 Before completing work, verify ALL checkpoints:
 
+**✅ Legacy Migration (Phase 0 - if applicable):**
+- [ ] Legacy detection patterns applied (Glob + Grep)
+- [ ] Legacy manifest built: { path, type, confidence, target }
+- [ ] User selected migration option (MIGRATE / ARCHIVE / SKIP)
+- [ ] If MIGRATE: Content extracted using type-specific extractors
+- [ ] Backup created: `.archive/legacy-{timestamp}/original/`
+- [ ] Extracted content saved: `.archive/legacy-{timestamp}/extracted/`
+- [ ] README_migration.md generated with rollback instructions
+- [ ] LEGACY_CONTENT prepared for Context Store
+- [ ] Legacy files cleaned up (sections removed from README.md, standalone files deleted)
+
 **✅ User Confirmation (Phase 1):**
+- [ ] Migration summary shown (if Phase 0 ran)
 - [ ] Workflow explained to user (coordinator + 4 workers: ln-110 → ln-120 → ln-130 → ln-140 → ln-150)
 - [ ] User approved: "Proceed with complete documentation system creation? (yes/no)"
 - [ ] Test docs preference captured: "Include test documentation? (yes/no)"
 
 **✅ Coordinator + Workers Invoked Sequentially (Phase 2):**
 - [ ] ln-110-project-docs-coordinator invoked → Output verified: Root docs (`CLAUDE.md` + `docs/README.md` + `docs/documentation_standards.md` + `docs/principles.md`) + Project docs (`docs/project/requirements.md`, `architecture.md`, `tech_stack.md` + conditional 3-7 files)
-- [ ] ln-120-reference-docs-creator invoked → Output verified: `docs/reference/README.md` + directories (adrs/, guides/, manuals/)
+- [ ] ln-120-reference-docs-creator invoked → Output verified: `docs/reference/README.md` + directories (adrs/, guides/, manuals/) + justified ADRs/Guides/Manuals based on TECH_STACK
 - [ ] ln-130-tasks-docs-creator invoked → Output verified: `docs/tasks/README.md` + optionally `kanban_board.md`
 - [ ] ln-140-test-docs-creator invoked (if enabled) → Output verified: `tests/README.md`
 - [ ] ln-150-presentation-creator invoked → Output verified: `docs/presentation/README.md` + `presentation_final.html` + `assets/`
@@ -496,5 +630,5 @@ Before completing work, verify ALL checkpoints:
 
 ---
 
-**Version:** 7.0.0 (MAJOR: Renamed ln-110→ln-100. New 3-tier architecture: L1 Orchestrator → L2 Coordinator (ln-110) with 5 L3 workers (ln-111-115) → L2 Workers (ln-120-150). Context Store passed explicitly to solve "context loss" problem.)
+**Version:** 8.0.0 (MAJOR: Added Phase 0 Legacy Migration. Detects existing documentation in non-standard formats, extracts content, archives legacy files, injects LEGACY_CONTENT into Context Store for workers. Full Migration workflow: detect → extract → backup → inject → cleanup.)
 **Last Updated:** 2025-12-19

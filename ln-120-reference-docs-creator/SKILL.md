@@ -1,11 +1,11 @@
 ---
 name: ln-120-reference-docs-creator
-description: Creates reference documentation structure (docs/reference/ with README, adrs/, guides/, manuals/ directories). L2 Worker in ln-100-documents-pipeline.
+description: Creates reference documentation structure + smart documents (ADRs/Guides/Manuals) based on TECH_STACK. Only creates justified documents (nontrivial technology choices). L2 Worker in ln-100-documents-pipeline.
 ---
 
 # Reference Documentation Creator
 
-This skill creates the reference documentation structure: docs/reference/README.md (hub with registries for ADRs/Guides/Manuals) and empty subdirectories for storing reference materials.
+This skill creates the reference documentation structure (docs/reference/) and **smart documents** (ADRs, Guides, Manuals) based on project's TECH_STACK. Documents are created only when justified (nontrivial technology choices with alternatives).
 
 ## When to Use This Skill
 
@@ -16,9 +16,32 @@ This skill should be used directly when:
 - Setting up directories for ADRs, guides, and manuals
 - NOT creating full documentation structure (use ln-100-documents-pipeline for complete setup)
 
+## Inputs
+
+**From ln-100 (via ln-110 Context Store):**
+```json
+{
+  "context_store": {
+    "PROJECT_NAME": "my-project",
+    "TECH_STACK": {
+      "frontend": "React 18",
+      "backend": "Express 4.18",
+      "database": "PostgreSQL 15",
+      "orm": "Prisma 5.0",
+      "auth": "JWT",
+      "cache": "Redis 7"
+    },
+    "DEPENDENCIES": [...],
+    "flags": { "hasBackend": true, "hasDatabase": true, "hasFrontend": true }
+  }
+}
+```
+
+**TECH_STACK** is used for smart document creation in Phase 2.
+
 ## How It Works
 
-The skill follows a 3-phase workflow: **CREATE** → **VALIDATE STRUCTURE** → **VALIDATE CONTENT**. Each phase builds on the previous, ensuring complete structure and semantic validation.
+The skill follows a 4-phase workflow: **CREATE STRUCTURE** → **SMART DOCUMENT CREATION** → **VALIDATE STRUCTURE** → **VALIDATE CONTENT**. Phase 2 creates documents only for justified technology choices.
 
 ---
 
@@ -44,9 +67,9 @@ The skill follows a 3-phase workflow: **CREATE** → **VALIDATE STRUCTURE** → 
   - Replace placeholders:
     - `{{VERSION}}` — "1.0.0"
     - `{{DATE}}` — current date (YYYY-MM-DD)
-    - `{{ADR_LIST}}` — kept as placeholder (filled in Phase 3)
-    - `{{GUIDE_LIST}}` — kept as placeholder (filled in Phase 3)
-    - `{{MANUAL_LIST}}` — kept as placeholder (filled in Phase 3)
+    - `{{ADR_LIST}}` — kept as placeholder (filled in Phase 4)
+    - `{{GUIDE_LIST}}` — kept as placeholder (filled in Phase 4)
+    - `{{MANUAL_LIST}}` — kept as placeholder (filled in Phase 4)
   - Log: "✓ Created docs/reference/README.md from template"
 
 **1.3 Output**:
@@ -60,7 +83,114 @@ docs/reference/
 
 ---
 
-### Phase 2: Validate Structure
+### Phase 2: Smart Document Creation
+
+**Objective**: Create ADRs, Guides, and Manuals for justified technology choices. Skip trivial/obvious selections.
+
+**2.1 Check Context Store**:
+- If no `context_store` provided → skip Phase 2, proceed to Phase 3
+- If no `TECH_STACK` in context_store → skip Phase 2, proceed to Phase 3
+- Log: "Context Store received with TECH_STACK: [categories count]"
+
+**2.2 Load Justification Rules**:
+- Read `references/tech_justification_rules.md`
+- Parse category → justified/skip conditions
+
+**2.3 Analyze TECH_STACK for ADRs**:
+
+For each category in TECH_STACK (frontend, backend, database, orm, auth, cache):
+
+1. **Check if justified** (from justification rules):
+   - `frontend`: Justified if React/Vue/Angular/Svelte (multiple options exist)
+   - `backend`: Justified if Express/Fastify/NestJS/Koa (multiple options exist)
+   - `database`: Justified if PostgreSQL/MySQL/MongoDB (multiple options exist)
+   - `auth`: Justified if JWT/OAuth/Session (decision required)
+   - `orm`: Justified if Prisma/TypeORM/Sequelize (multiple options exist)
+   - `cache`: Justified if Redis/Memcached (decision required)
+
+2. **Skip if trivial**:
+   - jQuery-only frontend (no framework choice)
+   - Simple http server (no framework)
+   - SQLite for dev only
+   - No auth required
+   - Raw SQL only
+   - In-memory cache only
+
+3. **Create ADR if justified**:
+   - Determine next ADR number: `adr-NNN-{category}.md`
+   - Use template: `references/templates/adr_template.md`
+   - MCP Research: `mcp__context7__resolve-library-id(technology)`
+   - Fill template:
+     - Title: "ADR-NNN: {Category} Selection"
+     - Context: Why decision was needed
+     - Decision: Technology chosen with version
+     - Rationale: 3 key reasons from research
+     - Alternatives: 2 other options with pros/cons
+   - Save: `docs/reference/adrs/adr-NNN-{category}.md`
+   - Log: "✓ Created ADR for {category}: {technology}"
+
+4. **Skip if not justified**:
+   - Log: "⊘ Skipped ADR for {category}: trivial choice"
+
+**2.4 Analyze TECH_STACK for Guides**:
+
+For each technology with complex configuration:
+
+1. **Check if justified**:
+   - Has config file with >20 lines
+   - Uses custom hooks/middleware/decorators
+   - Has 3+ related dependencies
+
+2. **Create Guide if justified**:
+   - Determine next guide number: `NN-{technology-slug}-patterns.md`
+   - Use template: `references/templates/guide_template.md`
+   - MCP Research: `mcp__Ref__ref_search_documentation("{technology} patterns 2025")`
+   - Fill template:
+     - Principle: Industry standard from research
+     - Our Implementation: How project uses it
+     - Patterns table: 3 Do/Don't/When rows
+   - Save: `docs/reference/guides/NN-{technology}-patterns.md`
+   - Log: "✓ Created Guide for {technology}"
+
+3. **Skip if standard usage**:
+   - Log: "⊘ Skipped Guide for {technology}: standard usage"
+
+**2.5 Analyze TECH_STACK for Manuals**:
+
+For each package with complex API:
+
+1. **Check if justified**:
+   - Package has >10 exported methods
+   - Has breaking changes in current version
+   - NOT in trivial list: lodash, uuid, dotenv
+
+2. **Create Manual if justified**:
+   - Use template: `references/templates/manual_template.md`
+   - MCP Research: `mcp__context7__get-library-docs(topic: "API")`
+   - Fill template:
+     - Package info with version
+     - 2-3 most used methods
+     - Configuration section
+   - Save: `docs/reference/manuals/{package}-{version}.md`
+   - Log: "✓ Created Manual for {package}"
+
+3. **Skip if trivial API**:
+   - Log: "⊘ Skipped Manual for {package}: trivial API"
+
+**2.6 Report Smart Creation**:
+```
+✅ Smart Document Creation complete:
+  - ADRs created: [count] (justified: frontend, backend, database)
+  - ADRs skipped: [count] (trivial: cache=in-memory)
+  - Guides created: [count]
+  - Guides skipped: [count]
+  - Manuals created: [count]
+  - Manuals skipped: [count]
+```
+
+---
+
+### Phase 3: Validate Structure
 
 **Objective**: Ensure reference/README.md complies with structural requirements and auto-fix violations.
 
@@ -132,17 +262,17 @@ docs/reference/
 
 ---
 
-### Phase 3: Validate Content
+### Phase 4: Validate Content
 
-**Objective**: Ensure each section answers its questions with meaningful content and populate registries from auto-discovery.
+**Objective**: Ensure each section answers its questions with meaningful content and populate registries from auto-discovery (including documents created in Phase 2).
 
 **Process**:
 
-**3.1 Load validation spec**:
+**4.1 Load validation spec**:
 - Read `references/questions.md`
 - Parse questions and validation heuristics for all 3 sections
 
-**3.2 Validate sections (parametric loop)**:
+**4.2 Validate sections (parametric loop)**:
 
 Define section parameters:
 ```
@@ -216,7 +346,7 @@ For each section in sections:
 4. **Skip external API calls**:
    - Do NOT use MCP Ref search (template already has format examples)
 
-**3.3 Report content validation**:
+**4.3 Report content validation**:
 - Log summary:
   ```
   ✅ Content validation complete:
@@ -251,21 +381,30 @@ docs/
   - Three registry sections with placeholders
   - Maintenance section
 
+**Document Templates** (for Phase 2 Smart Creation):
+- `references/templates/adr_template.md` - Nygard ADR format (7 sections)
+- `references/templates/guide_template.md` - Pattern documentation (Do/Don't/When)
+- `references/templates/manual_template.md` - API reference format
+
+**Justification Rules**:
+- `references/tech_justification_rules.md` - Mapping: category → create/skip conditions
+
 **Validation Specification**:
-- `references/questions.md` (v1.0) - Question-driven validation:
-  - Questions each section must answer
-  - Validation heuristics
+- `references/questions.md` (v2.0) - Question-driven validation:
+  - Q1-Q3: Registry sections (ADRs, Guides, Manuals)
+  - Q4-Q7: Smart document validation (ADR context, alternatives, patterns)
   - Auto-discovery hints
 
 ---
 
 ## Best Practices
 
-- **No premature validation**: Phase 1 creates structure, Phase 2 validates it (no duplicate checks)
-- **Parametric validation**: Phase 3 uses loop for 3 sections (no code duplication)
+- **No premature validation**: Phase 1 creates structure, Phase 3 validates it
+- **Smart creation**: Phase 2 creates documents only for justified choices
+- **Parametric validation**: Phase 4 uses loop for 3 sections (no code duplication)
 - **Auto-discovery first**: Scan actual files before external API calls
 - **Idempotent**: ✅ Can run multiple times safely (checks existence before creation)
-- **Separation of concerns**: CREATE → VALIDATE STRUCTURE → VALIDATE CONTENT
+- **Separation of concerns**: CREATE → SMART DOCS → VALIDATE STRUCTURE → VALIDATE CONTENT
 
 ---
 
@@ -286,28 +425,36 @@ docs/
 
 Before completing work, verify ALL checkpoints:
 
-**✅ Structure Created:**
+**✅ Phase 1 - Structure Created:**
 - [ ] `docs/reference/` directory exists
 - [ ] `docs/reference/adrs/` directory exists
 - [ ] `docs/reference/guides/` directory exists
 - [ ] `docs/reference/manuals/` directory exists
 - [ ] `docs/reference/README.md` exists (created or existing)
 
-**✅ Structure Validated:**
+**✅ Phase 2 - Smart Documents Created (if Context Store provided):**
+- [ ] ADRs created for justified technology choices (nontrivial)
+- [ ] ADRs skipped for trivial choices (logged)
+- [ ] Guides created for technologies with complex config
+- [ ] Manuals created for packages with complex API
+- [ ] Each created document has real content (not placeholders)
+
+**✅ Phase 3 - Structure Validated:**
 - [ ] SCOPE tag present in first 5 lines
 - [ ] Three registry sections present (ADRs, Guides, Manuals)
 - [ ] Maintenance section present at end
 - [ ] POSIX file endings compliant
 
-**✅ Content Validated:**
+**✅ Phase 4 - Content Validated:**
 - [ ] All sections checked against questions.md
-- [ ] Placeholders populated from auto-discovery OR kept if no files
+- [ ] Placeholders populated from auto-discovery (including Phase 2 documents)
 - [ ] No validation heuristic failures
 
 **✅ Reporting:**
 - [ ] Phase 1 logged: creation summary
-- [ ] Phase 2 logged: structural fixes (if any)
-- [ ] Phase 3 logged: content updates (if any)
+- [ ] Phase 2 logged: smart creation (created/skipped counts)
+- [ ] Phase 3 logged: structural fixes (if any)
+- [ ] Phase 4 logged: content updates (if any)
 
 ---
 
@@ -321,5 +468,5 @@ Before completing work, verify ALL checkpoints:
 
 ---
 
-**Version:** 7.1.0 (MINOR: Workflow optimization - merged Phase 1+2 CREATE, removed redundant Phase 2 Step 3 verification, removed Phase 3.4 project-specific standards check, parametrized Phase 4 content validation. No functionality change, pure refactoring for clarity and efficiency.)
-**Last Updated:** 2025-11-18
+**Version:** 8.0.0 (MAJOR: Added Phase 2 Smart Document Creation. Creates ADRs/Guides/Manuals based on TECH_STACK from Context Store. Only justified documents - nontrivial choices with alternatives. Receives context_store from ln-100 via ln-110.)
+**Last Updated:** 2025-12-19

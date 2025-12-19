@@ -28,6 +28,10 @@ From coordinator:
   - STARTUP_SEQUENCE (services order)
   - DEPLOYMENT_TARGET (AWS, Vercel, Heroku)
   - CI_CD_PIPELINE (from .github/workflows)
+  - DOCKER_SERVICES (parsed from docker-compose.yml services)
+  - DEPLOYMENT_SCALE ("single" | "multi" | "auto-scaling" | "gpu-based")
+  - DEVOPS_CONTACTS (from CODEOWNERS, package.json author, git log)
+  - HAS_GPU (detected from docker-compose nvidia runtime)
 - `targetDir`: Project root directory
 - `flags`: { hasDocker }
 
@@ -35,7 +39,7 @@ From coordinator:
 
 | File | Condition | Questions | Auto-Discovery |
 |------|-----------|-----------|----------------|
-| docs/project/runbook.md | hasDocker | Q46-Q48 | High |
+| docs/project/runbook.md | hasDocker | Q46-Q51 | High |
 
 ## Workflow
 
@@ -52,6 +56,13 @@ From coordinator:
    - Populate setup steps from package.json scripts
    - Extract env vars from .env.example
    - Mark `[TBD: X]` for missing data
+4. **Conditional Section Pruning:**
+   - If DEPLOYMENT_SCALE != "multi" or "auto-scaling": Remove scaling/load balancer sections
+   - If !HAS_GPU: Remove GPU-related sections (nvidia runtime, CUDA)
+   - If service not in DOCKER_SERVICES: Remove that service's examples (e.g., no Redis = no Redis commands)
+   - If DEVOPS_CONTACTS empty: Mark {{KEY_CONTACTS}} as `[TBD: Provide DevOps team contacts via Q50]`
+   - Populate {{SERVICE_DEPENDENCIES}} ONLY from DOCKER_SERVICES (no generic examples)
+   - Populate {{PORT_MAPPING}} ONLY from docker-compose.yml ports section
 
 ### Phase 3: Self-Validate
 1. Check SCOPE tag
@@ -87,7 +98,7 @@ From coordinator:
 
 ## Reference Files
 - Templates: `references/templates/runbook_template.md`
-- Questions: `references/questions_devops.md` (Q46-Q48)
+- Questions: `references/questions_devops.md` (Q46-Q51)
 
 ---
 **Version:** 1.0.0

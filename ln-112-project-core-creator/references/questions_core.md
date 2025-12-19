@@ -27,6 +27,7 @@
 - FR-XXX-NNN identifiers for all requirements
 - MoSCoW prioritization (MUST/SHOULD/COULD/WONT)
 - User stories or acceptance criteria format
+- **NO NFR content** (availability, latency, SLA, SLO, throughput, uptime) - requirements describe WHAT, not HOW WELL
 
 ---
 
@@ -58,6 +59,7 @@
 - Has SCOPE tag in first 10 lines
 - Has FR-XXX identifiers
 - Has MoSCoW labels
+- **NO NFR terminology:** "availability", "uptime", "latency", "SLA", "SLO", "p95", "p99", "throughput", "99.9%"
 
 <!-- DOCUMENT_END: docs/project/requirements.md -->
 

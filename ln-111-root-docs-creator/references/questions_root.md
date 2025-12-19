@@ -121,6 +121,7 @@
 **Overall File Validation:**
 - Has SCOPE tag in first 10 lines
 - Total length > 80 words
+- File size ≤100 lines (Claude Code performance requirement)
 
 <!-- DOCUMENT_END: CLAUDE.md -->
 
@@ -252,6 +253,7 @@
 **Target Sections:** Quick Reference, 12 main sections, Maintenance
 
 **Rules:**
+- Must have SCOPE tag in first 10 lines
 - 60+ universal documentation requirements
 - 12 main sections covering industry standards
 - References to ISO/IEC/IEEE, DIATAXIS, arc42
@@ -301,6 +303,7 @@
 ---
 
 **Overall File Validation:**
+- Has SCOPE tag in first 10 lines
 - File size > 300 lines
 - Mentions ISO/IEC/IEEE 29148:2018
 - Mentions DIATAXIS framework
@@ -313,25 +316,26 @@
 <!-- DOCUMENT_START: docs/principles.md -->
 ## docs/principles.md
 
-**File:** docs/principles.md (8 principles + Decision Framework)
+**File:** docs/principles.md (9 principles + Decision Framework)
 **Target Sections:** Core Principles, Decision Framework, Trade-offs, Anti-Patterns, Verification, Maintenance
 
 **Rules:**
 - Must have SCOPE tag in first 10 lines
-- 8 core principles (Standards First, YAGNI, KISS, DRY, Consumer-First, No Legacy, Docs-as-Code, Security)
+- 9 core principles (Standards First, YAGNI, KISS, DRY, Consumer-First, No Legacy, Docs-as-Code, Security, Auto-Generated Migrations Only)
 - Decision-Making Framework (7 steps)
-- Verification Checklist (8 items)
+- Verification Checklist (9 items)
+- NO code examples in Anti-Patterns section (keep language-agnostic)
 
 ---
 
 <!-- QUESTION_START: 17 -->
 ### Question 17: What are the core development principles?
 
-**Expected Answer:** 8 principles in table format
+**Expected Answer:** 9 principles in table format
 **Target Section:** ## Core Principles
 
 **Validation Heuristics:**
-- Has 8-row table: Standards First, YAGNI, KISS, DRY, Consumer-First, No Legacy, Docs-as-Code, Security
+- Has 9-row table: Standards First, YAGNI, KISS, DRY, Consumer-First, No Legacy, Docs-as-Code, Security, Auto-Generated Migrations Only
 
 **Auto-Discovery:** None (universal)
 <!-- QUESTION_END: 17 -->
@@ -383,11 +387,11 @@
 <!-- QUESTION_START: 21 -->
 ### Question 21: How to verify principles compliance?
 
-**Expected Answer:** Verification checklist with 8 items
+**Expected Answer:** Verification checklist with 9 items
 **Target Section:** ## Verification Checklist
 
 **Validation Heuristics:**
-- Has 8-item checklist (- [ ] format) covering all 8 principles
+- Has 9-item checklist (- [ ] format) covering all 9 principles
 
 **Auto-Discovery:** None (universal)
 <!-- QUESTION_END: 21 -->
@@ -411,7 +415,8 @@
 **Overall File Validation:**
 - Has SCOPE tag in first 10 lines
 - File size > 100 lines
-- All 8 core principles present
+- All 9 core principles present
+- NO code syntax in Anti-Patterns (no: if/else, ==, def, class, import)
 
 <!-- DOCUMENT_END: docs/principles.md -->
 

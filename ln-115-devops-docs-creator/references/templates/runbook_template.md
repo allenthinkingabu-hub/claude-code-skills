@@ -22,12 +22,10 @@ This runbook provides step-by-step operational procedures for {{PROJECT_NAME}} a
 
 ### 1.3 Key Contacts
 {{KEY_CONTACTS}}
-<!-- Example:
-| Role | Name | Contact | Availability |
-|------|------|---------|--------------|
-| DevOps Lead | John Doe | john@example.com | 24/7 on-call |
-| Tech Lead | Jane Smith | jane@example.com | Mon-Fri 9-6 |
-| DBA | Bob Johnson | bob@example.com | Mon-Fri 9-5 |
+<!--
+NOTE: Do NOT use placeholder names (John Doe, Jane Smith).
+Use auto-discovery (CODEOWNERS, package.json author, git log) or mark as [TBD].
+See Q50 in questions_devops.md for validation rules.
 -->
 
 ---
@@ -573,21 +571,10 @@ docker compose start app
 ### Appendix B: Service Dependencies
 
 {{SERVICE_DEPENDENCIES}}
-<!-- Example:
-**Internal dependencies:**
-- app → db (PostgreSQL 16)
-- app → cache (Redis 7)
-- app → queue (RabbitMQ 3.12)
-
-**External dependencies:**
-- Stripe API (https://api.stripe.com)
-- SendGrid API (https://api.sendgrid.com)
-- AWS S3 (file storage)
-
-**Health check URLs:**
-- App: http://localhost:3000/health
-- Database: `docker compose exec db pg_isready`
-- Cache: `docker compose exec cache redis-cli ping`
+<!--
+NOTE: Populate ONLY from docker-compose.yml services section.
+Do NOT include generic examples (Redis, RabbitMQ) if not actually used.
+See Q51 in questions_devops.md for auto-discovery rules.
 -->
 
 ---
@@ -595,13 +582,9 @@ docker compose start app
 ### Appendix C: Port Mapping
 
 {{PORT_MAPPING}}
-<!-- Example:
-| Service | Container Port | Host Port | Description |
-|---------|----------------|-----------|-------------|
-| app | 3000 | 3000 | Application HTTP |
-| db | 5432 | 5432 | PostgreSQL |
-| cache | 6379 | 6379 | Redis |
-| adminer | 8080 | 8080 | Database admin UI |
+<!--
+NOTE: Extract ONLY from docker-compose.yml ports section.
+Do NOT include services not in docker-compose (e.g., no Redis if not used).
 -->
 
 ---

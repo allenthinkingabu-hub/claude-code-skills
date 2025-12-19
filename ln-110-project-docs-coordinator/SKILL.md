@@ -18,6 +18,25 @@ L2 Coordinator that gathers project context once and delegates document creation
 - **ln-100-documents-pipeline:** Invoked as first L2 coordinator in documentation pipeline
 - Never called directly by users
 
+## Inputs
+
+**From ln-100 (via Phase 0 Legacy Migration):**
+```json
+{
+  "LEGACY_CONTENT": {
+    "legacy_architecture": { "sections": [...], "diagrams": [...] },
+    "legacy_requirements": { "functional": [...] },
+    "legacy_principles": { "principles": [...], "anti_patterns": [...] },
+    "legacy_tech_stack": { "frontend": "...", "backend": "...", "versions": {} },
+    "legacy_api": { "endpoints": [...], "authentication": "..." },
+    "legacy_database": { "tables": [...], "relationships": [...] },
+    "legacy_runbook": { "prerequisites": [...], "install_steps": [...], "env_vars": [...] }
+  }
+}
+```
+
+**LEGACY_CONTENT** is passed to workers as base content. Priority: **Legacy > Auto-discovery > Template defaults**.
+
 ## Architecture
 
 ```
@@ -40,14 +59,16 @@ ln-110-project-docs-coordinator (this skill)
 
 | Source | Data Extracted | Context Store Keys |
 |--------|----------------|-------------------|
-| package.json | name, description, dependencies, scripts, engines | PROJECT_NAME, PROJECT_DESCRIPTION, DEPENDENCIES, DEV_COMMANDS |
-| docker-compose.yml | services, ports | DOCKER_SERVICES |
+| package.json | name, description, dependencies, scripts, engines, author, contributors | PROJECT_NAME, PROJECT_DESCRIPTION, DEPENDENCIES, DEV_COMMANDS, DEVOPS_CONTACTS |
+| docker-compose.yml | services, ports, deploy.replicas, runtime:nvidia | DOCKER_SERVICES, DEPLOYMENT_SCALE, HAS_GPU |
 | Dockerfile | runtime version | RUNTIME_VERSION |
 | src/ structure | folders, patterns | SRC_STRUCTURE, ARCHITECTURE_PATTERN |
 | migrations/ | table definitions | SCHEMA_OVERVIEW |
 | .env.example | environment variables | ENV_VARIABLES |
 | tsconfig.json, .eslintrc | conventions | CODE_CONVENTIONS |
-| README.md | project description | PROJECT_DESCRIPTION (fallback) |
+| README.md | project description, scaling mentions | PROJECT_DESCRIPTION (fallback), DEPLOYMENT_SCALE (fallback) |
+| CODEOWNERS | maintainers | DEVOPS_CONTACTS |
+| git log | frequent committers | DEVOPS_CONTACTS (fallback) |
 
 **1.2 Detect Project Type:**
 
@@ -76,9 +97,41 @@ ln-110-project-docs-coordinator (this skill)
   "SRC_STRUCTURE": { "controllers": [...], "services": [...] },
   "ENV_VARIABLES": ["DATABASE_URL", "JWT_SECRET"],
   "DEV_COMMANDS": { "dev": "npm run dev", "test": "npm test" },
+  "DOCKER_SERVICES": ["app", "db"],
+  "DEPLOYMENT_SCALE": "single",
+  "DEVOPS_CONTACTS": [],
+  "HAS_GPU": false,
   "flags": { "hasBackend": true, "hasDatabase": true, "hasFrontend": true, "hasDocker": true }
 }
 ```
+
+**DEPLOYMENT_SCALE detection rules:**
+- `"single"` (default): No deploy.replicas, no scaling keywords in README
+- `"multi"`: deploy.replicas > 1 OR load balancer mentioned
+- `"auto-scaling"`: auto-scaling keywords in README/docker-compose
+- `"gpu-based"`: runtime: nvidia in docker-compose
+
+**DEVOPS_CONTACTS fallback chain:**
+1. CODEOWNERS file → extract maintainers
+2. package.json author/contributors → extract names/emails
+3. git log → top 3 frequent committers
+4. If all empty → `[TBD: Provide DevOps team contacts]`
+
+**1.6 Merge Legacy Content (if provided by ln-100):**
+- Check if `LEGACY_CONTENT` was passed from ln-100 Phase 0
+- If exists, merge into Context Store:
+  ```
+  contextStore.LEGACY_CONTENT = input.LEGACY_CONTENT
+  ```
+- Merge priority for workers:
+  - `LEGACY_CONTENT.legacy_architecture` → used by ln-112 for architecture.md
+  - `LEGACY_CONTENT.legacy_requirements` → used by ln-112 for requirements.md
+  - `LEGACY_CONTENT.legacy_tech_stack` → merged with auto-discovered TECH_STACK
+  - `LEGACY_CONTENT.legacy_principles` → used by ln-111 for principles.md
+  - `LEGACY_CONTENT.legacy_api` → used by ln-113 for api_spec.md
+  - `LEGACY_CONTENT.legacy_database` → used by ln-113 for database_schema.md
+  - `LEGACY_CONTENT.legacy_runbook` → used by ln-115 for runbook.md
+- If no LEGACY_CONTENT: workers use auto-discovery + template defaults
 
 ### Phase 2: Delegate to Workers
 
@@ -106,6 +159,7 @@ For each worker:
 2. Sum totals: created files, skipped files, TBD markers
 3. Report any validation warnings
 4. Return aggregated summary to ln-100
+5. **Include Context Store** for subsequent workers (ln-120 needs TECH_STACK)
 
 **Output:**
 ```json
@@ -127,7 +181,13 @@ For each worker:
     "docs/project/database_schema.md",
     "docs/project/design_guidelines.md",
     "docs/project/runbook.md"
-  ]
+  ],
+  "context_store": {
+    "PROJECT_NAME": "...",
+    "TECH_STACK": { "frontend": "React 18", "backend": "Express 4.18", "database": "PostgreSQL 15" },
+    "DEPENDENCIES": [...],
+    "flags": { "hasBackend": true, "hasDatabase": true, "hasFrontend": true, "hasDocker": true }
+  }
 }
 ```
 
@@ -149,5 +209,5 @@ For each worker:
 - Guides: `references/guides/automatic_analysis_guide.md`, `critical_questions.md`, `troubleshooting.md`
 
 ---
-**Version:** 1.0.0
+**Version:** 2.0.0 (MAJOR: Added LEGACY_CONTENT handling. Receives legacy content from ln-100 Phase 0, merges into Context Store, passes to workers. Priority: Legacy > Auto-discovery > Template defaults.)
 **Last Updated:** 2025-12-19
