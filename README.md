@@ -61,6 +61,8 @@ This repository contains **34 production-ready skills** for [Claude Code](https:
 | **[ln-130-tasks-docs-creator](ln-130-tasks-docs-creator/)** | Create task management documentation: docs/tasks/README.md (task system rules) + kanban_board.md (Linear integration). **Idempotent**: Critical kanban_board.md protection. | 6.0.0 | ✅ |
 | **[ln-140-test-docs-creator](ln-140-test-docs-creator/)** | Create test documentation: testing-strategy.md (universal testing philosophy) + tests/README.md (organization with Story-Level Pattern). Optional. **Idempotent**: Checks 4 items. | 7.0.0 | ✅ |
 | **[ln-150-presentation-creator](ln-150-presentation-creator/)** | Build interactive HTML presentation from project documentation with 6 tabs (Overview, Requirements+ADRs, Architecture, Technical Spec, Roadmap, Guides). **Idempotent**: User confirmation for rebuild. | 6.0.0 | ✅ |
+| **[ln-160-docs-auditor](ln-160-docs-auditor/)** | Audit documentation quality across 6 categories (Hierarchy, SSOT, Compactness, Requirements, Actuality, Legacy). Outputs Compliance Score X/10 + Findings. User-invocable or part of ln-100 pipeline. | 1.0.0 | ✅ |
+| **[ln-170-code-comments-auditor](ln-170-code-comments-auditor/)** | Audit code comments and docstrings across 6 categories (WHY-not-WHAT, Density, Forbidden, Docstrings, Actuality, Legacy). Universal for any tech stack. | 1.0.0 | ✅ |
 
 ---
 

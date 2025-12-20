@@ -20,7 +20,9 @@ ln-100-documents-pipeline (L1 Top Orchestrator - this skill)
 ├── ln-120-reference-docs-creator (L2 Worker)
 ├── ln-130-tasks-docs-creator (L2 Worker)
 ├── ln-140-test-docs-creator (L2 Worker - optional)
-└── ln-150-presentation-creator (L2 Worker)
+├── ln-150-presentation-creator (L2 Worker)
+├── ln-160-docs-auditor (L2 Worker - optional)
+└── ln-170-code-comments-auditor (L2 Worker - optional)
 ```
 
 ## When to Use This Skill
@@ -43,7 +45,7 @@ This skill should be used when:
 
 ## How It Works
 
-The skill follows a 6-phase orchestration workflow: **Legacy Migration (optional)** → User confirmation → Invoke coordinator + 4 workers sequentially → Global cleanup → Summary. Phase 3 (validation) is intentionally skipped - each component validates its own output.
+The skill follows a 7-phase orchestration workflow: **Legacy Migration (optional)** → User confirmation → Invoke coordinator + 4 workers sequentially → Global cleanup → **Documentation Audit (optional)** → Summary. Phase 3 (validation) is intentionally skipped - each component validates its own output.
 
 ---
 
@@ -262,6 +264,7 @@ Add ALL invocations to todos before starting:
 - Invoke ln-140-test-docs-creator (pending)
 - Invoke ln-150-presentation-creator (pending)
 - Run Global Cleanup (Phase 4) (pending)
+- Run Documentation Audit (Phase 5 - optional) (pending)
 ```
 Mark each as in_progress when starting, completed when worker returns success.
 
@@ -432,7 +435,53 @@ Links:
 
 ---
 
-### Phase 5: Summary and Next Steps
+### Phase 5: Documentation Audit (OPTIONAL)
+
+**Objective**: Audit documentation and code comments quality.
+
+**Trigger**: Only if user requests audit OR pipeline invoked with audit flags.
+
+**Process**:
+
+**5.1 Ask User**:
+```
+📊 Documentation Audit Options:
+1. AUDIT DOCS: Run ln-160-docs-auditor (6 categories)
+2. AUDIT COMMENTS: Run ln-170-code-comments-auditor (6 categories)
+3. BOTH: Run both auditors
+4. SKIP: Continue to summary
+
+Choose option (1/2/3/4): _
+```
+
+**5.2 Run Selected Auditors**:
+- If AUDIT DOCS selected:
+  - **Invocation**: `Skill(skill: "ln-160-docs-auditor")` → AUTOMATIC
+  - **Output**: Compliance Score X/10 per category + Findings
+- If AUDIT COMMENTS selected:
+  - **Invocation**: `Skill(skill: "ln-170-code-comments-auditor")` → AUTOMATIC
+  - **Output**: Compliance Score X/10 per category + Findings
+
+**5.3 Show Audit Summary**:
+```
+📊 Audit Results:
+- Documentation Quality: X/10 overall
+  - Hierarchy & Links: X/10
+  - Single Source of Truth: X/10
+  - ...
+- Code Comments Quality: X/10 overall
+  - WHY not WHAT: X/10
+  - Density (15-20%): X/10
+  - ...
+
+See full reports above for detailed findings.
+```
+
+**Output**: Audit reports with compliance scores and findings
+
+---
+
+### Phase 6: Summary and Next Steps
 
 **Objective**: Provide complete overview of created system.
 
@@ -618,7 +667,13 @@ Before completing work, verify ALL checkpoints:
 - [ ] 4.4: Internal links validated (broken links fixed, critical links added)
 - [ ] 4.5: Final report generated (counts, lists, actions)
 
-**✅ Summary Displayed (Phase 5):**
+**✅ Documentation Audit (Phase 5 - if selected):**
+- [ ] User selected audit option (AUDIT DOCS / AUDIT COMMENTS / BOTH / SKIP)
+- [ ] If AUDIT DOCS: ln-160-docs-auditor invoked, compliance score displayed
+- [ ] If AUDIT COMMENTS: ln-170-code-comments-auditor invoked, compliance score displayed
+- [ ] Audit summary shown with scores per category
+
+**✅ Summary Displayed (Phase 6):**
 - [ ] All created files listed with sizes
 - [ ] Documentation system features highlighted (SCOPE tags, Maintenance sections, README hubs, DAG structure, deduplicated content, validated links)
 - [ ] Next steps recommended (ln-210-epic-coordinator)

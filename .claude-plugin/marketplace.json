@@ -29,6 +29,8 @@
         "./ln-130-tasks-docs-creator",
         "./ln-140-test-docs-creator",
         "./ln-150-presentation-creator",
+        "./ln-160-docs-auditor",
+        "./ln-170-code-comments-auditor",
         "./ln-200-scope-decomposer",
         "./ln-210-epic-coordinator",
         "./ln-220-story-coordinator",
