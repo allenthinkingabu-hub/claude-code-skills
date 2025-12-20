@@ -48,5 +48,5 @@ Reviews a single task in To Review and decides Done vs To Rework with immediate 
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-Version: 4.0.0 (Condensed review flow and zero-tolerance guidance)
-Last Updated: 2025-11-26
+**Version:** 7.3.0
+**Last Updated:** 2025-12-20

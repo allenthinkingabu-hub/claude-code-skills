@@ -77,5 +77,5 @@ Update `docs/tasks/kanban_board.md` after EVERY status change:
 - Auto-discovery: `CLAUDE.md`, `docs/tasks/kanban_board.md`
 
 ---
-Version: 9.0.0 (Explicit Skill tool invocation instructions, Worker Invocation section)
-Last Updated: 2025-12-12
+**Version:** 9.0.0 (Explicit Skill tool invocation instructions, Worker Invocation section)
+**Last Updated:** 2025-12-12

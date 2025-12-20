@@ -3,7 +3,7 @@
 **Date:** {{DATE}} | **Status:** {{STATUS}} | **Category:** {{CATEGORY}} | **Decision Makers:** {{DECISION_MAKERS}}
 
 <!-- SCOPE: Architecture Decision Record for ONE specific technical decision ONLY. Contains context, decision, rationale, consequences, alternatives (2 with pros/cons). -->
-<!-- DO NOT add here: Implementation code → Task descriptions, Requirements → Requirements.md, Multiple decisions → Create separate ADRs, Architecture diagrams → Architecture.md -->
+<!-- DO NOT add here: Implementation code -> Task descriptions, Requirements -> Requirements.md, Multiple decisions -> Create separate ADRs, Architecture diagrams -> Architecture.md -->
 
 ---
 

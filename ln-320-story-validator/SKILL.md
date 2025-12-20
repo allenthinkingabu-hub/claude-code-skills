@@ -137,6 +137,5 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 - Linear integration: `../ln-210-epic-coordinator/references/linear_integration.md`
 
 ---
-
-Version: 13.0.0 (Added criteria #17-#20: Rate Limiting, Auth/Security, Error Handling, Logging & Observability)
-Last Updated: 2025-12-12
+**Version:** 13.0.0 (Added criteria #17-#20: Rate Limiting, Auth/Security, Error Handling, Logging & Observability)
+**Last Updated:** 2025-12-12

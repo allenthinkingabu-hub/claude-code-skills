@@ -108,12 +108,11 @@ Research industry standards and create project documentation in one workflow.
 - Path returned; README updated if placeholder present
 
 ## Reference Files
-- Guide template: `references/guide_template.md`
-- Manual template: `references/manual_template.md`
-- ADR template: `references/adr_template.md`
+- Guide template: `shared/templates/guide_template.md`
+- Manual template: `shared/templates/manual_template.md`
+- ADR template: `shared/templates/adr_template.md`
 - Standards: `docs/DOCUMENTATION_STANDARDS.md` (if exists)
 
 ---
-
-Version: 1.0.0 (Unified from ln-321-guide-creator, ln-322-adr-creator, ln-323-manual-creator)
-Last Updated: 2025-12-09
+**Version:** 1.0.0 (Unified from ln-321-guide-creator, ln-322-adr-creator, ln-323-manual-creator)
+**Last Updated:** 2025-12-09

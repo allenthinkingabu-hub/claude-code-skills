@@ -211,5 +211,5 @@ Full codebase quality audit that identifies technical debt and creates a consoli
 - Related worker: `../ln-341-code-quality-checker/SKILL.md`
 
 ---
-Version: 2.0.0
-Last Updated: 2025-12-19
+**Version:** 2.0.0
+**Last Updated:** 2025-12-19

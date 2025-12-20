@@ -2,7 +2,21 @@
 
 Token-efficient documentation targets.
 
-## File Size Limits
+## Philosophy
+
+Size limits are **upper bounds**, not targets. The goal is **maximum compression** while preserving accuracy and usefulness.
+
+| Approach | Wrong ❌ | Right ✅ |
+|----------|---------|---------|
+| File is 200/300 lines | "Under limit, OK" | "Can we compress to 150?" |
+| File is 100 lines | "Way under, skip" | "Can we compress to 80?" |
+| File is 350 lines | "Over limit, reduce to 300" | "Reduce as much as possible" |
+
+**Target: Minimum Viable Size (MVS)** — the smallest document that fully conveys the information.
+
+---
+
+## File Size Limits (Upper Bounds)
 
 | Document | Max Lines | Max Words | Rationale |
 |----------|-----------|-----------|-----------|

@@ -65,5 +65,5 @@ Mark each as in_progress when starting, completed when done. On failure, mark re
 - Tech stack/linters: `docs/project/tech_stack.md`
 
 ---
-Version: 8.0.0 (Condensed passes and fail-fast actions)
-Last Updated: 2025-11-26
+**Version:** 8.0.0 (Condensed passes and fail-fast actions)
+**Last Updated:** 2025-11-26

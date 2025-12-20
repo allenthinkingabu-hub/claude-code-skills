@@ -118,7 +118,7 @@ For each category in TECH_STACK (frontend, backend, database, orm, auth, cache):
 
 3. **Create ADR if justified**:
    - Determine next ADR number: `adr-NNN-{category}.md`
-   - Use template: `references/templates/adr_template.md`
+   - Use template: `shared/templates/adr_template.md`
    - MCP Research: `mcp__context7__resolve-library-id(technology)`
    - Fill template:
      - Title: "ADR-NNN: {Category} Selection"
@@ -143,7 +143,7 @@ For each technology with complex configuration:
 
 2. **Create Guide if justified**:
    - Determine next guide number: `NN-{technology-slug}-patterns.md`
-   - Use template: `references/templates/guide_template.md`
+   - Use template: `shared/templates/guide_template.md`
    - MCP Research: `mcp__Ref__ref_search_documentation("{technology} patterns 2025")`
    - Fill template:
      - Principle: Industry standard from research
@@ -165,7 +165,7 @@ For each package with complex API:
    - NOT in trivial list: lodash, uuid, dotenv
 
 2. **Create Manual if justified**:
-   - Use template: `references/templates/manual_template.md`
+   - Use template: `shared/templates/manual_template.md`
    - MCP Research: `mcp__context7__get-library-docs(topic: "API")`
    - Fill template:
      - Package info with version
@@ -382,9 +382,9 @@ docs/
   - Maintenance section
 
 **Document Templates** (for Phase 2 Smart Creation):
-- `references/templates/adr_template.md` - Nygard ADR format (7 sections)
-- `references/templates/guide_template.md` - Pattern documentation (Do/Don't/When)
-- `references/templates/manual_template.md` - API reference format
+- `shared/templates/adr_template.md` - Nygard ADR format (7 sections)
+- `shared/templates/guide_template.md` - Pattern documentation (Do/Don't/When)
+- `shared/templates/manual_template.md` - API reference format
 
 **Justification Rules**:
 - `references/tech_justification_rules.md` - Mapping: category → create/skip conditions

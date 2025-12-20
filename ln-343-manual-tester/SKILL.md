@@ -152,5 +152,5 @@ echo "=========================================="
 - Risk-based context: `../ln-350-story-test-planner/references/risk_based_testing_guide.md`
 
 ---
-Version: 4.0.0 (Reusable scripts in tests/manual/, prompsit-api format)
-Last Updated: 2025-12-12
+**Version:** 4.0.0 (Reusable scripts in tests/manual/, prompsit-api format)
+**Last Updated:** 2025-12-12

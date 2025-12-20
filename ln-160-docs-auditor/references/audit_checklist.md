@@ -64,40 +64,54 @@ This is non-negotiable. Changing rules instead of fixing content is forbidden.
 
 ---
 
-## 3. Context Compactness & Scannability
+## 3. Proactive Compression
+
+**Goal:** Minimum viable size - smallest document that fully conveys information.
+Size limits are upper bounds, NOT targets. A 100-line file instead of 300 = success!
 
 ### Must Pass
-- [ ] Files within size limits (see size_limits.md)
-- [ ] No filler words (simply, easily, basically, actually)
+- [ ] **All files checked for compression** (even under-limit ones!)
+- [ ] No filler words (simply, easily, basically, actually, really, very)
+- [ ] No obvious statements ("This section describes...")
+- [ ] No over-explanations (one concept = one sentence max)
+- [ ] Comparisons converted to tables
+- [ ] Enumerations converted to lists
 - [ ] Active voice used (not passive)
-- [ ] Short sentences (<25 words)
-- [ ] **Comparisons in prose → converted to tables**
-- [ ] **Enumerations in prose → converted to lists**
 
-### Should Pass
-- [ ] Tables preferred over prose for comparisons
-- [ ] Lists preferred over paragraphs for sequences
-- [ ] Code examples focused (one concept each)
-- [ ] No redundant explanations
-- [ ] Headings start with keywords (not "Introduction to...")
-- [ ] Lists contain 2-8 items (split if more)
-- [ ] Table cells ≤2 sentences
+### Compression Targets
+
+| Content Type | Before | After | Technique |
+|--------------|--------|-------|-----------|
+| Comparison prose | "X is better than Y because..." | Table: X vs Y | prose→table |
+| Long explanation | 5 sentences | 1-2 sentences | remove filler |
+| Obvious statement | "This function does X" | (delete) | remove obvious |
+| Repeated info | same info in 3 places | 1 place + links | SSOT |
+| Verbose phrase | "in order to" | "to" | compress |
+
+### Meaningless Content Patterns (DELETE)
+- "This section describes/explains..."
+- "As mentioned above/below..."
+- "It is important to note that..."
+- "Please note that..."
+- "In this document, we will..."
+- "The purpose of this is to..."
 
 ### Detection Patterns
-- Verbose phrases (in order to → to)
-- Long paragraphs (>5 sentences)
-- Repeated information within same doc
+- Verbose phrases (in order to → to, at this point → now)
+- Long paragraphs (>3 sentences)
 - Over-explained obvious concepts
-- **Prose comparisons:** "X is better than Y", "compared to", "versus"
-- **Prose enumerations:** "First..., Second...", "Additionally..."
-- **Prose attributes:** "X has A, B, and C"
+- Prose comparisons: "X is better than Y", "compared to"
+- Prose enumerations: "First..., Second...", "Additionally..."
 
 ### Scoring
-- 10/10: Concise and scannable throughout
-- -1 per verbose section
-- -1 per prose that should be table/list
-- -2 per file exceeding limits
-- -3 per bloated document (>50% over limit)
+- 10/10: Maximum compression achieved; no further reduction possible
+- 8-9/10: Minor compression opportunities remain
+- 6-7/10: Moderate compression possible (verbose sections, some prose→tables)
+- 4-5/10: Significant compression needed (filler words, over-explanations)
+- 1-3/10: Bloated content (major redundancy, meaningless sections)
+
+**Note:** Being under size limit does NOT automatically mean 10/10.
+A 150-line file with compression opportunities = 6/10.
 
 ---
 
@@ -149,30 +163,60 @@ Documents describe algorithms and concepts in text, NOT code:
 
 ---
 
-## 5. Actuality
+## 5. Actuality (CRITICAL)
 
-### Must Pass
-- [ ] File paths in docs match actual file structure
-- [ ] Command examples are runnable
-- [ ] API endpoints exist and match docs
-- [ ] Config examples match current schema
+**Outdated docs are worse than no docs** - they mislead and waste time.
+This category requires **active verification against code**, not passive reading.
 
-### Should Pass
-- [ ] Version numbers current
-- [ ] Screenshots match current UI (if any)
-- [ ] Links to external resources valid
-- [ ] Dependency versions accurate
+### Must Pass - Verify Against Code
+- [ ] **File paths** - every path in docs exists in codebase
+- [ ] **Function/class names** - match actual code signatures
+- [ ] **API endpoints** - exist and match described behavior
+- [ ] **Config keys** - exist in actual config files/schemas
+- [ ] **Environment variables** - match what code actually reads
+- [ ] **Command examples** - run successfully (test them!)
+- [ ] **Dependencies** - versions match package.json/requirements.txt
+
+### Verification Workflow
+
+For each doc, actively check:
+
+| Doc Content | How to Verify |
+|-------------|---------------|
+| File path `src/utils/helper.ts` | `ls src/utils/helper.ts` |
+| Function `processData(input)` | `grep -n "processData" src/` |
+| Endpoint `POST /api/users` | Check router/controller files |
+| Config `DATABASE_URL` | `grep -rn "DATABASE_URL" src/` |
+| Command `npm run build` | Check package.json scripts |
+
+### Fact-Check Patterns
+
+**High-risk areas** (check first):
+- Installation/setup instructions
+- API documentation
+- Configuration guides
+- Architecture diagrams
+- Dependency lists
+
+**Detection of stale content:**
+- Paths to deleted files
+- References to renamed functions/classes
+- Deprecated API endpoints still documented
+- Old env var names
+- Outdated version numbers
 
 ### Code vs Docs Priority
 When mismatch found:
-1. **Code is truth** - flag doc for update
-2. Report: "Doc says X, code does Y"
-3. Action: "Update doc to reflect code"
+1. **Code is truth** - always update doc, never "fix" code to match doc
+2. Report: "Doc says X, code does Y" with file:line reference
+3. Action: "Update doc to reflect current code behavior"
 
 ### Scoring
-- 10/10: Docs match code exactly
-- -1 per minor mismatch (formatting, names)
-- -2 per functional mismatch (wrong behavior described)
+- 10/10: All facts verified against code; docs match reality
+- 8-9/10: Minor mismatches (typos in names, formatting)
+- 6-7/10: Some paths/names outdated but core info correct
+- 4-5/10: Functional mismatches (wrong behavior described)
+- 1-3/10: Critical mismatches (setup fails, API wrong, config broken)
 - -3 per critical mismatch (security, breaking changes)
 
 ---
@@ -209,14 +253,29 @@ When mismatch found:
 ## Quick Audit Commands
 
 ```bash
+# === ACTUALITY VERIFICATION (run these first!) ===
+
+# Extract all file paths from docs and check if they exist
+grep -roh 'src/[^)` ]*\|lib/[^)` ]*' docs/ | sort -u | while read f; do [ ! -e "$f" ] && echo "MISSING: $f"; done
+
+# Extract function/class names and verify they exist
+grep -roh '\b[A-Z][a-zA-Z]*\b' docs/ | sort -u | head -20  # then grep in src/
+
+# Check if documented env vars exist in code
+grep -roh '\$[A-Z_]*\|[A-Z_]*=' docs/ | sort -u | while read v; do grep -rq "$v" src/ || echo "NOT FOUND: $v"; done
+
+# Verify npm scripts mentioned in docs
+grep -oh 'npm run [a-z-]*' docs/*.md | sort -u  # compare with package.json
+
+# === STRUCTURE & LINKS ===
+
 # Find orphaned files (files not linked from any other)
 grep -rL "filename.md" docs/
 
 # Find broken links
 grep -roh '\[.*\](.*\.md)' docs/ | grep -v http
 
-# Find TODO comments
-grep -rn "TODO\|FIXME\|XXX" docs/
+# === COMPRESSION ===
 
 # Find verbose phrases
 grep -rni "in order to\|at this point\|has the ability" docs/
@@ -226,4 +285,9 @@ grep -rn '```python\|```js\|```ts\|```java\|```go\|```rust' docs/
 
 # Check file sizes
 wc -l docs/**/*.md | sort -n
+
+# === LEGACY ===
+
+# Find TODO comments
+grep -rn "TODO\|FIXME\|XXX" docs/
 ```

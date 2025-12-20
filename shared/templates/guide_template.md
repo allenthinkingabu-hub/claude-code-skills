@@ -1,7 +1,7 @@
 # [Pattern Name]
 
 <!-- SCOPE: Pattern documentation ONLY. Contains principle (industry standard), implementation (project-specific), code structure patterns (DO/DON'T), sources. -->
-<!-- DO NOT add here: Architectural decisions → ADR, Implementation code → Task descriptions, Multiple patterns → Separate guides, Requirements → Requirements.md, API specs → api_spec.md -->
+<!-- DO NOT add here: Architectural decisions -> ADR, Implementation code -> Task descriptions, Multiple patterns -> Separate guides, Requirements -> Requirements.md, API specs -> api_spec.md -->
 
 ## Principle
 

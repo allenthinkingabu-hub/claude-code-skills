@@ -43,5 +43,5 @@ Executes a single implementation (or refactor) task from Todo to To Review using
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-Version: 5.1.0 (Condensed executor flow and single-task safety)
-Last Updated: 2025-11-26
+**Version:** 10.1.0
+**Last Updated:** 2025-12-20

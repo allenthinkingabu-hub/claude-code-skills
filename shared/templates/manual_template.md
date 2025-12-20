@@ -1,7 +1,7 @@
 # {{PACKAGE_NAME}} v{{VERSION}} - Usage Manual
 
 <!-- SCOPE: API/Method reference ONLY. Contains technical descriptions, parameters, examples. -->
-<!-- DO NOT add: How-to instructions → Guide, Decision rationale → ADR -->
+<!-- DO NOT add: How-to instructions -> Guide, Decision rationale -> ADR -->
 
 ## Package Information
 

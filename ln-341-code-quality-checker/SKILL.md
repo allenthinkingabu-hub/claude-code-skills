@@ -40,5 +40,5 @@ Analyzes Done implementation tasks for code-quality issues and reports findings 
 - Templates for context: `../ln-311-task-creator/references/task_template_implementation.md`
 
 ---
-Version: 4.0.0 (Condensed worker flow)
-Last Updated: 2025-11-26
+**Version:** 4.0.0 (Condensed worker flow)
+**Last Updated:** 2025-11-26
