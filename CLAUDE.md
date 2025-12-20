@@ -47,7 +47,7 @@ All skills have state diagrams in `diagram.html` files for visualizing workflows
 
 ### Available Skills
 
-**36 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
+**37 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
 
 **Key workflow:** ln-100-documents-pipeline → ln-200-scope-decomposer → ln-300-story-pipeline → ln-340-story-quality-gate
 

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ln-370-test-auditor Workflow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="../shared/css/diagram.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ln-370-test-auditor Workflow</h1>
+            <p class="subtitle">Standalone Worker v1.0.0</p>
+        </header>
+        <div class="info-box">
+        <h3>Overview</h3>
+        <p><strong>Purpose:</strong> Test suite quality audit with Usefulness Score per test. Remove useless, create missing.</p>
+        <p><strong>Type:</strong> Linear Workflow (6 sequential phases)</p>
+        <p><strong>Single Responsibility:</strong> Audit tests and create ONE refactoring task in Epic 0.</p>
+        <p><strong>Invocation:</strong> Manual - user runs when needed for test suite optimization.</p>
+    </div>
+
+    <div class="mermaid">
+graph TD
+    Start([START]) --> Phase1[Phase 1: Discovery<br/>Find all test files<br/>*.test.*, *.spec.*<br/>__tests__/*]
+
+    Phase1 --> Phase2[Phase 2: Analyze<br/>Parse each test<br/>Extract what it validates<br/>Identify dependencies]
+
+    Phase2 --> Phase3[Phase 3: Score<br/>Calculate Usefulness Score<br/>Impact x Probability<br/>KEEP/REVIEW/REMOVE]
+
+    Phase3 --> Phase4[Phase 4: Audit<br/>6 categories check<br/>Anti-patterns detection<br/>Coverage gaps]
+
+    Phase4 --> Phase5[Phase 5: Report<br/>Tests to remove<br/>Missing tests<br/>Recommendations]
+
+    Phase5 --> Phase6[Phase 6: Create Task<br/>Linear Epic 0<br/>Full report<br/>Action items]
+
+    Phase6 --> End([END:<br/>Audit task created])
+
+    classDef phase fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    classDef endpoint fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
+
+    class Phase1,Phase2,Phase3,Phase4,Phase5,Phase6 phase
+    class Start,End endpoint
+    </div>
+
+    <h2>Usefulness Score Decision Flow</h2>
+
+    <div class="mermaid">
+graph TD
+    Test[Each Test] --> CalcScore[Calculate Score<br/>Impact 1-5 x Probability 1-5]
+
+    CalcScore --> Check{Score?}
+
+    Check -->|15-25| Keep[KEEP<br/>High value test]
+    Check -->|10-14| Review[REVIEW<br/>Check if E2E covers]
+    Check -->|1-9| Remove[REMOVE<br/>Delete test]
+
+    Review --> ReviewQ{Already covered<br/>by E2E?}
+    ReviewQ -->|Yes| Remove
+    ReviewQ -->|No| Keep
+
+    Keep --> Done[Include in suite]
+    Remove --> Delete[Add to removal list]
+
+    classDef keep fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
+    classDef review fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px
+    classDef remove fill:#FFCDD2,stroke:#D32F2F,stroke-width:2px
+    classDef neutral fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+
+    class Keep,Done keep
+    class Review,ReviewQ review
+    class Remove,Delete remove
+    class Test,CalcScore,Check neutral
+    </div>
+
+    <h2>Audit Categories</h2>
+
+    <div class="mermaid">
+graph LR
+    subgraph Core
+        C1[1. Business Logic Focus<br/>OUR code vs Framework]
+        C2[2. E2E Priority<br/>E2E primary, rest secondary]
+    end
+
+    subgraph Value
+        V1[3. Risk-Based Value<br/>Priority >= 15 required]
+        V2[4. Coverage Gaps<br/>Critical paths tested?]
+    end
+
+    subgraph Quality
+        Q1[5. Test Isolation<br/>Mocking, determinism]
+        Q2[6. Anti-Patterns<br/>Liars, Giants, etc.]
+    end
+
+    C1 --> C2 --> V1 --> V2 --> Q1 --> Q2
+
+    classDef core fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    classDef value fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px
+    classDef quality fill:#E1BEE7,stroke:#7B1FA2,stroke-width:2px
+
+    class C1,C2 core
+    class V1,V2 value
+    class Q1,Q2 quality
+    </div>
+
+    <h2>Category Details</h2>
+
+    <div class="violation-type">
+        <div class="violation-title">1. Business Logic Focus</div>
+        <p><strong>Detects:</strong> Tests that validate framework/library behavior instead of OUR code</p>
+        <p><strong>Examples to REMOVE:</strong></p>
+        <ul>
+            <li><code>test('bcrypt hashes password')</code> - tests bcrypt library</li>
+            <li><code>test('Prisma findMany returns array')</code> - tests ORM</li>
+            <li><code>test('Express middleware works')</code> - tests framework</li>
+        </ul>
+        <p><strong>Keep:</strong> Tests that validate OUR business rules, calculations, transformations</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">2. E2E Priority</div>
+        <p><strong>Principle:</strong> E2E tests prove feature works. Unit/Integration are supplementary.</p>
+        <p><strong>Baseline:</strong> 2 E2E per endpoint (positive + negative)</p>
+        <p><strong>Red Flag:</strong> 50 unit tests but 0 E2E tests = inverted pyramid</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">3. Risk-Based Value</div>
+        <p><strong>Formula:</strong> Usefulness = Impact (1-5) x Probability (1-5)</p>
+        <p><strong>Threshold:</strong> Priority >= 15 to justify test existence</p>
+        <p><strong>Example:</strong> Payment calculation (Impact 5 x Probability 4 = 20) = KEEP</p>
+        <p><strong>Example:</strong> Getter test (Impact 1 x Probability 1 = 1) = REMOVE</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">4. Coverage Gaps</div>
+        <p><strong>Critical Paths:</strong> Money, Security, Data Integrity, Core Flows</p>
+        <p><strong>Question:</strong> Is payment flow tested? Auth flow? User registration?</p>
+        <p><strong>Output:</strong> List of missing tests with Priority and justification</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">5. Test Isolation</div>
+        <p><strong>Checks:</strong> External APIs mocked, DB mocked, Time mocked, No flaky tests</p>
+        <p><strong>Red Flag:</strong> Tests that call real external services</p>
+        <p><strong>Red Flag:</strong> Tests that fail randomly (flaky)</p>
+    </div>
+
+    <div class="violation-type">
+        <div class="violation-title">6. Anti-Patterns</div>
+        <p><strong>The Liar:</strong> Test always passes, validates nothing</p>
+        <p><strong>The Giant:</strong> Test > 100 lines, tests too many things</p>
+        <p><strong>Slow Poke:</strong> Test takes > 5 seconds</p>
+        <p><strong>Happy Path Only:</strong> No error scenarios tested</p>
+        <p><strong>Framework Tester:</strong> Tests Express/Prisma/bcrypt instead of OUR code</p>
+    </div>
+
+    <h2>Output: Linear Task in Epic 0</h2>
+    <pre style="background: #F5F5F5; padding: 15px; border-radius: 4px; overflow-x: auto;">
+Title: Test Suite Audit: 2025-12-20
+
+## Summary
+| Decision | Count |
+|----------|-------|
+| KEEP | 45 |
+| REVIEW | 12 |
+| REMOVE | 23 |
+
+## Tests to REMOVE (Score < 10)
+1. auth.test.ts:45 - "bcrypt hashes password" (Score: 3, tests library)
+2. db.test.ts:78 - "Prisma findMany returns array" (Score: 4, tests ORM)
+3. utils.test.ts:12 - "getter returns value" (Score: 1, trivial)
+
+## Missing Tests (Priority >= 15)
+1. E2E: Payment with discount (Priority: 25, money calculation)
+2. E2E: Auth token refresh (Priority: 20, security)
+
+## Anti-Patterns Found
+- 3 Liar tests (no assertions)
+- 5 Framework tests (bcrypt, Prisma)
+- 2 Giant tests (> 100 lines)
+    </pre>
+
+    <h2>Key Characteristics</h2>
+    <ul>
+        <li><strong>Usefulness Score:</strong> Every test evaluated with Keep/Review/Remove decision</li>
+        <li><strong>Risk-Based:</strong> Priority >= 15 required to justify test existence</li>
+        <li><strong>Business Focus:</strong> Tests OUR code, not frameworks/libraries</li>
+        <li><strong>E2E Priority:</strong> E2E tests are primary, unit/integration supplementary</li>
+        <li><strong>Actionable:</strong> Clear list of tests to delete and tests to add</li>
+    </ul>
+
+    <footer>
+        <p>ln-370-test-auditor v1.0.0 | Standalone Worker | 6 Audit Categories</p>
+    </footer>
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default', flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' } });
+    </script>
+</body>
+</html>

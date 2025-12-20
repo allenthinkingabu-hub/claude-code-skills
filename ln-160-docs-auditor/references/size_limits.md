@@ -43,6 +43,57 @@ Token-efficient documentation targets.
 | with regard to | about | -67% |
 | it is important to note | (remove) | -100% |
 
+## Structured Representation (Prose → Table/List)
+
+**Principle:** Tables and lists are 3-5x faster to scan than prose text.
+
+| Prose Pattern | Convert To | When |
+|---------------|------------|------|
+| Comparisons (X vs Y, X is better than Y) | Table | Always |
+| Enumerations (First..., Second..., Additionally...) | Numbered list | >2 items |
+| Object attributes (has X, contains Y, supports Z) | Table or bullet list | >3 attributes |
+| Step-by-step instructions | Numbered list | Always |
+| Parameters/options | Table | >2 parameters |
+| Before/After examples | Two-column table | Always |
+
+### Detection Patterns (convert prose to structured)
+
+```regex
+# Comparisons
+(compared to|versus|vs\.?|better than|worse than|unlike|similar to)
+
+# Enumerations in prose
+(first(ly)?|second(ly)?|third(ly)?|additionally|furthermore|moreover|also,)
+
+# Attribute listings
+(has|have|contains?|includes?|supports?|provides?).*(and|,).*(and|,)
+```
+
+---
+
+## Scannability Checks
+
+**Principle:** F-pattern reading — users scan left side first, then horizontally.
+
+| Check | Rule | Why |
+|-------|------|-----|
+| Lead with important | Keyword at heading start | F-pattern: left side scanned first |
+| List size | 2-8 items per list | <2 not a list, >8 overwhelming |
+| Table cells | Max 2 sentences | More → use different format |
+| Paragraph size | Max 5 sentences | Split longer paragraphs |
+| Heading depth | Max h3, rarely h4 | Deep nesting = poor structure |
+
+### Anti-Patterns
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| "Introduction to X" | Buries keyword | "X Overview" |
+| 10+ item lists | Overwhelming | Split into groups |
+| 3+ sentences in table cell | Unreadable | Move to prose or split rows |
+| Wall of text | Not scannable | Add headings, lists, tables |
+
+---
+
 ## Red Flags
 
 - File exceeds limits by >20%
@@ -50,3 +101,4 @@ Token-efficient documentation targets.
 - Paragraphs >7 sentences
 - Code blocks >50 lines
 - Tables >30 rows
+- Prose where table would work better

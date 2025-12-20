@@ -53,29 +53,38 @@ Detailed checks per category.
 
 ---
 
-## 3. Context Compactness
+## 3. Context Compactness & Scannability
 
 ### Must Pass
 - [ ] Files within size limits (see size_limits.md)
 - [ ] No filler words (simply, easily, basically, actually)
 - [ ] Active voice used (not passive)
 - [ ] Short sentences (<25 words)
+- [ ] **Comparisons in prose → converted to tables**
+- [ ] **Enumerations in prose → converted to lists**
 
 ### Should Pass
 - [ ] Tables preferred over prose for comparisons
 - [ ] Lists preferred over paragraphs for sequences
 - [ ] Code examples focused (one concept each)
 - [ ] No redundant explanations
+- [ ] Headings start with keywords (not "Introduction to...")
+- [ ] Lists contain 2-8 items (split if more)
+- [ ] Table cells ≤2 sentences
 
 ### Detection Patterns
 - Verbose phrases (in order to → to)
 - Long paragraphs (>5 sentences)
 - Repeated information within same doc
 - Over-explained obvious concepts
+- **Prose comparisons:** "X is better than Y", "compared to", "versus"
+- **Prose enumerations:** "First..., Second...", "Additionally..."
+- **Prose attributes:** "X has A, B, and C"
 
 ### Scoring
-- 10/10: Concise throughout
+- 10/10: Concise and scannable throughout
 - -1 per verbose section
+- -1 per prose that should be table/list
 - -2 per file exceeding limits
 - -3 per bloated document (>50% over limit)
 

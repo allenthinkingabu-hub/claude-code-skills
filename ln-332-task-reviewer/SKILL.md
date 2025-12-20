@@ -21,7 +21,7 @@ Reviews a single task in To Review and decides Done vs To Rework with immediate 
    - No hardcoded creds/URLs/magic numbers; config in env/config.
    - Error handling sane; layering respected; reuse existing components.
    - Logging: critical paths logged (errors, business events); correct log levels (DEBUG/INFO/WARNING/ERROR).
-   - Comments: explain WHY not WHAT; no commented-out code; docstrings on public methods.
+   - Comments: explain WHY not WHAT; no commented-out code; docstrings on public methods; Task ID present in new code blocks (`// See PROJ-123`).
    - Naming: consistent conventions; descriptive names; no single-letter variables (except loops).
    - Docs updated where required.
    - Tests updated/run: for impl/refactor ensure affected tests adjusted; for test tasks check counts (E2E 2-5, Integration 0-8, Unit 0-15, total 10-28) and Priority ≤15, no framework/DB tests.

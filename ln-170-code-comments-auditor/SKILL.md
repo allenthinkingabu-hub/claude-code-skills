@@ -11,7 +11,7 @@ Audit code comments and docstrings quality. Universal for any tech stack.
 
 - Verify comments explain WHY, not obvious WHAT
 - Check comment density (15-20% ratio)
-- Detect forbidden content (Epic/Task IDs, historical notes)
+- Detect forbidden content (dates, author names, historical notes)
 - Validate docstrings match function signatures
 - Ensure comments match current code state
 - Identify legacy comments and commented-out code
@@ -35,7 +35,7 @@ Audit code comments and docstrings quality. Universal for any tech stack.
 |---|----------|---------------|
 | 1 | **WHY not WHAT** | Comments explain rationale, not obvious code behavior; no restating code |
 | 2 | **Density (15-20%)** | Comment-to-code ratio within range; not over/under-commented |
-| 3 | **No Forbidden Content** | No Epic/Task IDs; no historical notes; no code examples in comments |
+| 3 | **No Forbidden Content** | No dates/authors; no historical notes; no code examples in comments |
 | 4 | **Docstrings Quality** | Match function signatures; parameters documented; return types accurate |
 | 5 | **Actuality** | Comments match code behavior; no stale references; examples runnable |
 | 6 | **Legacy Cleanup** | No TODO without context; no commented-out code; no deprecated notes |
@@ -65,7 +65,7 @@ Audit code comments and docstrings quality. Universal for any tech stack.
 
 | Priority | Action | Location | Category |
 |----------|--------|----------|----------|
-| High | Remove Task ID reference | src/X:45 | Forbidden |
+| High | Remove author name | src/X:45 | Forbidden |
 | Medium | Update stale docstring | lib/Y:120 | Actuality |
 ```
 
@@ -77,7 +77,7 @@ Audit code comments and docstrings quality. Universal for any tech stack.
 | 8-9/10 | Minor issues (small density deviation, few obvious comments) |
 | 6-7/10 | Moderate issues (stale docstrings, some forbidden content) |
 | 4-5/10 | Significant issues (major density problems, outdated comments) |
-| 1-3/10 | Critical issues (Epic IDs, commented-out code blocks, broken docstrings) |
+| 1-3/10 | Critical issues (author names, commented-out code blocks, broken docstrings) |
 
 ## Reference Files
 
@@ -87,7 +87,7 @@ Audit code comments and docstrings quality. Universal for any tech stack.
 
 - **Code is truth:** When comment contradicts code, flag comment for update
 - **WHY > WHAT:** Comments explaining obvious behavior should be removed
-- **No IDs:** Epic/Task IDs belong in commit messages, not code
+- **Task IDs OK:** Task/Story IDs in comments help with code traceability
 - **Universal:** Works with any language; detect comment syntax automatically
 - **Based on:** Claude Code comment-analyzer agent patterns
 

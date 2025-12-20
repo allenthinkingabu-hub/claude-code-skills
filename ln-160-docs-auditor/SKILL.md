@@ -35,7 +35,7 @@ Audit project documentation quality. Universal for any tech stack.
 |---|----------|---------------|
 | 1 | **Hierarchy & Links** | CLAUDE.md is root; all docs reachable via links; no orphaned files; no broken links |
 | 2 | **Single Source of Truth** | No content duplication; duplicates replaced with links to source; clear ownership |
-| 3 | **Context Compactness** | Concise writing; no verbose phrases; token-efficient; see [size_limits.md](references/size_limits.md) |
+| 3 | **Context Compactness & Scannability** | Concise writing; prose→tables for comparisons; F-pattern friendly; see [size_limits.md](references/size_limits.md) |
 | 4 | **Requirements Compliance** | Correct sections per doc type; within size limits; proper formatting |
 | 5 | **Actuality** | Docs match code; code is priority; outdated info flagged; examples runnable |
 | 6 | **Legacy Cleanup** | No history sections; no "was changed" notes; no deprecated info; current state only |
@@ -51,7 +51,7 @@ Audit project documentation quality. Universal for any tech stack.
 |----------|-------|--------|
 | Hierarchy & Links | X/10 | N issues found |
 | Single Source of Truth | X/10 | N duplications |
-| Context Compactness | X/10 | N verbose sections |
+| Context Compactness & Scannability | X/10 | N verbose sections |
 | Requirements Compliance | X/10 | N violations |
 | Actuality | X/10 | N mismatches with code |
 | Legacy Cleanup | X/10 | N legacy items |

@@ -53,7 +53,8 @@
         "./ln-342-regression-checker",
         "./ln-343-manual-tester",
         "./ln-350-story-test-planner",
-        "./ln-360-codebase-auditor"
+        "./ln-360-codebase-auditor",
+        "./ln-370-test-auditor"
       ]
     }
   ]

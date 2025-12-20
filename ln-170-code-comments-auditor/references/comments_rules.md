@@ -67,21 +67,16 @@ Exclude:
 
 | Forbidden | Reason | Where It Belongs |
 |-----------|--------|------------------|
-| Epic IDs (EPIC-123) | Couples code to PM tool | Commit message |
-| Task IDs (TASK-456) | Outdates quickly | PR description |
-| Story IDs (STORY-789) | Not relevant to code | Git history |
 | Dates ("Updated 2024-01-15") | Git tracks this | Git blame |
 | Author names | Git tracks this | Git log |
 | Historical notes ("was X, now Y") | Clutters code | CHANGELOG |
 | Code examples | Belongs in tests/docs | Documentation |
 
+> **Note:** Task/Epic/Story IDs are **allowed** — they help with code traceability and quick navigation to original requirements.
+
 ### Detection Patterns
 
 ```regex
-# Epic/Task/Story IDs
-(EPIC|TASK|STORY|ISSUE|BUG|FEAT)-\d+
-[A-Z]{2,5}-\d{3,6}
-
 # Dates in comments
 (19|20)\d{2}[-/](0[1-9]|1[0-2])[-/](0[1-9]|[12]\d|3[01])
 
@@ -90,6 +85,50 @@ Exclude:
 
 # Author references
 (Author:|Written by:|Created by:|@author)
+```
+
+---
+
+## Comment Compression
+
+**Principle:** Comments should be as concise as possible while preserving meaning.
+
+### Length Limits
+
+| Comment Type | Max Length | Example |
+|--------------|------------|---------|
+| Inline comment | 1 line (~80 chars) | `// Retry 3x for flaky API` |
+| Block comment | 3 lines | Short explanation of complex logic |
+| Docstring (function) | 5 lines | Purpose, params, return |
+| Docstring (class/module) | 10 lines | Purpose, usage, key methods |
+
+### Compression Techniques
+
+| Verbose | Concise |
+|---------|---------|
+| `// This function is used to calculate the total` | `// Calculate total` |
+| `// We need to do this because...` | `// Because: [reason]` |
+| `// The following code will iterate through...` | (remove, obvious from code) |
+| `// TODO: In the future we should consider...` | `// TODO: [specific action]` |
+
+### Structured Docstrings
+
+When documenting >3 parameters, use structured format:
+
+```
+Good (structured):
+/**
+ * @param {string} name - User name
+ * @param {number} age - User age
+ * @param {boolean} active - Is active
+ */
+
+Bad (prose):
+/**
+ * This function takes a name which is the user's name,
+ * an age which represents how old the user is, and
+ * a boolean active flag that indicates whether...
+ */
 ```
 
 ---
@@ -166,9 +205,6 @@ When comment says one thing and code does another:
 ## Quick Audit Commands
 
 ```bash
-# Find forbidden IDs
-grep -rn "EPIC-\|TASK-\|STORY-" src/
-
 # Find TODO/FIXME
 grep -rn "TODO\|FIXME\|XXX\|HACK" src/
 

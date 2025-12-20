@@ -2,13 +2,13 @@
 
 > A comprehensive collection of skills for Claude Code, providing end-to-end Agile workflow automation integrated with Linear for modern software development teams.
 
-![Version](https://img.shields.io/badge/version-10.1.0-blue) ![Skills](https://img.shields.io/badge/skills-34-green) ![Updated](https://img.shields.io/badge/updated-Nov%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
+![Version](https://img.shields.io/badge/version-10.1.0-blue) ![Skills](https://img.shields.io/badge/skills-37-green) ![Updated](https://img.shields.io/badge/updated-Nov%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
 
 ---
 
 ## 📖 About
 
-This repository contains **34 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From initial documentation to story execution and quality assurance, these skills work together to create a complete Agile development workflow.
+This repository contains **37 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From initial documentation to story execution and quality assurance, these skills work together to create a complete Agile development workflow.
 
 **What You Get:**
 - 🎯 **Complete Agile Workflow** - From Epic decomposition to task execution and review
@@ -181,6 +181,12 @@ Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-de
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
 | **[ln-360-codebase-auditor](ln-360-codebase-auditor/)** | Full codebase quality audit across 9 categories (Security, Build, Architecture, Design, Complexity, Algorithms, Dependencies, Wheel Reinvention, Unused Code). Creates consolidated refactoring task in Linear Epic 0. Manual invocation for technical debt assessment. | 1.0.0 | ✅ |
+
+#### 3.7 Test Suite Audit (ln-370-test-auditor)
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-370-test-auditor](ln-370-test-auditor/)** | Test suite quality audit across 6 categories (Business Logic Focus, E2E Priority, Risk-Based Value, Coverage Gaps, Isolation, Anti-Patterns). Calculates **Usefulness Score** per test (Keep/Remove/Refactor). Removes useless tests, identifies missing ones. Creates task in Linear Epic 0. | 1.0.0 | ✅ |
 
 ---
 
