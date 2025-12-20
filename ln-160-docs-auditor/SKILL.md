@@ -36,7 +36,7 @@ Audit project documentation quality. Universal for any tech stack.
 | 1 | **Hierarchy & Links** | CLAUDE.md is root; all docs reachable via links; no orphaned files; no broken links |
 | 2 | **Single Source of Truth** | No content duplication; duplicates replaced with links to source; clear ownership |
 | 3 | **Context Compactness & Scannability** | Concise writing; prose→tables for comparisons; F-pattern friendly; see [size_limits.md](references/size_limits.md) |
-| 4 | **Requirements Compliance** | Correct sections per doc type; within size limits; proper formatting |
+| 4 | **Requirements Compliance** | Correct sections per doc type; within size limits; proper formatting; **no code blocks** (text descriptions only) |
 | 5 | **Actuality** | Docs match code; code is priority; outdated info flagged; examples runnable |
 | 6 | **Legacy Cleanup** | No history sections; no "was changed" notes; no deprecated info; current state only |
 
@@ -86,6 +86,8 @@ Audit project documentation quality. Universal for any tech stack.
 
 ## Critical Notes
 
+- **Fix content, not rules:** NEVER modify standards/rules files (*_standards.md, *_rules.md, *_limits.md) to make violations pass. Always fix the violating files instead.
+- **No code in docs:** Documents describe algorithms and concepts in text, not code. Code belongs in codebase, docs explain WHY and HOW in words.
 - **Code is priority:** When docs contradict code, flag docs for update (not code)
 - **Delete, don't archive:** Legacy content should be removed, not moved to "archive"
 - **No history:** Documents describe current state only; git tracks history

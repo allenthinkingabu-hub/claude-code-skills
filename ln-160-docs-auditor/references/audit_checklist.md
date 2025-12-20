@@ -2,6 +2,17 @@
 
 Detailed checks per category.
 
+## ⚠️ Fundamental Principle
+
+**Fix content, not rules.** When files violate limits/standards:
+- ✅ Reduce file size (split, compress, extract)
+- ✅ Fix formatting issues
+- ✅ Remove duplication
+- ❌ NEVER change limits in *_standards.md
+- ❌ NEVER relax rules to make violations pass
+
+This is non-negotiable. Changing rules instead of fixing content is forbidden.
+
 ## 1. Hierarchy & Links
 
 ### Must Pass
@@ -97,12 +108,27 @@ Detailed checks per category.
 - [ ] README.md has: About, Features, Installation, Usage
 - [ ] SKILL.md has: YAML frontmatter (name, description), workflow, critical notes
 - [ ] All docs end with single blank line (POSIX)
+- [ ] **No code blocks in docs** - text descriptions only; code lives in codebase
 
 ### Should Pass
 - [ ] Consistent heading hierarchy (h1 → h2 → h3)
-- [ ] Code blocks have language tags
 - [ ] Tables properly formatted
 - [ ] Callouts/admonitions for warnings
+
+### No Code Policy
+
+Documents describe algorithms and concepts in text, NOT code:
+- ✅ "Function validates input, checks permissions, then processes request"
+- ✅ "Loop iterates through items, filtering by status"
+- ❌ `def process(item): ...` (code block)
+- ❌ `for item in items: if item.status == 'active': ...`
+
+**Exceptions:**
+- CLI commands for installation/usage in README.md
+- Config file snippets (YAML/JSON) when documenting configuration
+- Shell commands for Quick Audit section
+
+**Detection:** Search for triple backticks (```) with language tags (python, js, ts, etc.)
 
 ### Document-Specific Checks
 
@@ -115,9 +141,10 @@ Detailed checks per category.
 | ADR | Context, Decision, Consequences |
 
 ### Scoring
-- 10/10: All required sections present
+- 10/10: All required sections present, no code blocks
 - -1 per missing optional section
 - -2 per missing required section
+- -2 per code block in doc (except allowed exceptions)
 - -3 per malformed document structure
 
 ---
@@ -193,6 +220,9 @@ grep -rn "TODO\|FIXME\|XXX" docs/
 
 # Find verbose phrases
 grep -rni "in order to\|at this point\|has the ability" docs/
+
+# Find code blocks (should be minimal in docs)
+grep -rn '```python\|```js\|```ts\|```java\|```go\|```rust' docs/
 
 # Check file sizes
 wc -l docs/**/*.md | sort -n

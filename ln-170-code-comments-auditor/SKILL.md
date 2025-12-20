@@ -85,6 +85,7 @@ Audit code comments and docstrings quality. Universal for any tech stack.
 
 ## Critical Notes
 
+- **Fix code, not rules:** NEVER modify rules files (*_rules.md, *_standards.md) to make violations pass. Always fix the code instead.
 - **Code is truth:** When comment contradicts code, flag comment for update
 - **WHY > WHAT:** Comments explaining obvious behavior should be removed
 - **Task IDs OK:** Task/Story IDs in comments help with code traceability
