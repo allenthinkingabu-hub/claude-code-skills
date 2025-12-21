@@ -4,11 +4,13 @@ Detailed rules for solution optimization, library versions, test strategy, and d
 
 ---
 
-## Criterion #5: Solution Optimization (Phase 2 Findings)
+## Criterion #5: Solution Optimization (Phase 2 Findings OR MCP Ref Fallback)
 
-**Check:** Technical approach follows industry standards researched in Phase 2
+**Check:** Technical approach follows industry standards
 
-⚠️ **Important:** This criterion does NOT call MCP Ref directly. It uses findings from Phase 2 research (guides created by ln-321).
+⚠️ **CONDITIONAL RESEARCH:**
+- IF `phase2_executed = true` (NON-TRIVIAL) → Use findings from Phase 2 (no MCP calls)
+- IF `phase2_executed = false` (TRIVIAL skip) → FALLBACK to direct MCP Ref query
 
 ✅ **GOOD:**
 - OAuth implementation: "Using RFC 6749 compliant `/token` endpoint with grant_type parameter"
@@ -20,7 +22,7 @@ Detailed rules for solution optimization, library versions, test strategy, and d
 - "Return errors as plain text" (ignores RFC 7807 standard)
 - "Use GET for mutations" (violates REST principles)
 
-**Auto-fix actions:**
+**Auto-fix actions (NON-TRIVIAL path - phase2_executed = true):**
 1. Read findings from Phase 2 `research_results` (guides already created by ln-321)
 2. Extract standards/patterns from guides (RFC numbers, OWASP rules, do/don't/when patterns)
 3. Compare Story Technical Notes with standards from findings
@@ -29,6 +31,20 @@ Detailed rules for solution optimization, library versions, test strategy, and d
    - Add reference to guide (e.g., "See [Guide-05: REST API Patterns](docs/guides/05-rest-api-patterns.md)")
 5. Update Linear issue via `mcp__linear-server__update_issue`
 6. Add comment: "Solution updated to comply with [Standards list] - see guides created in Phase 2"
+
+**FALLBACK Auto-fix actions (TRIVIAL path - phase2_executed = false):**
+1. Extract Story domain from title + Technical Notes (e.g., "CRUD", "REST API", "User management")
+2. Query MCP Ref for industry standards related to Story domain:
+   - Tool: `mcp__Ref__ref_search_documentation(query="[Story domain] industry standards RFC OWASP best practices")`
+   - Example: "REST API CRUD industry standards RFC 7807 OWASP"
+3. Extract RFC numbers, OWASP rules from search results (e.g., RFC 7807 Problem Details, OWASP A01:2021 Broken Access Control)
+4. Compare Story Technical Notes with standards
+5. IF Story violates standard:
+   - Rewrite Technical Notes with compliant approach from MCP Ref results
+   - Add inline reference to RFC/OWASP (e.g., "Error responses follow RFC 7807 Problem Details")
+   - **Note:** Do NOT create separate doc - just inline reference
+6. Update Linear issue via `mcp__linear-server__update_issue`
+7. Add comment: "Solution updated to comply with [Standards list from MCP Ref] - TRIVIAL fast path"
 
 **Example transformation:**
 
@@ -63,11 +79,13 @@ OAuth 2.0 compliant authentication flow:
 
 ---
 
-## Criterion #6: Library & Version (Phase 2 Findings)
+## Criterion #6: Library & Version (Phase 2 Findings OR Context7 Fallback)
 
-**Check:** Libraries are latest stable versions from Phase 2 research
+**Check:** Libraries are latest stable versions
 
-⚠️ **Important:** This criterion does NOT call Context7/WebSearch directly. It uses findings from Phase 2 research (manuals created by ln-321).
+⚠️ **CONDITIONAL RESEARCH:**
+- IF `phase2_executed = true` (NON-TRIVIAL) → Use findings from Phase 2 (no Context7 calls)
+- IF `phase2_executed = false` (TRIVIAL skip) → FALLBACK to direct Context7 query
 
 ✅ **GOOD:**
 - "Using express v4.19.2 (latest stable as of 2025-01)"
@@ -79,7 +97,7 @@ OAuth 2.0 compliant authentication flow:
 - "Any JWT library" (no specific version)
 - "Latest version" (no verification)
 
-**Auto-fix actions:**
+**Auto-fix actions (NON-TRIVIAL path - phase2_executed = true):**
 1. Extract library versions from manuals created in Phase 2 research
 2. For EACH library in Phase 2 findings:
    - Read recommended version from manual (e.g., Manual: oauth2-proxy v7.6.0)
@@ -88,6 +106,21 @@ OAuth 2.0 compliant authentication flow:
 4. Add manual reference: "See [Manual: oauth2-proxy v7](docs/manuals/oauth2-proxy-v7.md) for API details"
 5. Update Linear issue via `mcp__linear-server__update_issue`
 6. Add comment: "Library versions updated from Phase 2 manuals - [list of manuals]"
+
+**FALLBACK Auto-fix actions (TRIVIAL path - phase2_executed = false):**
+1. Extract libraries from Story Technical Notes + Implementation Tasks (e.g., "Express", "Prisma", "PostgreSQL")
+2. For EACH library:
+   - Query Context7 for library version:
+     - Tool: `mcp__context7__resolve-library-id(libraryName="[library]")` (e.g., "express", "prisma")
+     - Receive context7CompatibleLibraryID (e.g., "/expressjs/express")
+     - Tool: `mcp__context7__get-library-docs(context7CompatibleLibraryID="/expressjs/express", mode="code")`
+     - Extract latest stable version from docs
+   - Compare with Story Technical Notes
+   - IF outdated or unspecified → Update to latest version from Context7
+3. Add inline reference with version (e.g., "Express.js v4.19.2 (verified via Context7)")
+4. **Note:** Do NOT create separate manual - just inline version reference
+5. Update Linear issue via `mcp__linear-server__update_issue`
+6. Add comment: "Library versions updated from Context7 - [list of libraries] - TRIVIAL fast path"
 
 **Example transformation:**
 

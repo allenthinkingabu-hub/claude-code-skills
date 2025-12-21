@@ -23,9 +23,9 @@ General structure and category overview for ln-320-story-validator verification 
 
 **Quick summary:**
 - **Phase 1:** Discovery & Loading (auto-discover config, load metadata, upstream validation)
-- **Phase 2:** CRITICAL PATH VALIDATION ⭐ NEW - PRIORITY #1 (domain extraction, TRIVIAL CRUD detection, research delegation via ln-321, findings analysis, improvement score)
-- **Phase 3:** DECISION POINT ⭐ NEW (REPLAN if ≥50% improvement OR CONTINUE to Phase 4)
-- **Phase 4:** Structural + Solution Auto-Fix - ONLY IF CONTINUE (4 categories: Structural #1-#4 → Solution #5-#8 → Workflow #9-#12 → Quality #13-#17)
+- **Phase 2:** TRIVIAL CRUD Detection → **IF TRIVIAL:** skip Phase 2-3, MCP fallback in Phase 4 (#5, #6, #16, #17), fast path ~2 min; **IF NON-TRIVIAL:** MANDATORY research (domain extraction, ln-321 delegation, findings analysis, improvement score), deep path ~10 min
+- **Phase 3:** DECISION POINT (NON-TRIVIAL ONLY) - REPLAN if ≥50% improvement OR CONTINUE to Phase 4
+- **Phase 4:** Structural + Solution Auto-Fix (4 categories: Structural #1-#4 → Solution #5-#8 → Workflow #9-#12 → Quality #13-#17); Criteria #5, #6, #16, #17 use conditional research (Phase 2 findings OR MCP fallback)
 - **Phase 5:** Approve & Notify (set Todo status, update kanban_board.md, Linear comment, tabular output)
 
 ---
