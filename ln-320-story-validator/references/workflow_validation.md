@@ -34,9 +34,17 @@ Detailed rules for Story size, test cleanup, YAGNI, and KISS principles.
    - Add comment to Linear: "Large Story detected - recommend decomposition"
    - **DO NOT auto-split** (requires user decision)
 3. IF >8 Tasks:
-   - Review for over-decomposition (merge related Tasks)
-   - Combine Tasks operating on same file/module
-   - Update Linear issue with consolidated Task list
+   - **INVOKE ln-310-story-decomposer** in REPLAN mode:
+     ```
+     Skill(skill="ln-310-story-decomposer",
+          args="story_id=[STORY_ID] mode=REPLAN")
+     ```
+   - ln-310 will:
+     - Build IDEAL plan with optimal task count (3-8)
+     - Delegate to ln-312-task-replanner to update existing Tasks
+     - Return summary with updated Task URLs
+   - Update kanban_board.md with new Task structure
+   - Add Linear comment: "Story decomposed via ln-310 - optimal task count achieved"
 4. Add comment: "Story size optimized - [N] Tasks (within 3-8 range)"
 
 **Example transformation:**
@@ -81,6 +89,12 @@ Detailed rules for Story size, test cleanup, YAGNI, and KISS principles.
 
 5. **[Task] Final test suite** - US-123-T5 (created by ln-350)
 ```
+
+**Integration with ln-310:**
+- ln-320 invokes ln-310 when >8 Tasks detected
+- ln-310 builds IDEAL plan (Foundation-First order)
+- ln-310 delegates to ln-312 for existing Task updates
+- ln-320 receives summary and continues validation
 
 **Skip Fix When:**
 - Story in Done/Canceled status

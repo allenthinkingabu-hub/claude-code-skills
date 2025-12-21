@@ -127,7 +127,7 @@ Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-de
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-320-story-validator](ln-320-story-validator/)** | **Coordinator** that critically reviews Stories and Tasks against 2025 industry standards before approval (Backlog → Todo). ALWAYS auto-fixes all 20 verification criteria (Progressive Disclosure: 5 validation files). Invokes ln-321 to create Guides/Manuals/ADRs (#17-#20). Tabular output (Unicode box-drawing). Upstream validation (ln-220). No "Needs Work" path exists. | 14.0.0 | ✅ |
+| **[ln-320-story-validator](ln-320-story-validator/)** | **Coordinator** that validates Stories/Tasks against 2025 standards - CRITICAL PATH FIRST. Phase 2: Research via ln-321 (domain extraction, TRIVIAL CRUD detection). Phase 3: Decision Point (REPLAN ≥50% improvement OR CONTINUE). Phase 4: Auto-fixes 17 criteria (Progressive Disclosure: 5 validation files). No direct MCP calls. Tabular output (Unicode box-drawing). Upstream validation (ln-220). No "Needs Work" path exists. | 15.0.0 | ✅ |
 
 **Workers:**
 
