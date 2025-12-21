@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## 2025-12-21
+
+ln-320-story-validator v14.0.0 - Progressive Disclosure Pattern refactor with ln-321 integration. Split verification_checklist.md (582 lines) into 5 specialized files for 70% token efficiency: verification_checklist_template.md (overview), structural_validation.md (#1-#4), solution_validation.md (#5-#8), workflow_validation.md (#9-#12), quality_validation.md (#13-#20 + ln-321 integration), plus ln321_auto_trigger_matrix.md for auto-documentation triggers. Criteria #17-#20 now INVOKE ln-321-docs-creator to create real documentation (Rate Limiting Guide, Auth Manual+ADR, Error Handling Guide, Logging Guide) instead of adding TODO placeholders. Upstream validation (ln-220 check) added in Phase 1 Step 0 to detect incomplete ln-220 work. Self-Audit integrated into Linear comment (removed separate checkpoints/{STORY_ID}_verification_log.md files). Tabular output (Unicode box-drawing) displays validation report in terminal. Standards Compliance Evidence table mandatory for all validations (RFC/OWASP verification with documented evidence).
+
+---
+
 ## 2025-11-17
 
 Centralized validation refactor + file naming standardization. ln-110-documents-pipeline v5.0.0 added Phase 3: Validate All Documentation - centralized validation for all created documents (SCOPE tags, Maintenance sections, POSIX compliance), auto-fixes violations, checks documentation_standards.md in target project or applies industry best practices. 5 workers refactored to pure CREATE (removed duplicate validation logic, -93 lines code duplication): ln-112-reference-docs-creator v6.0.0 (removed Phase 3), ln-113-tasks-docs-creator v6.0.0 (removed Phase 3), ln-114-project-docs-creator v11.0.0 (removed Phase 3), ln-115-presentation-creator v6.0.0 (removed Phase 6), ln-116-test-docs-creator v6.0.0 (removed Phase 2). File naming standardized to lowercase: ln-111-root-docs-creator v9.0.0 now creates documentation_standards.md + principles.md (lowercase, not DOCUMENTATION_STANDARDS.md/Principles.md), updated templates (claude_md_template.md, docs_root_readme_template.md) with lowercase references. ln-115 renamed TEMPLATE_ARCHITECTURE.md → template_architecture.md for consistency. ln-121-structure-validator v3.0.1 fixed Principles.md → principles.md references (14 replacements across 4 files via automated script). Orchestrator-Worker Pattern implemented: workers do pure CREATE, orchestrator validates (separation of concerns, token efficiency).

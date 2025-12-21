@@ -47,7 +47,7 @@ All skills have state diagrams in `diagram.html` files for visualizing workflows
 
 ### Available Skills
 
-**37 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
+**51 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
 
 **Key workflow:** ln-100-documents-pipeline → ln-200-scope-decomposer → ln-300-story-pipeline → ln-340-story-quality-gate
 
@@ -65,7 +65,7 @@ Three levels: Scope → Epics (ln-210) → Stories (ln-220) → Tasks (ln-310). 
 
 ## Skill Workflows
 
-All 37 skills documented in [README.md](README.md#-features) feature tables with workflows in each skill's SKILL.md file. Follow Orchestrator-Worker Pattern per [SKILL_ARCHITECTURE_GUIDE.md](docs/SKILL_ARCHITECTURE_GUIDE.md).
+All 51 skills documented in [README.md](README.md#-features) feature tables with workflows in each skill's SKILL.md file. Follow Orchestrator-Worker Pattern per [SKILL_ARCHITECTURE_GUIDE.md](docs/SKILL_ARCHITECTURE_GUIDE.md).
 
 ## Important Details
 
@@ -181,4 +181,4 @@ links. Kept only repository-specific content: Configuration Auto-Discovery, Code
 Comments rules, Documentation Language policy, Versioning workflow.
 ```
 
-**Last Updated:** 2025-11-17
+**Last Updated:** 2025-12-21
