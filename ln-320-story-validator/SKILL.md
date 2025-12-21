@@ -1,6 +1,6 @@
 ---
 name: ln-320-story-validator
-description: Reviews Stories/Tasks against 2025 standards before approval (Backlog -> Todo). Auto-fixes issues, validates structure, invokes ln-321 for docs. Tabular output. Auto-discovers team/config.
+description: Reviews Stories/Tasks against 2025 standards - CRITICAL PATH FIRST. Research via ln-321, decision point (CONTINUE/REPLAN), auto-fix if path correct. Tabular output. Auto-discovers team/config.
 ---
 
 # Story Verification Skill
@@ -21,19 +21,6 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 - Validating implementation path across Story and Tasks
 - Ensuring standards, architecture, and solution fit
 - Optimizing or correcting proposed approaches
-
-## Research Tools (Mandatory)
-
-**For standards verification (Phase 2):**
-- `mcp__Ref__ref_search_documentation(query="[domain] RFC standard best practices 2025")` - industry standards
-- `mcp__Ref__ref_search_documentation(query="[library] security vulnerabilities OWASP")` - security checks
-- `WebSearch(query="[library] latest stable version 2025")` - version verification
-
-**For library versions (Auto-Fix #6):**
-- `mcp__context7__resolve-library-id(libraryName="[library]")` → get Context7 ID
-- `mcp__context7__get-library-docs(context7CompatibleLibraryID="...", topic="version changelog")` - current versions
-
-**Time-box:** 5-10 minutes per Story for research; skip if Story is trivial CRUD
 
 ## Workflow Overview
 
@@ -58,32 +45,76 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 - Expect 3-8 implementation tasks; record parentId for filtering
 - Rationale: keep loading light; full descriptions arrive in Phase 2
 
-### Phase 2: Critical Solution Review
-- Load full Story description (all 8 sections) when analysis starts
-- Standards first (priority): Industry/RFCs -> Security -> 2025 best practices -> KISS/YAGNI/DRY within standards
-- **Research using MCP Ref:** call `ref_search_documentation(query="[story domain] RFC standard 2025")` for each technology in Story
-- **Verify versions via Context7:** call `get-library-docs` to check library versions mentioned in Technical Notes
-- Challenge approach: prefer proven standards over custom work; cite specific RFC/standard in Linear comment when fixing
-- **Auto-Trigger ln-321 Documentation:**
-  1. Load `ln321_auto_trigger_matrix.md`
-  2. Scan Story title + Technical Notes for trigger keywords (OAuth, REST API, Rate Limiting, etc.)
-  3. IF keywords match pattern → Invoke `Skill(skill="ln-321-docs-creator", args="doc_type=[guide|manual|adr] topic='...'")` per matrix
-  4. Add created doc links to Story Technical Notes
-- Verify against codebase reality before edits; if Story is outdated, auto-correct via Linear update
-- Reporting rule: when principles are violated, explain why with best-practice references and propose concrete fixes, not just list names
+### Phase 2: CRITICAL PATH VALIDATION (NEW - PRIORITY #1)
 
-### Phase 3: Comprehensive Auto-Fix
-- Always auto-fix; no "Needs Work" path. Follow execution order: Structural (1-4) -> Solution (5-8) -> Workflow (9-12) -> Quality & Documentation (13-20)
-- Use Auto-Fix Actions table below as the authoritative checklist; keep sequential task validation to avoid truncation
-- Test mention: ensure Test Strategy section exists but keep it empty here; do not plan coverage or execution at this stage
+**Purpose:** Validate solution path BEFORE structural details. Researched approach quality > structural correctness.
 
-### Phase 4: Approve & Notify
-- Set Story + all Tasks to Todo (Linear); update kanban_board.md with APPROVED marker and move items from Backlog to Todo keeping hierarchy
+**Steps:**
+
+1. **Domain Extraction:** Extract technical domains from Story title + Technical Notes + Implementation Tasks
+   - Load pattern registry from `ln321_auto_trigger_matrix.md` (contains ALL patterns with trigger keywords)
+   - Scan Story content for pattern matches via keyword detection
+   - Build list of detected domains requiring research
+   - Universal approach: works for ANY Story (OAuth, REST API, ML pipelines, Video processing, Email, File Upload, Blockchain, etc.)
+
+2. **TRIVIAL CRUD Detection:** Optimize timebox based on Story complexity
+   - Check if Story matches TRIVIAL CRUD pattern (keywords: "CRUD", "basic API", "simple REST")
+   - Check for anti-keywords (auth, oauth, security, integration, external, payment)
+   - IF TRIVIAL CRUD: timebox = 2 min (shallow research, version checks only)
+   - ELSE: timebox = 10 min (deep research, full standards verification)
+
+3. **Research Delegation:** For EACH domain, delegate research to ln-321
+   - Check if documentation already exists (from previous validations or ln-220)
+   - IF doc missing: Invoke `Skill(skill="ln-321-best-practices-researcher", args="doc_type=[guide|manual|adr] topic='...'")` per ln321_auto_trigger_matrix.md
+   - Receive file paths to created documentation (docs/guides/, docs/manuals/, docs/adrs/)
+   - ONE ln-321 invocation per pattern in Phase 2 (no duplicates later)
+
+4. **Findings Analysis:** Read created documentation, extract research findings
+   - Read each created doc (Guide/Manual/ADR)
+   - Extract: standards (RFC numbers, OWASP rules), library versions, patterns (do/don't/when), architecture decisions
+   - Save findings to memory for use in Phase 4 criteria
+
+5. **Improvement Score Calculation:** Compare Story approach with researched best practices
+   - For EACH finding: compare current Story approach vs recommended approach
+   - Calculate improvement score: library version diff + standards violations + rejected alternatives
+   - Compute improvement percentage: (score / max_score * 100)
+   - Generate issues list with severity (CRITICAL, HIGH, MEDIUM)
+
+### Phase 3: DECISION POINT (NEW)
+
+**Purpose:** Decide CONTINUE (auto-fix) or REPLAN (better approach found).
+
+**Logic:**
+- **IF improvement_score ≥ 50%:**
+  - **REPLAN PATH:**
+    - Add Linear comment with research findings, issues table, improvement score
+    - Recommend: "Invoke ln-310-story-decomposer with mode=REPLAN"
+    - List created documentation paths (for ln-310 to use)
+    - Display tabular report with REPLAN recommendation
+    - EXIT (do NOT proceed to auto-fix)
+- **ELSE (improvement_score < 50%):**
+  - **CONTINUE PATH:**
+    - Proceed to Phase 4 (auto-fix using findings from Phase 2)
+    - Findings from Phase 2 available to all criteria (no additional research needed)
+
+### Phase 4: Structural + Solution Auto-Fix (ONLY IF CONTINUE)
+
+**CRITICAL:** This phase executes ONLY if Phase 3 decided CONTINUE (improvement < 50%).
+
+- Execution order: Structural (#1-#4) → Solution (#5-#8) → Workflow (#9-#12) → Quality & Documentation (#13-#20)
+- Use Auto-Fix Actions table below as authoritative checklist
+- **Criteria #5, #6, #16-#20 DO NOT call MCP Ref/Context7/ln-321 directly** - they READ findings from Phase 2 research
+- Test Strategy section must exist but remain empty (testing handled by ln-350 later)
+
+### Phase 5: Approve & Notify
+
+- Set Story + all Tasks to Todo (Linear); update kanban_board.md with APPROVED marker
 - **Add Linear comment** with full validation summary:
   - Validation Summary table (criteria checked, status, evidence)
   - Auto-Fixes Applied table (fix number, category, description)
-  - Documentation Created table (docs created via ln-321)
+  - Documentation Created table (docs created via ln-321 in Phase 2)
   - **Standards Compliance Evidence table** (standard, applies?, status, evidence)
+  - **Improvement Score** (from Phase 3 calculation)
   - TODO Warnings (if any remain)
 - **Display tabular output** (Unicode box-drawing) to terminal:
   - STORY VALIDATION REPORT header with Story ID + ln-320 version
@@ -91,6 +122,7 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
   - AUTO-FIXES APPLIED table (Fix #, Category, Description)
   - DOCUMENTATION CREATED table (docs created via ln-321)
   - STANDARDS COMPLIANCE table (Standard, Status, Evidence)
+  - IMPROVEMENT SCORE (percentage)
   - APPROVED → Todo footer with Story + Task count
 - Any principle violations in reports must include rationale, best-practice reference, and recommended remediation steps
 
@@ -102,8 +134,8 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 |2 Tasks Structure|Each Task has 7 sections in order|Load each Task full description sequentially; add/reorder sections with placeholders; update Linear and comment; preserve language|Sequential per task; skip if Done/Canceled or older than 30 days|
 |3 Story Statement|As a/I want/So that clarity|Rewrite using persona (Context), capability (Technical Notes), value (Success Metrics); update Linear and comment|-|
 |4 Acceptance Criteria|Given/When/Then, 3-5 items, edge/error coverage|Normalize AC to G/W/T; add missing edge/error cases; update Linear and comment|-|
-|5 Solution Optimization|2025-best approach via MCP Ref research|Call `ref_search_documentation(query="[domain] best practices 2025")`; rewrite Technical Notes if better approach found; cite RFC/standard number; add Linear comment with research evidence|Evidence: MCP Ref query + result summary|
-|6 Library & Version|Verify via Context7 + WebSearch|Call `mcp__context7__get-library-docs(topic="version")` for each library; if outdated, update to latest stable; log checked versions in Linear comment|Evidence: Context7 query + version comparison|
+|5 Solution Optimization|Compare Story approach with Phase 2 findings|Read findings from Phase 2 research_results (guides already created by ln-321); extract standards/patterns from guides; compare with Story Technical Notes; IF Story violates standard → Update with RFC-compliant approach from guide; Add reference to guide; update Linear comment|Evidence: Guide paths from Phase 2|
+|6 Library & Version|Read library versions from Phase 2 findings|Extract library versions from manuals created in Phase 2; compare with Story Technical Notes; IF outdated → Update to recommended version from manual; Add manual reference; update Linear comment|Evidence: Manual paths from Phase 2|
 |7 Test Strategy|Section exists but remains empty now|Ensure Test Strategy section present; leave empty with note that testing is planned later by ln-350; do not add coverage details|Mention "testing handled later; not evaluated in this phase"|
 |8 Documentation Integration|No standalone doc tasks|Remove doc-only tasks; fold doc updates into implementation tasks and DoD; update Linear and comment|-|
 |9 Story Size & Granularity|3-8 tasks; 3-5h each|If <3 tasks invoke ln-310-story-decomposer; if >8 add TODO to split; flag tasks <3h or >8h with TODO; reload metadata and update kanban_board.md|Comment creation source|
@@ -113,11 +145,8 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 |13 Documentation Links|Technical Notes reference docs|Add "Related Documentation" subsection; link guides/manuals/ADRs by path; update Linear|Use created/existing paths|
 |14 Foundation-First Order|Task order DB -> Repo -> Service -> API -> Frontend|Reorder Implementation Tasks and note execution order; update Linear and comment|-|
 |15 Code Quality Basics|No magic values; config approach defined|Add TODOs for constants/config/env creds; describe config management in Technical Notes; update Linear|Warn in summary if TODOs remain|
-|16 Industry Standards|MCP Ref verification mandatory|Call `ref_search_documentation(query="[domain] RFC OWASP standard")` BEFORE checking local docs; if RFC applies, verify Story complies; if local doc missing, invoke creators; add Linear comment with RFC reference or explicit "no standards apply" with reasoning|Evidence: MCP Ref query result or explicit skip reason|
-|17 Rate Limiting|API Stories must have Rate Limiting documentation|If API Story (keywords: endpoint, API, REST, GraphQL) AND Rate Limiting subsection missing: invoke `Skill(skill="ln-321-docs-creator", args="doc_type=guide topic='API Rate Limiting Pattern'")` → creates docs/guides/06-api-rate-limiting.md; add reference to Technical Notes; update Linear comment with created doc|Skip if internal service, no external API; Evidence: Guide path or skip reason|
-|18 Auth/Security Pattern|Auth Stories must have Security Pattern documentation|If Auth Story (keywords: auth, login, token, JWT, OAuth) AND Security Pattern missing: extract library from Technical Notes → invoke ln-321 twice: (1) `doc_type=manual topic='[library] v[version]'` → creates Manual; (2) `doc_type=adr topic='Authentication Strategy'` → creates ADR; add references to Technical Notes; update Linear with created docs|Skip if non-auth Story; Evidence: Manual + ADR paths or skip reason|
-|19 Error Handling Strategy|All Stories must have Error Handling documentation|If Error Handling subsection missing in Technical Notes: invoke `Skill(skill="ln-321-docs-creator", args="doc_type=guide topic='Error Response Patterns (RFC 7807)'")` → creates docs/guides/07-error-handling.md; add reference to Technical Notes; update Linear comment|Mandatory for all Stories; Evidence: Guide path|
-|20 Logging & Observability|All Stories must have Logging documentation|If Logging subsection missing in Technical Notes: invoke `Skill(skill="ln-321-docs-creator", args="doc_type=guide topic='Structured Logging Strategy'")` → creates docs/guides/08-logging.md; add reference to Technical Notes; update Linear comment|Mandatory for all Stories; Evidence: Guide path|
+|16 Industry Standards|Verify compliance with Phase 2 findings|Read standards from guides created in Phase 2; check Story compliance with each standard (RFC, OWASP); IF non-compliant → Update Story with compliant approach from guide; Add reference to guide; update Linear comment|Evidence: Standards list + Guide paths from Phase 2|
+|17 Technical Documentation|Check pattern-specific docs exist (from Phase 2)|For EACH pattern detected in Phase 2 Domain Extraction: check if corresponding documentation exists (guides/manuals/ADRs created by ln-321); IF exists → add reference to Technical Notes under appropriate subsection; ELSE → WARNING (should have been created in Phase 2); Works for ANY pattern from ln321_auto_trigger_matrix.md (OAuth, REST API, Rate Limiting, Caching, WebSocket, Email, File Upload, ML, Blockchain, etc.)|Universal criterion; Evidence: All doc paths from Phase 2 pattern research|
 
 ## Self-Audit Protocol (Mandatory)
 
@@ -131,8 +160,8 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 |2|Loaded full description for each Task?|Task validation count|
 |3|Statement in As a/I want/So that?|Quoted statement|
 |4|AC are G/W/T and testable?|AC count and format|
-|5|Challenged "best for 2025" via MCP Ref?|MCP Ref query + result summary|
-|6|Versions verified via Context7?|Context7 query + version list|
+|5|Compared Story approach with Phase 2 findings?|Guide paths from Phase 2 research|
+|6|Read library versions from Phase 2 manuals?|Manual paths from Phase 2 research|
 |7|Test Strategy kept empty for now?|Note that testing is deferred|
 |8|Docs integrated, no standalone tasks?|Integration evidence|
 |9|Task count 3-8 and 3-5h?|Task count/sizes|
@@ -142,40 +171,37 @@ Critically review and auto-fix Stories and Tasks against 2025 standards and proj
 |13|All relevant guides linked?|Guide paths|
 |14|Tasks ordered DB->Repo->Service->API?|Task order list|
 |15|Hardcoded values handled?|TODO/config evidence|
-|16|Standards verified via MCP Ref?|MCP Ref query or explicit skip reason|
-|17|Rate Limiting Guide created or exists?|Guide-06 path OR skip reason (non-API Story)|
-|18|Auth Manual + ADR created or exist?|Manual path + ADR path OR skip reason (non-Auth Story)|
-|19|Error Handling Guide created or exists?|Guide-07 path|
-|20|Logging Guide created or exists?|Guide-08 path|
+|16|Verified compliance with Phase 2 guides?|Standards list + Guide paths from Phase 2|
+|17|Pattern-specific docs referenced in Story?|All doc paths from Phase 2 (guides/manuals/ADRs for detected patterns)|
 
 ## Definition of Done
 
-- Phase 1 Step 0: Upstream validation (ln-220) checked if applicable; ln-220 bugs reported if detected
-- Phase 1 Step 1: Auto-discovery done; Story + Tasks metadata loaded; task count checked
-- Phase 2: Full Story parsed; standards researched via MCP Ref; library versions verified via Context7; ln-321 invoked for missing docs (Guides, Manuals, ADRs); codebase reality verified; reports explain violations with best-practice references and fixes
-- Phase 3: Criteria 1-20 auto-fixed in execution order (Structural → Solution → Workflow → Quality); Test Strategy section present but empty; test tasks removed; guide links inserted; ln-321 documentation created (#17-#20)
-- Phase 4: Story/Tasks set to Todo; kanban_board.md updated with APPROVED marker and hierarchy; **Linear comment added** with Validation Summary table, Auto-Fixes table, Documentation Created table, Standards Compliance Evidence table, TODO warnings; **Tabular output displayed** (Unicode box-drawing) to terminal with validation report
+- **Phase 1:** Upstream validation (ln-220) checked if applicable; auto-discovery done; Story + Tasks metadata loaded; task count checked
+- **Phase 2:** Domain extraction completed; TRIVIAL CRUD detected (if applicable); research delegation to ln-321 for ALL detected patterns; findings analysis completed (standards, library versions, patterns extracted from created docs); improvement score calculated with issues list
+- **Phase 3:** Decision made: REPLAN (≥50% improvement) with Linear comment + tabular report, OR CONTINUE to Phase 4
+- **Phase 4 (ONLY IF CONTINUE):** Criteria 1-17 auto-fixed in execution order (Structural → Solution → Workflow → Quality); findings from Phase 2 used (no additional MCP/ln-321 calls); Test Strategy section present but empty; test tasks removed; pattern-specific docs referenced
+- **Phase 5:** Story/Tasks set to Todo; kanban_board.md updated with APPROVED marker; **Linear comment added** with Validation Summary, Auto-Fixes, Documentation Created, Standards Compliance, Improvement Score, TODO warnings; **Tabular output displayed** (Unicode box-drawing) to terminal
 
 ## Example Workflows
 
-- **Outdated library:** Detect old version via Context7, update to current stable in Technical Notes/Tasks, document change in Linear comment, approve.
-- **OAuth violation:** Replace custom endpoints with RFC-compliant `/token` flow (verified via MCP Ref), invoke ln-321 to create Manual + ADR, add references to Technical Notes, approve.
-- **Missing Rate Limiting (API Story):** Detect API Story pattern, Rate Limiting subsection missing → invoke ln-321 `doc_type=guide topic="API Rate Limiting Pattern"` → creates Guide-06, add reference to Technical Notes, approve.
-- **Missing tasks:** If <3 tasks, run ln-310-story-decomposer, reload tasks, reorder Foundation-First, update kanban and comments, approve.
+- **REPLAN scenario (improvement ≥50%):** Phase 2 detects OAuth Story using outdated session-based auth; ln-321 creates Manual (oauth2-proxy v7) + ADR (Auth Strategy); improvement score 58% (RFC 6749 violation); Phase 3 recommends REPLAN; Linear comment added with findings; EXIT without auto-fix.
+- **CONTINUE scenario (improvement <50%):** Phase 2 detects REST API Story; ln-321 creates Guide-05 (REST patterns); findings show minor version update needed; improvement score 25%; Phase 3 continues to Phase 4; Criterion #6 reads manual from Phase 2, updates library version; Criterion #17 adds Guide-05 reference to Story; approve.
+- **Universal pattern detection:** Story about ML pipeline triggers ln-321 to create Guide for Data Validation + Manual for TensorFlow v2.15; Phase 4 Criterion #17 adds both doc references to Technical Notes; works for ANY domain from ln321_auto_trigger_matrix.md.
+- **TRIVIAL CRUD optimization:** Story "Create basic CRUD for User entity" detected as TRIVIAL; Phase 2 timebox 2 min (shallow research); only Error Handling + Logging guides created; no REPLAN needed; fast approval path.
 
 ## Reference Files
 
 - **Templates:** `../ln-220-story-coordinator/references/story_template_universal.md`, `../ln-311-task-creator/references/task_template_implementation.md`
 - **Validation Checklists (Progressive Disclosure):**
-  - `references/verification_checklist_template.md` (overview of 4 categories)
+  - `references/verification_checklist_template.md` (overview of 4 categories, 17 criteria total)
   - `references/structural_validation.md` (criteria #1-#4: Story/Tasks structure)
   - `references/solution_validation.md` (criteria #5-#8: Solution optimization, library versions)
   - `references/workflow_validation.md` (criteria #9-#12: YAGNI, KISS, story size)
-  - `references/quality_validation.md` (criteria #13-#20: Standards, ln-321 integration)
-  - `references/ln321_auto_trigger_matrix.md` (Auto-Trigger Matrix for ln-321 invocation)
+  - `references/quality_validation.md` (criteria #13-#17: Standards, pattern-specific documentation)
+  - `references/ln321_auto_trigger_matrix.md` (Pattern registry: ALL technical domains with trigger keywords)
 - **Testing methodology** (for later phases): `../ln-350-story-test-planner/references/risk_based_testing_guide.md`
 - **Linear integration:** `../ln-210-epic-coordinator/references/linear_integration.md`
 
 ---
-**Version:** 14.0.0 (Progressive Disclosure Pattern: 5 validation files, ln-321 integration for #17-#20, tabular output, upstream validation, Self-Audit in Linear comment)
+**Version:** 15.0.0 (Critical Path Validation First: Research via ln-321 in Phase 2, Decision Point (CONTINUE/REPLAN), TRIVIAL CRUD detection, no direct MCP calls, improvement score calculation)
 **Last Updated:** 2025-12-21

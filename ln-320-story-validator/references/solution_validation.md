@@ -4,11 +4,11 @@ Detailed rules for solution optimization, library versions, test strategy, and d
 
 ---
 
-## Criterion #5: Solution Optimization (MCP Ref + Standards Research)
+## Criterion #5: Solution Optimization (Phase 2 Findings)
 
-**Check:** Technical approach follows industry standards (RFC, OWASP, REST) researched via MCP Ref
+**Check:** Technical approach follows industry standards researched in Phase 2
 
-⚠️ **Important:** Use `mcp__Ref__ref_search_documentation` to verify solution against official docs, RFCs, and best practices.
+⚠️ **Important:** This criterion does NOT call MCP Ref directly. It uses findings from Phase 2 research (guides created by ln-321).
 
 ✅ **GOOD:**
 - OAuth implementation: "Using RFC 6749 compliant `/token` endpoint with grant_type parameter"
@@ -21,15 +21,14 @@ Detailed rules for solution optimization, library versions, test strategy, and d
 - "Use GET for mutations" (violates REST principles)
 
 **Auto-fix actions:**
-1. Parse Story Technical Notes → Identify solution domain (auth, API, errors, etc.)
-2. Search relevant standards via MCP Ref:
-   - Auth → `mcp__Ref__ref_search_documentation(query="OAuth 2.0 RFC 6749")`
-   - Errors → `mcp__Ref__ref_search_documentation(query="RFC 7807 Problem Details")`
-   - REST API → `mcp__Ref__ref_search_documentation(query="RESTful API best practices")`
-3. Compare current solution with standard recommendations
-4. IF non-compliant → Rewrite Technical Notes with RFC-compliant approach
+1. Read findings from Phase 2 `research_results` (guides already created by ln-321)
+2. Extract standards/patterns from guides (RFC numbers, OWASP rules, do/don't/when patterns)
+3. Compare Story Technical Notes with standards from findings
+4. IF Story violates standard:
+   - Rewrite Technical Notes with RFC-compliant approach from guide
+   - Add reference to guide (e.g., "See [Guide-05: REST API Patterns](docs/guides/05-rest-api-patterns.md)")
 5. Update Linear issue via `mcp__linear-server__update_issue`
-6. Add comment: "Solution updated to follow [RFC/Standard] - see Technical Notes"
+6. Add comment: "Solution updated to comply with [Standards list] - see guides created in Phase 2"
 
 **Example transformation:**
 
@@ -40,13 +39,15 @@ We'll create custom login endpoint `/do-login` that accepts username/password
 and returns a session cookie.
 ```
 
-**After (MCP Ref researched RFC 6749):**
+**After (Phase 2 findings from oauth2-proxy Manual + Auth ADR):**
 ```markdown
 ## Technical Notes
 
-### Standards Research
+### Standards Compliance
 - OAuth 2.0 (RFC 6749): Resource Owner Password Credentials Grant
 - Token endpoint: POST /token with grant_type=password
+- See [Manual: oauth2-proxy v7](docs/manuals/oauth2-proxy-v7.md) for implementation details
+- Architecture decision: [ADR-003: Authentication Strategy](docs/adrs/003-auth-strategy.md)
 
 ### Architecture Considerations
 OAuth 2.0 compliant authentication flow:
@@ -57,16 +58,16 @@ OAuth 2.0 compliant authentication flow:
 ```
 
 **Skip Fix When:**
-- Solution already references specific RFC/standard
+- Solution already references specific RFC/standard from Phase 2 guides
 - Story in Done/Canceled status
 
 ---
 
-## Criterion #6: Library & Version Research (Context7 + WebSearch)
+## Criterion #6: Library & Version (Phase 2 Findings)
 
-**Check:** Libraries are latest stable versions, researched via Context7 or WebSearch
+**Check:** Libraries are latest stable versions from Phase 2 research
 
-⚠️ **Important:** Use `mcp__context7__resolve-library-id` + `mcp__context7__get-library-docs` or `WebSearch` to verify current versions.
+⚠️ **Important:** This criterion does NOT call Context7/WebSearch directly. It uses findings from Phase 2 research (manuals created by ln-321).
 
 ✅ **GOOD:**
 - "Using express v4.19.2 (latest stable as of 2025-01)"
@@ -79,21 +80,14 @@ OAuth 2.0 compliant authentication flow:
 - "Latest version" (no verification)
 
 **Auto-fix actions:**
-1. Parse Technical Notes → Extract library names
-2. For EACH library:
-   - **Try Context7 first:**
-     ```
-     mcp__context7__resolve-library-id(libraryName="express")
-     mcp__context7__get-library-docs(context7CompatibleLibraryID="/expressjs/express")
-     ```
-   - **Fallback to WebSearch:**
-     ```
-     WebSearch(query="express npm latest stable version 2025")
-     ```
-3. Compare Story versions with latest stable
-4. IF outdated or unspecified → Update Technical Notes with specific version + verification source
+1. Extract library versions from manuals created in Phase 2 research
+2. For EACH library in Phase 2 findings:
+   - Read recommended version from manual (e.g., Manual: oauth2-proxy v7.6.0)
+   - Compare with Story Technical Notes current version
+3. IF outdated or unspecified → Update Technical Notes with recommended version from manual
+4. Add manual reference: "See [Manual: oauth2-proxy v7](docs/manuals/oauth2-proxy-v7.md) for API details"
 5. Update Linear issue via `mcp__linear-server__update_issue`
-6. Add comment: "Library versions verified - updated to latest stable (Context7/npm/GitHub)"
+6. Add comment: "Library versions updated from Phase 2 manuals - [list of manuals]"
 
 **Example transformation:**
 
@@ -106,25 +100,25 @@ OAuth 2.0 compliant authentication flow:
 - PostgreSQL database
 ```
 
-**After (Context7 researched):**
+**After (Phase 2 manuals: passport-v0.7.md, prisma-v5.md):**
 ```markdown
 ## Technical Notes
 
 ### Integration Points
-- Passport.js v0.7.0 (latest stable, verified via Context7)
-- PostgreSQL v16.1 (current major version, compatible with Prisma v5.8.1)
+- Passport.js v0.7.0 (latest stable, see [Manual: Passport v0.7](docs/manuals/passport-v0.7.md))
+- PostgreSQL v16.1 (compatible with Prisma v5.8.1, see [Manual: Prisma v5](docs/manuals/prisma-v5.md))
 
-### Library Verification
-| Library | Version | Source | Date Verified |
-|---------|---------|--------|---------------|
-| passport | v0.7.0 | Context7 | 2025-01-15 |
-| @prisma/client | v5.8.1 | npm | 2025-01-15 |
-| postgresql | v16.1 | Official docs | 2025-01-15 |
+### Library References
+| Library | Version | Manual | Phase 2 Research |
+|---------|---------|--------|------------------|
+| passport | v0.7.0 | docs/manuals/passport-v0.7.md | ln-321 verified |
+| @prisma/client | v5.8.1 | docs/manuals/prisma-v5.md | ln-321 verified |
+| postgresql | v16.1 | External dependency | Compatible check |
 ```
 
 **Skip Fix When:**
-- All libraries have specific versions (X.Y.Z format)
-- Versions verified within last 30 days
+- All libraries have specific versions matching Phase 2 manuals
+- No library manuals created in Phase 2 (no library patterns detected)
 - Story in Done/Canceled status
 
 ---
@@ -264,10 +258,10 @@ E2E tests:
 - Cannot optimize solution (#5) until structure (#1-#2) is correct
 - Cannot verify libraries (#6) until Technical Notes exist (#1)
 
-**MCP Tool Priority:**
-1. **MCP Ref** for RFC/standards research (Criterion #5)
-2. **Context7** for library versions (Criterion #6)
-3. **WebSearch** as fallback when Context7 unavailable
+**Phase 2 Integration:**
+- Criteria #5-#6 DO NOT call MCP Ref/Context7 directly
+- They READ findings from Phase 2 research (guides/manuals created by ln-321)
+- All research completed BEFORE Phase 4 auto-fix begins
 
 **Linear Updates:**
 - Each criterion auto-fix updates Linear issue once
