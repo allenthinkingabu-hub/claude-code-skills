@@ -2,13 +2,13 @@
 
 > A comprehensive collection of skills for Claude Code, providing end-to-end Agile workflow automation integrated with Linear for modern software development teams.
 
-![Version](https://img.shields.io/badge/version-10.1.0-blue) ![Skills](https://img.shields.io/badge/skills-37-green) ![Updated](https://img.shields.io/badge/updated-Nov%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
+![Version](https://img.shields.io/badge/version-12.0.0-blue) ![Skills](https://img.shields.io/badge/skills-51-green) ![Updated](https://img.shields.io/badge/updated-Dec%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
 
 ---
 
 ## 📖 About
 
-This repository contains **37 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From initial documentation to story execution and quality assurance, these skills work together to create a complete Agile development workflow.
+This repository contains **51 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From initial documentation to story execution and quality assurance, these skills work together to create a complete Agile development workflow.
 
 **What You Get:**
 - 🎯 **Complete Agile Workflow** - From Epic decomposition to task execution and review
@@ -118,7 +118,7 @@ Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-de
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-311-task-creator](ln-311-task-creator/)** | **Universal factory** for creating ALL 3 task types (implementation, refactoring, test). Generates task documents from templates, validates type-specific rules, creates in Linear. Invoked by orchestrators (ln-310-story-decomposer, ln-340-story-quality-gate, ln-350-story-test-planner). Owns all 3 templates. | 5.0.0 | ✅ |
+| **[ln-311-task-creator](ln-311-task-creator/)** | **Universal factory** for creating ALL 3 task types (implementation, refactoring, test). Generates task documents from templates, validates type-specific rules, creates in Linear. **DRY Check:** Scans codebase (Grep) for similar functionality, adds warnings to Task descriptions with reuse/extend/justify recommendations (≥70% similarity). Invoked by orchestrators (ln-310-story-decomposer, ln-340-story-quality-gate, ln-350-story-test-planner). Owns all 3 templates. | 6.0.0 | ✅ |
 | **[ln-312-task-replanner](ln-312-task-replanner/)** | **Universal replanner** for updating ALL 3 task types (implementation, refactoring, test). Compares IDEAL plan vs existing, categorizes operations (KEEP/UPDATE/OBSOLETE/CREATE), applies type-specific validation, executes changes in Linear. Reads templates from ln-311-task-creator/references/. | 6.0.0 | ✅ |
 
 #### 3.2 Story Validation (ln-320-story-validator)
@@ -127,7 +127,7 @@ Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-de
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-320-story-validator](ln-320-story-validator/)** | **Coordinator** that critically reviews Stories and Tasks against 2025 industry standards before approval (Backlog → Todo). ALWAYS auto-fixes all 16 verification criteria. Auto-creates guides/manuals/ADRs via AUTO-RESEARCH. No "Needs Work" path exists. | 13.0.0 | ✅ |
+| **[ln-320-story-validator](ln-320-story-validator/)** | **Coordinator** that critically reviews Stories and Tasks against 2025 industry standards before approval (Backlog → Todo). ALWAYS auto-fixes all 20 verification criteria (Progressive Disclosure: 5 validation files). Invokes ln-321 to create Guides/Manuals/ADRs (#17-#20). Tabular output (Unicode box-drawing). Upstream validation (ln-220). No "Needs Work" path exists. | 14.0.0 | ✅ |
 
 **Workers:**
 
@@ -178,15 +178,43 @@ Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-de
 
 #### 3.6 Codebase Audit (ln-360-codebase-auditor)
 
+**Coordinator:**
+
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-360-codebase-auditor](ln-360-codebase-auditor/)** | Full codebase quality audit across 9 categories (Security, Build, Architecture, Design, Complexity, Algorithms, Dependencies, Wheel Reinvention, Unused Code). Creates consolidated refactoring task in Linear Epic 0. Manual invocation for technical debt assessment. | 2.0.0 | ✅ |
+| **[ln-360-codebase-auditor](ln-360-codebase-auditor/)** | **L2 Coordinator** that orchestrates complete codebase quality audit. Researches best practices ONCE, delegates to 9 specialized workers IN PARALLEL, aggregates results into single consolidated report. Creates refactoring task in Linear Epic 0. Manual invocation for technical debt assessment. | 3.0.0 | ✅ |
+
+**Workers (L3 Audit Specialists):**
+
+| # | Skill | Priority | What It Audits | Version |
+|:---:|:------|:--------:|:---------------|:-------:|
+| 1 | **[ln-361-security-auditor](ln-361-security-auditor/)** | CRITICAL | Hardcoded secrets, SQL injection, XSS, insecure dependencies, missing input validation | 1.0.0 |
+| 2 | **[ln-362-build-auditor](ln-362-build-auditor/)** | CRITICAL | Compiler/linter errors, deprecation warnings, type errors, failed tests, build config | 1.0.0 |
+| 3 | **[ln-363-architecture-auditor](ln-363-architecture-auditor/)** | HIGH | DRY/KISS/YAGNI violations, layer breaks, TODO/FIXME, workarounds, error handling | 1.0.0 |
+| 4 | **[ln-364-code-quality-auditor](ln-364-code-quality-auditor/)** | MEDIUM | Cyclomatic complexity, O(n²), N+1 queries, **magic numbers**, **duplicate constants** | 1.0.0 |
+| 5 | **[ln-365-dependencies-auditor](ln-365-dependencies-auditor/)** | MEDIUM | Outdated packages, unused dependencies, reinvented wheels, custom implementations | 1.0.0 |
+| 6 | **[ln-366-dead-code-auditor](ln-366-dead-code-auditor/)** | LOW | Unreachable code, unused imports/variables/functions, commented-out code | 1.0.0 |
+| 7 | **[ln-367-observability-auditor](ln-367-observability-auditor/)** | MEDIUM | Structured logging, health checks, metrics, request tracing, log levels | 1.0.0 |
+| 8 | **[ln-368-concurrency-auditor](ln-368-concurrency-auditor/)** | HIGH | Race conditions, async/await, resource contention, thread safety, deadlocks | 1.0.0 |
+| 9 | **[ln-369-lifecycle-auditor](ln-369-lifecycle-auditor/)** | MEDIUM | Bootstrap, graceful shutdown, resource cleanup, signal handling, probes | 1.0.0 |
 
 #### 3.7 Test Suite Audit (ln-370-test-auditor)
 
+**Coordinator:**
+
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-370-test-auditor](ln-370-test-auditor/)** | Test suite quality audit across 6 categories (Business Logic Focus, E2E Priority, Risk-Based Value, Coverage Gaps, Isolation, Anti-Patterns). Calculates **Usefulness Score** per test (Keep/Remove/Refactor). Removes useless tests, identifies missing ones. Creates task in Linear Epic 0. | 1.0.0 | ✅ |
+| **[ln-370-test-auditor](ln-370-test-auditor/)** | **L2 Coordinator** that orchestrates comprehensive test suite audit. Researches testing best practices ONCE, delegates to 5 specialized workers IN PARALLEL, aggregates results into unified audit report with KEEP/REMOVE/REVIEW decisions. Calculates **Usefulness Score** per test (Impact × Probability). Creates refactoring task in Linear Epic 0. Manual invocation for test suite quality assessment. | 2.0.0 | ✅ |
+
+**Workers (L3 Test Audit Specialists):**
+
+| # | Skill | Category | What It Audits | Version |
+|:---:|:------|:--------:|:---------------|:-------:|
+| 1 | **[ln-371-test-business-logic-auditor](ln-371-test-business-logic-auditor/)** | Business Logic Focus | Framework/library tests (Prisma, Express, bcrypt, JWT, axios, React hooks) → REMOVE | 1.0.0 |
+| 2 | **[ln-372-test-e2e-priority-auditor](ln-372-test-e2e-priority-auditor/)** | E2E Priority | E2E baseline (2/endpoint: positive + negative), pyramid validation, missing E2E tests | 1.0.0 |
+| 3 | **[ln-373-test-value-auditor](ln-373-test-value-auditor/)** | Risk-Based Value | Usefulness Score = Impact (1-5) × Probability (1-5). Thresholds: ≥15 KEEP, 10-14 REVIEW, <10 REMOVE | 1.0.0 |
+| 4 | **[ln-374-test-coverage-auditor](ln-374-test-coverage-auditor/)** | Coverage Gaps | Missing tests for critical paths (Money 20+, Security 20+, Data 15+, Core Flows 15+) | 1.0.0 |
+| 5 | **[ln-375-test-isolation-auditor](ln-375-test-isolation-auditor/)** | Isolation + Anti-Patterns | Isolation (APIs, DB, FS, Time, Random, Network), Anti-Patterns (Liar, Giant, Slow Poke, Conjoined Twins, Happy Path Only, Framework Tester) | 1.0.0 |
 
 ---
 

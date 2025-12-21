@@ -1,31 +1,48 @@
 ---
 name: ln-360-codebase-auditor
-description: Codebase-level quality audit across 12 categories with best practices research. Creates refactoring task in Linear Epic 0.
-allowed-tools: Read, Grep, Glob, Bash, WebFetch, WebSearch, mcp__Ref, mcp__context7, mcp__linear-server
+description: Coordinates 9 specialized audit workers (security, build, architecture, code quality, dependencies, dead code, observability, concurrency, lifecycle). Researches best practices, delegates parallel audits, aggregates results into single Linear task in Epic 0.
+allowed-tools: Read, Grep, Glob, Bash, WebFetch, WebSearch, mcp__Ref, mcp__context7, mcp__linear-server, Skill
 ---
 
-# Codebase Auditor
+# Codebase Auditor (L2 Coordinator)
 
-Full codebase quality audit that identifies technical debt and creates a consolidated refactoring task.
+Coordinates 9 specialized audit workers to perform comprehensive codebase quality analysis.
 
 ## Purpose & Scope
-- Audit entire codebase against 12 quality categories (security, architecture, complexity, observability, etc.).
-- Research current best practices for detected tech stack via MCP tools.
-- Collect issues with severity, location, effort estimate, and recommendations.
-- Calculate compliance score (X/10) per category.
-- Create single refactoring task in Linear under Epic 0 with all findings.
-- Manual invocation by user; not part of Story pipeline.
+
+- **Coordinates 9 audit workers** (ln-361 through ln-369) running in parallel
+- Research current best practices for detected tech stack via MCP tools ONCE
+- Pass shared context to all workers (token-efficient)
+- Aggregate worker results into single consolidated report
+- Create single refactoring task in Linear under Epic 0 with all findings
+- Manual invocation by user; not part of Story pipeline
 
 ## Workflow
-1) **Discovery:** Load tech_stack.md, principles.md, package manifests (package.json/requirements.txt/go.mod).
-2) **Research:** Query MCP tools for current best practices per major dependency.
-3) **Static Analysis:** Run 12 audit categories in priority order (see below).
-4) **Collect Issues:** Record each finding with severity, location, effort estimate (S/M/L), recommendation.
-5) **Score:** Calculate compliance score per category (X/10).
-6) **Generate Report:** Include Executive Summary, Strengths, Findings by category, Recommended Actions.
-7) **Create Task:** Create Linear task in Epic 0 titled "Codebase Refactoring: [YYYY-MM-DD]" with full report.
 
-## Phase 2: Research Best Practices
+1) **Discovery:** Load tech_stack.md, principles.md, package manifests, auto-discover Team ID
+2) **Research:** Query MCP tools for current best practices per major dependency ONCE
+3) **Build Context:** Create contextStore with best practices + tech stack metadata
+4) **Delegate:** Invoke 9 workers IN PARALLEL (single message, 9 Skill tool calls)
+5) **Aggregate:** Collect worker results, merge findings, calculate overall score
+6) **Generate Report:** Build consolidated report with Executive Summary, Compliance Score, Findings
+7) **Create Task:** Create Linear task in Epic 0 titled "Codebase Refactoring: [YYYY-MM-DD]"
+
+## Phase 1: Discovery
+
+**Load project metadata:**
+- `docs/project/tech_stack.md` - detect tech stack for research
+- `docs/principles.md` - project-specific quality principles
+- Package manifests: `package.json`, `requirements.txt`, `go.mod`, `Cargo.toml`
+- Auto-discover Team ID from `docs/tasks/kanban_board.md`
+
+**Extract metadata only** (not full codebase scan):
+- Programming language(s)
+- Major frameworks/libraries
+- Database system(s)
+- Build tools
+- Test framework(s)
+
+## Phase 2: Research Best Practices (ONCE)
 
 **For each major dependency identified in Phase 1:**
 
@@ -35,89 +52,79 @@ Full codebase quality audit that identifies technical debt and creates a consoli
 
 | Type | Research Focus |
 |------|----------------|
-| **Web Framework** | Async patterns, middleware, error handling, request lifecycle |
-| **ML/AI Libraries** | Inference optimization, memory management, batching |
-| **Database** | Connection pooling, transactions, query optimization |
-| **Containerization** | Multi-stage builds, security, layer caching |
-| **Language Runtime** | Idioms, performance patterns, memory management |
+| Web Framework | Async patterns, middleware, error handling, request lifecycle |
+| ML/AI Libraries | Inference optimization, memory management, batching |
+| Database | Connection pooling, transactions, query optimization |
+| Containerization | Multi-stage builds, security, layer caching |
+| Language Runtime | Idioms, performance patterns, memory management |
 
-## Audit Categories (priority order)
+**Build contextStore:**
+```json
+{
+  "tech_stack": {...},
+  "best_practices": {...},
+  "principles": {...},
+  "codebase_root": "..."
+}
+```
 
-### 1. Security (Critical)
-- Hardcoded secrets (API keys, passwords, tokens in code)
-- SQL injection patterns (string concatenation in queries)
-- XSS vulnerabilities (unsanitized user input in output)
-- Insecure dependencies (known CVEs)
-- Missing input validation at boundaries
+## Phase 3: Delegate to Workers (PARALLEL)
 
-### 2. Build Health (Critical)
-- Compiler/linter errors
-- Deprecation warnings
-- Type errors (TypeScript strict, mypy, etc.)
-- Failed or skipped tests
+**Invoke ALL 9 workers in PARALLEL** using single message with 9 Skill tool calls:
 
-### 3. Architecture Principles (High)
-- DRY violations (duplicated logic/constants across files)
-- KISS violations (over-engineered abstractions)
-- YAGNI violations (unused extensibility points, dead feature flags)
-- Layer boundary breaks (UI calling DB directly, etc.)
+| # | Worker | Priority | Categories | What It Audits |
+|---|--------|----------|------------|----------------|
+| 1 | ln-361-security-auditor | CRITICAL | Security | Hardcoded secrets, SQL injection, XSS, insecure deps, input validation |
+| 2 | ln-362-build-auditor | CRITICAL | Build Health | Compiler/linter errors, deprecations, type errors, failed tests |
+| 3 | ln-363-architecture-auditor | HIGH | Architecture + Design | DRY/KISS/YAGNI violations, layer breaks, TODO/FIXME, workarounds, error handling |
+| 4 | ln-364-code-quality-auditor | MEDIUM | Complexity + Algorithms + Constants | Cyclomatic complexity, nesting, O(n²), N+1 queries, magic numbers, decentralized constants |
+| 5 | ln-365-dependencies-auditor | MEDIUM | Dependencies + Wheel Reinvention | Outdated packages, unused deps, custom implementations, reimplemented algorithms |
+| 6 | ln-366-dead-code-auditor | LOW | Unused Code | Dead code, unused imports/variables, commented-out code |
+| 7 | ln-367-observability-auditor | MEDIUM | Observability | Structured logging, health checks, metrics, tracing, log levels |
+| 8 | ln-368-concurrency-auditor | HIGH | Concurrency | Race conditions, async/await, resource contention, thread safety, deadlocks |
+| 9 | ln-369-lifecycle-auditor | MEDIUM | Entry Points & Lifecycle | Bootstrap, graceful shutdown, resource cleanup, signal handling, probes |
 
-### 4. Design Issues (High)
-- TODO/FIXME/HACK/XXX comments indicating unfinished work
-- Workarounds with explanatory comments
-- Temporary solutions marked for removal
-- Missing error handling on critical paths
+**Worker invocation:**
+```javascript
+FOR EACH worker IN [ln-361, ln-362, ..., ln-369]:
+  Skill(skill=worker, args=JSON.stringify(contextStore))
+  // All 9 workers run concurrently
+```
 
-### 5. Code Complexity (Medium)
-- Cyclomatic complexity > 10 per function
-- Deep nesting (> 4 levels)
-- Long methods (> 50 lines)
-- God classes/modules (> 500 lines)
-- Too many parameters (> 5)
+## Phase 4: Aggregate Results
 
-### 6. Algorithms (Medium)
-- O(n^2) or worse in loops over collections
-- N+1 query patterns (ORM lazy loading abuse)
-- Missing indexes on frequently queried fields
-- Inefficient data structures for use case
+**Collect results from each worker:**
+Each worker returns:
+```json
+{
+  "category": "Security",
+  "score": 7,
+  "total_issues": 5,
+  "critical": 1,
+  "high": 2,
+  "medium": 2,
+  "low": 0,
+  "findings": [
+    {
+      "severity": "CRITICAL",
+      "location": "src/api/auth.ts:45",
+      "issue": "Hardcoded API key in source code",
+      "principle": "Secrets Management (OWASP A02:2021)",
+      "recommendation": "Move to environment variable (.env), use secrets manager",
+      "effort": "S"
+    }
+  ]
+}
+```
 
-### 7. Dependencies (Medium)
-- Outdated packages (major versions behind)
-- Unused dependencies in manifest
-- Available features not used (e.g., native fetch vs axios)
-- Conflicting or duplicate dependencies
-
-### 8. Wheel Reinvention (Low)
-- Custom implementations of standard library features
-- Hand-rolled utilities with popular npm/pip alternatives
-- Reimplemented algorithms (sorting, parsing, validation)
-
-### 9. Unused Code (Low)
-- Dead code (unreachable branches)
-- Unused imports/variables/functions
-- Backward compatibility shims after migration complete
-- Commented-out code blocks
-
-### 10. Observability (Medium)
-- Missing structured logging (console.log vs proper logger)
-- No health check endpoints (/health, /ready)
-- Missing metrics collection (Prometheus, StatsD)
-- No request tracing/correlation IDs
-- Insufficient log levels (only errors, no debug/info)
-
-### 11. Concurrency (High)
-- Race conditions in shared state
-- Missing async/await patterns (callback hell)
-- Resource contention (file handles, connections)
-- Thread safety violations
-- Deadlock potential in lock ordering
-
-### 12. Entry Points & Lifecycle (Medium)
-- Application bootstrap issues (missing initialization order)
-- Missing graceful shutdown (SIGTERM handling)
-- Resource cleanup on exit (DB connections, file handles)
-- Signal handling (SIGTERM, SIGINT, SIGHUP)
-- Missing liveness/readiness probes for containers
+**Aggregate:**
+1. Merge all findings arrays → single findings list
+2. Calculate overall score → average of 9 category scores
+3. Build severity summary → sum critical/high/medium/low across all workers
+4. Generate Executive Summary → analyze overall health, major risks, strengths
+5. Build Compliance Score table → one row per worker category
+6. Build Findings by Category tables → group by category, include Principle Violated column
+7. Build Recommended Actions table → sort by priority, include Principle Violated column
 
 ## Output Format
 
@@ -133,13 +140,10 @@ Full codebase quality audit that identifies technical debt and creates a consoli
 |----------|-------|-------|
 | Security | X/10 | ... |
 | Build Health | X/10 | ... |
-| Architecture | X/10 | ... |
-| Design | X/10 | ... |
-| Complexity | X/10 | ... |
-| Algorithms | X/10 | ... |
-| Dependencies | X/10 | ... |
-| Wheel Reinvention | X/10 | ... |
-| Unused Code | X/10 | ... |
+| Architecture & Design | X/10 | ... |
+| Code Quality | X/10 | ... |
+| Dependencies & Reuse | X/10 | ... |
+| Dead Code | X/10 | ... |
 | Observability | X/10 | ... |
 | Concurrency | X/10 | ... |
 | Lifecycle | X/10 | ... |
@@ -160,22 +164,38 @@ Full codebase quality audit that identifies technical debt and creates a consoli
 
 ### Findings by Category
 
-#### 1. Security (Critical)
-- [ ] **[CRITICAL]** `src/api/auth.ts:45` - Hardcoded API key. Move to environment variable. **Effort: S**
-- [ ] **[HIGH]** `src/db/queries.ts:112` - SQL string concatenation. Use parameterized query. **Effort: M**
+#### 1. Security
+
+| Severity | Location | Issue | Principle Violated | Recommendation | Effort |
+|----------|----------|-------|-------------------|----------------|--------|
+| CRITICAL | src/api/auth.ts:45 | Hardcoded API key in source code | Secrets Management (OWASP A02:2021) | Move to environment variable (.env), use secrets manager | S |
+| HIGH | src/api/queries.ts:112 | SQL injection vulnerability (string concatenation) | Input Validation (OWASP A03:2021) | Use parameterized queries or ORM | M |
 
 #### 2. Build Health
-- [ ] **[CRITICAL]** 3 TypeScript errors in strict mode. Fix type annotations. **Effort: S**
 
-... (continue for all 12 categories with findings)
+| Severity | Location | Issue | Principle Violated | Recommendation | Effort |
+|----------|----------|-------|-------------------|----------------|--------|
+| CRITICAL | Multiple files (3 errors) | TypeScript strict mode errors | Type Safety | Fix type annotations, add proper types | S |
+| HIGH | package.json | 5 deprecated dependencies | Dependency Health | Update to non-deprecated versions | M |
 
-### Recommended Actions
+#### 3. Architecture & Design
 
-| Priority | Issue | Location | Effort | Category |
-|----------|-------|----------|--------|----------|
-| Critical | Hardcoded API key | auth.ts:45 | S | Security |
-| Critical | TypeScript errors | multiple | S | Build |
-| High | SQL injection risk | queries.ts:112 | M | Security |
+| Severity | Location | Issue | Principle Violated | Recommendation | Effort |
+|----------|----------|-------|-------------------|----------------|--------|
+| CRITICAL | src/controllers/UserController.ts:12 | Controller directly uses Repository (bypass Service) | Layer Separation (Clean Architecture) | Create UserService, inject into controller | L |
+| HIGH | src/middleware/error.ts:5-20 | Error handling not centralized | Single Responsibility Principle | Create ErrorHandler class, delegate from middleware | M |
+
+... (continue for all 9 categories)
+
+### Recommended Actions (Priority-Sorted)
+
+| Priority | Category | Location | Issue | Principle Violated | Recommendation | Effort |
+|----------|----------|----------|-------|-------------------|----------------|--------|
+| CRITICAL | Security | src/api/auth.ts:45 | Hardcoded API key | Secrets Management | Move to .env, use secrets manager | S |
+| CRITICAL | Build | Multiple files | TypeScript strict errors | Type Safety | Fix type annotations | S |
+| CRITICAL | Architecture | UserController.ts:12 | Controller→Repository bypass | Layer Separation | Add Service layer | L |
+| HIGH | Security | queries.ts:112 | SQL injection risk | Input Validation | Use parameterized queries | M |
+| HIGH | Architecture | error.ts:5-20 | Decentralized error handling | Single Responsibility | Create ErrorHandler class | M |
 
 ### Priority Actions
 1. Fix all Critical issues before next release
@@ -188,28 +208,56 @@ Full codebase quality audit that identifies technical debt and creates a consoli
 - [Library] documentation: [URL from Context7]
 ```
 
+## Phase 5: Create Linear Task
+
+Create task in Epic 0:
+- Title: `Codebase Refactoring: [YYYY-MM-DD]`
+- Description: Full report from Phase 4 (markdown format)
+- Team: Auto-discovered from kanban_board.md
+- Epic: 0 (technical debt / refactoring epic)
+- Labels: `refactoring`, `technical-debt`, `audit`
+- Priority: Based on highest severity findings (Critical → Urgent, High → High, etc.)
+
 ## Critical Rules
-- Read project's principles.md and tech_stack.md before judging.
-- Use project's linters/formatters configuration as baseline.
-- Do not auto-fix issues; report only. User decides what to address.
-- Single task created; do not create multiple tasks per category.
-- Language preservation in task description (EN/RU based on project).
+
+- **Parallel execution:** ALL 9 workers must run in PARALLEL (single message, 9 Skill tool calls)
+- **Single context gathering:** Research best practices ONCE, pass contextStore to all workers
+- **Metadata-only loading:** Coordinator loads metadata only; workers load full file contents
+- **Language preservation:** Task description in project's language (EN/RU from kanban_board.md)
+- **Single task:** Create ONE task with all findings; do not create multiple tasks
+- **Do not audit:** Coordinator orchestrates only; audit logic lives in workers
 
 ## Definition of Done
-- Best practices researched via MCP tools for major dependencies.
-- All 12 categories audited.
-- Findings collected with severity, location, effort estimate, and recommendation.
-- Compliance score (X/10) calculated per category.
-- Executive Summary and Strengths sections included.
-- Report generated in structured format.
-- Linear task created in Epic 0 with full report.
-- Sources consulted listed with URLs.
+
+- Best practices researched via MCP tools for major dependencies
+- contextStore built with tech stack + best practices
+- All 9 workers invoked in PARALLEL
+- All 9 workers completed successfully (or reported errors)
+- Results aggregated into single consolidated report
+- Compliance score (X/10) calculated per category + overall
+- Executive Summary and Strengths sections included
+- Linear task created in Epic 0 with full report
+- Sources consulted listed with URLs
+
+## Workers
+
+See individual worker SKILL.md files for detailed audit rules:
+- [ln-361-security-auditor](../ln-361-security-auditor/SKILL.md)
+- [ln-362-build-auditor](../ln-362-build-auditor/SKILL.md)
+- [ln-363-architecture-auditor](../ln-363-architecture-auditor/SKILL.md)
+- [ln-364-code-quality-auditor](../ln-364-code-quality-auditor/SKILL.md)
+- [ln-365-dependencies-auditor](../ln-365-dependencies-auditor/SKILL.md)
+- [ln-366-dead-code-auditor](../ln-366-dead-code-auditor/SKILL.md)
+- [ln-367-observability-auditor](../ln-367-observability-auditor/SKILL.md)
+- [ln-368-concurrency-auditor](../ln-368-concurrency-auditor/SKILL.md)
+- [ln-369-lifecycle-auditor](../ln-369-lifecycle-auditor/SKILL.md)
 
 ## Reference Files
+
 - Principles: `docs/principles.md`
 - Tech stack: `docs/project/tech_stack.md`
-- Related worker: `../ln-341-code-quality-checker/SKILL.md`
+- Kanban board: `docs/tasks/kanban_board.md`
 
 ---
-**Version:** 2.0.0
-**Last Updated:** 2025-12-19
+**Version:** 3.0.0
+**Last Updated:** 2025-12-21
