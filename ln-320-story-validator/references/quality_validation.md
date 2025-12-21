@@ -158,13 +158,15 @@ We'll use normalized database schema.
 
 ---
 
-## Criterion #16: Industry Standards Compliance (Phase 2 Findings)
+## Criterion #16: Industry Standards Compliance (Phase 2 Findings OR MCP Ref Fallback)
 
-**Check:** Solution follows industry standards researched in Phase 2
+**Check:** Solution follows industry standards
 
 ⚠️ **CRITICAL:** This criterion checked BEFORE KISS/YAGNI (#11-#12). Standards override simplicity.
 
-⚠️ **Important:** Does NOT call MCP Ref directly. Reads standards from guides created in Phase 2 by ln-321.
+⚠️ **CONDITIONAL RESEARCH:**
+- IF `phase2_executed = true` (NON-TRIVIAL) → Reads standards from Phase 2 guides (no MCP calls)
+- IF `phase2_executed = false` (TRIVIAL skip) → FALLBACK to direct MCP Ref query
 
 **Common Standards (from Phase 2 guides):**
 
@@ -196,7 +198,7 @@ We'll use custom auth with session cookies.
 (Violates OAuth RFC 6749 if API requires stateless auth)
 ```
 
-**Auto-fix actions:**
+**Auto-fix actions (NON-TRIVIAL path - phase2_executed = true):**
 1. Read standards from guides created in Phase 2 research
 2. For EACH standard in Phase 2 findings:
    - Extract RFC/OWASP requirements from guide
@@ -206,6 +208,20 @@ We'll use custom auth with session cookies.
 4. Update Linear issue via `mcp__linear-server__update_issue`
 5. Add comment: "Solution updated to comply with [Standards list] - see guides from Phase 2"
 
+**FALLBACK Auto-fix actions (TRIVIAL path - phase2_executed = false):**
+1. Identify applicable standards for Story domain (e.g., REST → RFC 7231/7807, Auth → OWASP)
+2. Query MCP Ref for standards compliance:
+   - Tool: `mcp__Ref__ref_search_documentation(query="[domain] RFC OWASP standards compliance")`
+   - Example: "REST API RFC 7231 7807 OWASP standards"
+3. Extract compliance requirements from search results
+4. Compare Story Technical Notes with requirements
+5. IF non-compliant:
+   - Update Technical Notes with compliant approach from MCP Ref results
+   - Add Standards Compliance subsection with inline RFC/OWASP references
+   - **Note:** Do NOT create separate guide - just inline references
+6. Update Linear issue via `mcp__linear-server__update_issue`
+7. Add comment: "Solution updated to comply with [Standards list from MCP Ref] - TRIVIAL fast path"
+
 **Skip Fix When:**
 - Solution already documents standard compliance with guide references
 - Story in Done/Canceled status
@@ -213,11 +229,13 @@ We'll use custom auth with session cookies.
 
 ---
 
-## Criterion #17: Technical Documentation (Pattern-Specific)
+## Criterion #17: Technical Documentation (Pattern-Specific Docs OR MCP Ref Fallback)
 
-**Check:** Pattern-specific documentation exists from Phase 2 research
+**Check:** Pattern-specific documentation exists or referenced
 
-⚠️ **Important:** Does NOT invoke ln-321. Checks if docs exist from Phase 2 Domain Extraction + Research Delegation.
+⚠️ **CONDITIONAL RESEARCH:**
+- IF `phase2_executed = true` (NON-TRIVIAL) → Checks docs from Phase 2, adds references (no ln-321/MCP calls)
+- IF `phase2_executed = false` (TRIVIAL skip) → FALLBACK to MCP Ref query for pattern docs
 
 ⚠️ **Universal:** Works for ANY pattern from `ln321_auto_trigger_matrix.md` (OAuth, REST API, Rate Limiting, Caching, WebSocket, Email, File Upload, ML, Blockchain, Database, Validation, Pagination, etc.)
 
@@ -246,7 +264,7 @@ We'll add OAuth authentication and REST API endpoints.
 (No references to guides/manuals/ADRs created in Phase 2)
 ```
 
-**Auto-fix actions:**
+**Auto-fix actions (NON-TRIVIAL path - phase2_executed = true):**
 1. For EACH pattern detected in Phase 2 Domain Extraction:
    - Check if corresponding documentation exists in `research_results` (guides/manuals/ADRs created by ln-321)
    - IF exists:
@@ -256,6 +274,19 @@ We'll add OAuth authentication and REST API endpoints.
      - Add WARNING to Linear comment: "Pattern documentation should have been created in Phase 2 - check ln321_auto_trigger_matrix.md"
 2. Update Linear issue via `mcp__linear-server__update_issue`
 3. Add comment: "Pattern documentation references added - [list of docs from Phase 2]"
+
+**FALLBACK Auto-fix actions (TRIVIAL path - phase2_executed = false):**
+1. Extract patterns from Story domain (e.g., "CRUD REST API" → REST API, Error Handling, Logging)
+2. For EACH pattern:
+   - Query MCP Ref for pattern-specific best practices:
+     - Tool: `mcp__Ref__ref_search_documentation(query="[pattern] best practices documentation")`
+     - Example: "REST API best practices RFC 7231", "Error handling RFC 7807"
+   - Extract key references from search results (RFC numbers, library recommendations, patterns)
+3. Add inline references to Technical Notes under appropriate subsections:
+   - Example: "REST API: Resource-based URLs (RFC 7231), proper HTTP methods"
+   - **Note:** Do NOT create separate guides - just inline references from MCP Ref
+4. Update Linear issue via `mcp__linear-server__update_issue`
+5. Add comment: "Pattern documentation references added from MCP Ref - [list of patterns] - TRIVIAL fast path"
 
 **Example patterns handled:**
 - **OAuth/Auth:** Manual (library v[version]) + ADR (Authentication Strategy)
