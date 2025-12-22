@@ -159,7 +159,15 @@ ELSE Priority ≤8 → SKIP (manual testing sufficient)
   - ❌ Getters/setters or simple property access
   - ❌ Trivial conditionals (`if (user) return user.name`, `status === 'active'`)
   - ❌ Pass-through functions (wrappers without logic)
-  - ❌ Performance/load testing (benchmarks, stress tests, scalability validation)
+  - ❌ Performance/load/stress testing (benchmarks, stress tests, scalability, throughput)
+    - **Why:** Measures infrastructure (servers, DB, network), NOT business logic correctness
+    - **Forbidden examples:**
+      - "API handles 1000 concurrent requests in <100ms"
+      - "Database processes 10k inserts/second"
+      - "Memory stays under 256MB with 1M records"
+      - "Response time degrades <5% under load"
+    - **Where to do:** Separate DevOps/Infrastructure Epic with k6/JMeter/Locust
+    - **Story tests:** Only E2E/Integration/Unit for business logic verification
 
 ### Step 4: Anti-Duplication Check
 
@@ -395,6 +403,47 @@ test('validatePasswordStrength() requires 12+ chars with special symbols', () =>
 });
 ```
 
+### Anti-Pattern 8: "Performance/Load Testing in Story Task"
+
+**Bad:**
+```javascript
+// Load testing with artillery/k6
+test('Payment API handles 1000 concurrent requests', async () => {
+  const results = await artillery.run(paymentEndpoint, { rate: 1000 });
+  expect(results.p99).toBeLessThan(100); // Infrastructure metric!
+});
+
+// Performance benchmark
+test('Query completes in <50ms', () => {
+  const start = Date.now();
+  await db.query('SELECT * FROM users');
+  expect(Date.now() - start).toBeLessThan(50); // Benchmark!
+});
+
+// Stress test
+test('System handles 10k concurrent users', async () => {
+  // Testing infrastructure capacity, not business logic
+});
+```
+
+**Why bad:**
+- Tests infrastructure (servers, DB, network), not YOUR business logic correctness
+- Results depend on deployment environment, not code behavior
+- Requires specialized tools (k6, JMeter, Locust) outside standard test framework
+- Flaky: fails on CI runners but passes locally (resource variance)
+- Performance thresholds change with infrastructure, not code
+
+**Good:** Test business logic correctness, not speed
+```javascript
+// Test that payment WORKS correctly (business logic)
+test('Payment creates order with correct total', async () => {
+  const response = await request(app).post('/payments').send(validPayment);
+  expect(response.body.total).toBe(100.00); // Business logic!
+});
+
+// Performance testing belongs in separate DevOps Epic with k6/JMeter/Locust
+```
+
 ## When to Break the Rules
 
 ### Scenario 1: Regulatory Compliance
@@ -461,6 +510,8 @@ test('validatePasswordStrength() requires 12+ chars with special symbols', () =>
 ❌ **"Story has 15 tests but includes Prisma/bcrypt/Express tests"** → Testing framework/library, remove
 ❌ **"Testing getter/setter"** → Trivial code, E2E covers it
 ❌ **"Need more tests to hit 10 minimum"** → Minimum is 2, not 10!
+❌ **"Need to test API response time <100ms"** → Performance test, not business logic (DevOps Epic)
+❌ **"Need to test 1000 concurrent users"** → Load test, not business logic (use k6/JMeter separately)
 
 ### Green Lights (Good Test)
 

@@ -11,37 +11,125 @@
     <div class="container">
         <header>
             <h1>ln-370-test-auditor Workflow</h1>
-            <p class="subtitle">Standalone Worker v1.0.0</p>
+            <p class="subtitle">L2 Coordinator v3.0.0 | Domain-Aware Coverage Gaps</p>
         </header>
         <div class="info-box">
         <h3>Overview</h3>
-        <p><strong>Purpose:</strong> Test suite quality audit with Usefulness Score per test. Remove useless, create missing.</p>
-        <p><strong>Type:</strong> Linear Workflow (6 sequential phases)</p>
-        <p><strong>Single Responsibility:</strong> Audit tests and create ONE refactoring task in Epic 0.</p>
+        <p><strong>Purpose:</strong> Coordinates 5 specialized test audit workers with domain-aware coverage gap analysis.</p>
+        <p><strong>Type:</strong> Orchestrator-Worker Pattern (L2 Coordinator + 5 L3 Workers)</p>
+        <p><strong>Domain Support:</strong> Auto-detects project domains; runs Coverage Gaps (ln-374) per domain.</p>
         <p><strong>Invocation:</strong> Manual - user runs when needed for test suite optimization.</p>
     </div>
 
+    <h2>Main Workflow (7 Phases)</h2>
+
     <div class="mermaid">
 graph TD
-    Start([START]) --> Phase1[Phase 1: Discovery<br/>Find all test files<br/>*.test.*, *.spec.*<br/>__tests__/*]
+    Start([START]) --> Phase1[Phase 1: Discovery<br/>Find all test files<br/>*.test.*, *.spec.*]
 
-    Phase1 --> Phase2[Phase 2: Analyze<br/>Parse each test<br/>Extract what it validates<br/>Identify dependencies]
+    Phase1 --> Phase2[Phase 2: Research<br/>MCP Ref + Context7<br/>Best practices ONCE<br/>Build contextStore]
 
-    Phase2 --> Phase3[Phase 3: Score<br/>Calculate Usefulness Score<br/>Impact x Probability<br/>KEEP/REVIEW/REMOVE]
+    Phase2 --> Phase3[Phase 3: Domain Discovery<br/>Detect project structure<br/>Build domain_map<br/>Set domain_mode]
 
-    Phase3 --> Phase4[Phase 4: Audit<br/>6 categories check<br/>Anti-patterns detection<br/>Coverage gaps]
+    Phase3 --> Decision{Domains<br/>found?}
 
-    Phase4 --> Phase5[Phase 5: Report<br/>Tests to remove<br/>Missing tests<br/>Recommendations]
+    Decision -->|Yes domain-aware| Phase4a
+    Decision -->|No global| Phase4aGlobal[Phase 4a: Global Workers<br/>4 workers PARALLEL]
 
-    Phase5 --> Phase6[Phase 6: Create Task<br/>Linear Epic 0<br/>Full report<br/>Action items]
+    Phase4a[Phase 4a: Global Workers<br/>4 workers PARALLEL] --> Phase4b[Phase 4b: Domain-Aware<br/>ln-374 per domain<br/>PARALLEL]
 
-    Phase6 --> End([END:<br/>Audit task created])
+    Phase4aGlobal --> Phase4bGlobal[Phase 4b: ln-374<br/>global mode]
+
+    Phase4b --> Phase5[Phase 5: Aggregate<br/>Group by domain<br/>Domain Coverage Summary<br/>Calculate scores]
+
+    Phase4bGlobal --> Phase5
+
+    Phase5 --> Phase6[Phase 6: Report<br/>Compliance Scores<br/>Domain-grouped findings<br/>Recommendations]
+
+    Phase6 --> Phase7[Phase 7: Create Task<br/>Linear Epic 0<br/>Full report]
+
+    Phase7 --> End([END:<br/>Audit task created])
 
     classDef phase fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    classDef newphase fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+    classDef decision fill:#FFF3E0,stroke:#FF9800,stroke-width:2px
     classDef endpoint fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
 
-    class Phase1,Phase2,Phase3,Phase4,Phase5,Phase6 phase
+    class Phase1,Phase2,Phase4a,Phase4aGlobal,Phase5,Phase6,Phase7 phase
+    class Phase3,Phase4b,Phase4bGlobal newphase
+    class Decision decision
     class Start,End endpoint
+    </div>
+
+    <h2>Worker Distribution</h2>
+
+    <div class="mermaid">
+graph TB
+    subgraph Coordinator["ln-370-test-auditor (L2)"]
+        direction TB
+        Coord[Orchestrator<br/>Domain Discovery<br/>Context Building<br/>Aggregation]
+    end
+
+    subgraph GlobalWorkers["Global Workers (4) - Entire Test Suite"]
+        direction LR
+        W1[ln-371<br/>Business Logic<br/>MEDIUM]
+        W2[ln-372<br/>E2E Priority<br/>HIGH]
+        W3[ln-373<br/>Value<br/>CRITICAL]
+        W5[ln-375<br/>Isolation<br/>MEDIUM]
+    end
+
+    subgraph DomainWorkers["Domain-Aware Worker (1 x N) - Per Domain"]
+        direction TB
+        subgraph DomainUsers["Domain: users"]
+            W4u[ln-374<br/>Coverage Gaps]
+        end
+        subgraph DomainOrders["Domain: orders"]
+            W4o[ln-374<br/>Coverage Gaps]
+        end
+        subgraph DomainPayments["Domain: payments"]
+            W4p[ln-374<br/>Coverage Gaps]
+        end
+    end
+
+    Coord --> GlobalWorkers
+    Coord --> DomainWorkers
+
+    classDef coordinator fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    classDef critical fill:#FFCDD2,stroke:#D32F2F,stroke-width:2px
+    classDef high fill:#FFE0B2,stroke:#F57C00,stroke-width:2px
+    classDef medium fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px
+    classDef domain fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+
+    class Coord coordinator
+    class W3 critical
+    class W2 high
+    class W1,W5 medium
+    class W4u,W4o,W4p domain
+    </div>
+
+    <h2>Domain Discovery Algorithm</h2>
+
+    <div class="mermaid">
+graph TD
+    Start2([Check Structure]) --> P1{Priority 1:<br/>Explicit domains?}
+    P1 -->|Found| UseExplicit[Use domains/features/modules]
+    P1 -->|Not found| P2{Priority 2:<br/>src/* folders?}
+    P2 -->|Found >1| FilterInfra[Filter infrastructure<br/>utils/shared/config/types]
+    P2 -->|Not found| P3[Priority 3:<br/>Fallback to global]
+    FilterInfra --> HasDomains{Remaining<br/>>1 folders?}
+    HasDomains -->|Yes| UseSrc[Use src/* as domains]
+    HasDomains -->|No| P3
+    UseExplicit --> DomainAware([domain_mode = domain-aware])
+    UseSrc --> DomainAware
+    P3 --> GlobalMode([domain_mode = global])
+
+    classDef decision fill:#FFF3E0,stroke:#FF9800,stroke-width:2px
+    classDef process fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    classDef result fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+
+    class P1,P2,HasDomains decision
+    class UseExplicit,FilterInfra,UseSrc,P3 process
+    class DomainAware,GlobalMode,Start2 result
     </div>
 
     <h2>Usefulness Score Decision Flow</h2>
@@ -85,7 +173,7 @@ graph LR
 
     subgraph Value
         V1[3. Risk-Based Value<br/>Priority >= 15 required]
-        V2[4. Coverage Gaps<br/>Critical paths tested?]
+        V2[4. Coverage Gaps<br/>Per-domain analysis]
     end
 
     subgraph Quality
@@ -97,102 +185,61 @@ graph LR
 
     classDef core fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
     classDef value fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px
+    classDef domain fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
     classDef quality fill:#E1BEE7,stroke:#7B1FA2,stroke-width:2px
 
     class C1,C2 core
-    class V1,V2 value
+    class V1 value
+    class V2 domain
     class Q1,Q2 quality
     </div>
 
-    <h2>Category Details</h2>
-
-    <div class="violation-type">
-        <div class="violation-title">1. Business Logic Focus</div>
-        <p><strong>Detects:</strong> Tests that validate framework/library behavior instead of OUR code</p>
-        <p><strong>Examples to REMOVE:</strong></p>
-        <ul>
-            <li><code>test('bcrypt hashes password')</code> - tests bcrypt library</li>
-            <li><code>test('Prisma findMany returns array')</code> - tests ORM</li>
-            <li><code>test('Express middleware works')</code> - tests framework</li>
-        </ul>
-        <p><strong>Keep:</strong> Tests that validate OUR business rules, calculations, transformations</p>
-    </div>
-
-    <div class="violation-type">
-        <div class="violation-title">2. E2E Priority</div>
-        <p><strong>Principle:</strong> E2E tests prove feature works. Unit/Integration are supplementary.</p>
-        <p><strong>Baseline:</strong> 2 E2E per endpoint (positive + negative)</p>
-        <p><strong>Red Flag:</strong> 50 unit tests but 0 E2E tests = inverted pyramid</p>
-    </div>
-
-    <div class="violation-type">
-        <div class="violation-title">3. Risk-Based Value</div>
-        <p><strong>Formula:</strong> Usefulness = Impact (1-5) x Probability (1-5)</p>
-        <p><strong>Threshold:</strong> Priority >= 15 to justify test existence</p>
-        <p><strong>Example:</strong> Payment calculation (Impact 5 x Probability 4 = 20) = KEEP</p>
-        <p><strong>Example:</strong> Getter test (Impact 1 x Probability 1 = 1) = REMOVE</p>
-    </div>
-
-    <div class="violation-type">
-        <div class="violation-title">4. Coverage Gaps</div>
-        <p><strong>Critical Paths:</strong> Money, Security, Data Integrity, Core Flows</p>
-        <p><strong>Question:</strong> Is payment flow tested? Auth flow? User registration?</p>
-        <p><strong>Output:</strong> List of missing tests with Priority and justification</p>
-    </div>
-
-    <div class="violation-type">
-        <div class="violation-title">5. Test Isolation</div>
-        <p><strong>Checks:</strong> External APIs mocked, DB mocked, Time mocked, No flaky tests</p>
-        <p><strong>Red Flag:</strong> Tests that call real external services</p>
-        <p><strong>Red Flag:</strong> Tests that fail randomly (flaky)</p>
-    </div>
-
-    <div class="violation-type">
-        <div class="violation-title">6. Anti-Patterns</div>
-        <p><strong>The Liar:</strong> Test always passes, validates nothing</p>
-        <p><strong>The Giant:</strong> Test > 100 lines, tests too many things</p>
-        <p><strong>Slow Poke:</strong> Test takes > 5 seconds</p>
-        <p><strong>Happy Path Only:</strong> No error scenarios tested</p>
-        <p><strong>Framework Tester:</strong> Tests Express/Prisma/bcrypt instead of OUR code</p>
-    </div>
-
-    <h2>Output: Linear Task in Epic 0</h2>
+    <h2>Output: Report with Domain Coverage Summary</h2>
     <pre style="background: #F5F5F5; padding: 15px; border-radius: 4px; overflow-x: auto;">
-Title: Test Suite Audit: 2025-12-20
+## Test Suite Audit Report - 2025-12-22
 
-## Summary
-| Decision | Count |
+### Compliance Score
+| Category | Score |
 |----------|-------|
-| KEEP | 45 |
-| REVIEW | 12 |
-| REMOVE | 23 |
+| Business Logic Focus | 8/10 |
+| E2E Priority | 7/10 |
+| Risk-Based Value | 7/10 |
+| Coverage Gaps | 6.5/10 |
+| Test Isolation | 8/10 |
+| Anti-Patterns | 7/10 |
+| **Overall** | **7.3/10** |
 
-## Tests to REMOVE (Score < 10)
-1. auth.test.ts:45 - "bcrypt hashes password" (Score: 3, tests library)
-2. db.test.ts:78 - "Prisma findMany returns array" (Score: 4, tests ORM)
-3. utils.test.ts:12 - "getter returns value" (Score: 1, trivial)
+### Domain Coverage Summary (NEW)
+| Domain | Critical Paths | Tested | Coverage % | Gaps |
+|--------|---------------|--------|------------|------|
+| users | 8 | 6 | 75% | 2 |
+| orders | 12 | 8 | 67% | 4 |
+| shared | 4 | 4 | 100% | 0 |
+| **Total** | **24** | **18** | **75%** | **6** |
 
-## Missing Tests (Priority >= 15)
-1. E2E: Payment with discount (Priority: 25, money calculation)
-2. E2E: Auth token refresh (Priority: 20, security)
+### Coverage Gaps by Domain
+#### Domain: users (src/users/)
+| Severity | Category | Missing Test | Location |
+| CRITICAL | Money | E2E: processRefund() | services/user.ts:120 |
 
-## Anti-Patterns Found
-- 3 Liar tests (no assertions)
-- 5 Framework tests (bcrypt, Prisma)
-- 2 Giant tests (> 100 lines)
+#### Domain: orders (src/orders/)
+| Severity | Category | Missing Test | Location |
+| CRITICAL | Money | E2E: applyDiscount() | services/order.ts:45 |
+| HIGH | Data | Integration: orderTransaction() | repositories/order.ts:78 |
     </pre>
 
     <h2>Key Characteristics</h2>
     <ul>
-        <li><strong>Usefulness Score:</strong> Every test evaluated with Keep/Review/Remove decision</li>
-        <li><strong>Risk-Based:</strong> Priority >= 15 required to justify test existence</li>
-        <li><strong>Business Focus:</strong> Tests OUR code, not frameworks/libraries</li>
-        <li><strong>E2E Priority:</strong> E2E tests are primary, unit/integration supplementary</li>
-        <li><strong>Actionable:</strong> Clear list of tests to delete and tests to add</li>
+        <li><strong>Orchestrator-Worker:</strong> L2 Coordinator + 5 L3 Workers</li>
+        <li><strong>Domain-Aware:</strong> Coverage Gaps (ln-374) runs per domain</li>
+        <li><strong>Global Workers:</strong> Business Logic, E2E Priority, Value, Isolation</li>
+        <li><strong>Parallel Execution:</strong> All workers (global + domain-aware) run in PARALLEL</li>
+        <li><strong>Domain Coverage Summary:</strong> Per-domain coverage metrics</li>
+        <li><strong>Backward Compatible:</strong> Falls back to global mode if <2 domains detected</li>
     </ul>
 
     <footer>
-        <p>ln-370-test-auditor v1.0.0 | Standalone Worker | 6 Audit Categories</p>
+        <p>ln-370-test-auditor v3.0.0 | L2 Coordinator | 5 Workers | Domain-Aware Coverage</p>
     </footer>
     </div>
     <script>

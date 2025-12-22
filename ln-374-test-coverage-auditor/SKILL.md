@@ -20,14 +20,55 @@ Specialized worker identifying missing tests for critical business logic.
 
 Receives `contextStore` with critical paths classification, codebase structure, test file list.
 
+**Domain-aware fields (NEW):**
+- `domain_mode`: `"domain-aware"` | `"global"` (optional, defaults to "global")
+- `current_domain`: `{name, path}` when domain_mode="domain-aware"
+
+**Example contextStore (domain-aware):**
+```json
+{
+  "tech_stack": {...},
+  "best_practices": {...},
+  "testFilesMetadata": [...],
+  "codebase_root": "/project",
+  "domain_mode": "domain-aware",
+  "current_domain": {
+    "name": "orders",
+    "path": "src/orders"
+  }
+}
+```
+
 ## Workflow
 
-1) Parse context
-2) Identify critical paths in codebase
-3) Check test coverage for each critical path
-4) Collect missing tests
-5) Calculate score
-6) Return JSON
+1) **Parse context from contextStore**
+   - Extract tech_stack, best_practices, testFilesMetadata
+   - **Determine scan_path (NEW):**
+     ```
+     IF domain_mode == "domain-aware":
+       scan_path = codebase_root + "/" + current_domain.path
+       domain_name = current_domain.name
+     ELSE:
+       scan_path = codebase_root
+       domain_name = null
+     ```
+
+2) **Identify critical paths in scan_path** (not entire codebase)
+   - Scan production code in `scan_path` for money/security/data keywords
+   - All Grep/Glob patterns use `scan_path` (not codebase_root)
+   - Example: `Grep(pattern="payment|refund|discount", path=scan_path)`
+
+3) **Check test coverage for each critical path**
+   - Search ALL test files for coverage (tests may be in different location than production code)
+   - Match by function name, module name, or test description
+
+4) **Collect missing tests**
+   - Tag each finding with `domain: domain_name` (if domain-aware)
+
+5) **Calculate score**
+
+6) **Return JSON with domain metadata**
+   - Include `domain` and `scan_path` fields (if domain-aware)
 
 ## Critical Paths Classification
 
@@ -135,6 +176,7 @@ score = max(0, min(10, score))
 
 ## Output Format
 
+**Global mode output:**
 ```json
 {
   "category": "Coverage Gaps",
@@ -153,41 +195,66 @@ score = max(0, min(10, score))
       "justification": "Money calculation with discount logic — high risk of incorrect total",
       "test_type": "E2E",
       "effort": "M"
-    },
-    {
-      "severity": "CRITICAL",
-      "category": "Security",
-      "missing_test": "Unit: Password reset token expiration",
-      "location": "auth/reset-password.ts:validateResetToken()",
-      "priority": 20,
-      "justification": "Security vulnerability — expired tokens must be rejected",
-      "test_type": "Unit",
-      "effort": "S"
-    },
-    {
-      "severity": "HIGH",
-      "category": "Data Integrity",
-      "missing_test": "Integration: Database transaction rollback on error",
-      "location": "db/transaction.ts:withTransaction()",
-      "priority": 18,
-      "justification": "Data corruption risk — failed transactions must rollback completely",
-      "test_type": "Integration",
-      "effort": "M"
-    },
-    {
-      "severity": "HIGH",
-      "category": "Core Flow",
-      "missing_test": "E2E: User registration → Email verification → First login",
-      "location": "routes/auth.ts + routes/users.ts",
-      "priority": 16,
-      "justification": "Critical onboarding flow — broken flow loses new users",
-      "test_type": "E2E",
-      "effort": "L"
     }
   ]
 }
 ```
 
+**Domain-aware mode output (NEW):**
+```json
+{
+  "category": "Coverage Gaps",
+  "score": 7,
+  "domain": "orders",
+  "scan_path": "src/orders",
+  "critical_paths_total": 12,
+  "tested_paths": 8,
+  "untested_paths": 4,
+  "coverage_percentage": 67,
+  "findings": [
+    {
+      "severity": "CRITICAL",
+      "category": "Money",
+      "missing_test": "E2E: applyDiscount() with edge cases",
+      "location": "src/orders/services/order.ts:45",
+      "priority": 25,
+      "justification": "Discount calculation in orders domain — high risk of incorrect total",
+      "test_type": "E2E",
+      "effort": "M",
+      "domain": "orders"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Data Integrity",
+      "missing_test": "Integration: orderTransaction() rollback",
+      "location": "src/orders/repositories/order.ts:78",
+      "priority": 18,
+      "justification": "Data corruption risk in orders domain",
+      "test_type": "Integration",
+      "effort": "M",
+      "domain": "orders"
+    }
+  ]
+}
+```
+
+## Critical Rules
+
+- **Domain-aware scanning:** If `domain_mode="domain-aware"`, scan ONLY `scan_path` production code (not entire codebase)
+- **Tag findings:** Include `domain` field in each finding when domain-aware
+- **Test search scope:** Search ALL test files for coverage (tests may be in different location than production code)
+- **Match by name:** Use function name, module name, or test description to match tests to production code
+
+## Definition of Done
+
+- contextStore parsed (including domain_mode and current_domain)
+- scan_path determined (domain path or codebase root)
+- Critical paths identified in scan_path (Money, Security, Data, Core Flows)
+- Test coverage checked for each critical path
+- Missing tests collected with severity, priority, justification, domain
+- Score calculated
+- JSON returned to coordinator with domain metadata
+
 ---
-**Version:** 1.0.0
-**Last Updated:** 2025-12-21
+**Version:** 2.0.0
+**Last Updated:** 2025-12-22

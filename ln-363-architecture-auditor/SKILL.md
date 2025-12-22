@@ -18,15 +18,56 @@ Specialized worker auditing architecture principles and design patterns.
 
 ## Inputs (from Coordinator)
 
-Receives `contextStore` with tech stack, best practices, principles, codebase root.
+Receives `contextStore` with:
+- `tech_stack` - detected tech stack (languages, frameworks)
+- `best_practices` - researched best practices from MCP
+- `principles` - project-specific principles from docs/principles.md
+- `codebase_root` - root path of codebase
+
+**Domain-aware fields (NEW):**
+- `domain_mode`: `"domain-aware"` | `"global"` (optional, defaults to "global")
+- `current_domain`: `{name, path}` when domain_mode="domain-aware"
+
+**Example contextStore (domain-aware):**
+```json
+{
+  "tech_stack": {...},
+  "best_practices": {...},
+  "principles": {...},
+  "codebase_root": "/project",
+  "domain_mode": "domain-aware",
+  "current_domain": {
+    "name": "users",
+    "path": "src/users"
+  }
+}
+```
 
 ## Workflow
 
-1) Parse context from contextStore
-2) Scan codebase for violations (Grep/Glob patterns)
-3) Collect findings with severity, location, effort, recommendation
-4) Calculate score using penalty algorithm
-5) Return JSON result to coordinator
+1) **Parse context from contextStore**
+   - Extract tech_stack, best_practices, principles
+   - **Determine scan_path (NEW):**
+     ```
+     IF domain_mode == "domain-aware":
+       scan_path = codebase_root + "/" + current_domain.path
+       domain_name = current_domain.name
+     ELSE:
+       scan_path = codebase_root
+       domain_name = null
+     ```
+
+2) **Scan codebase for violations**
+   - All Grep/Glob patterns use `scan_path` (not codebase_root)
+   - Example: `Grep(pattern="TODO", path=scan_path)`
+
+3) **Collect findings with severity, location, effort, recommendation**
+   - Tag each finding with `domain: domain_name` (if domain-aware)
+
+4) **Calculate score using penalty algorithm**
+
+5) **Return JSON result to coordinator**
+   - Include `domain` and `scan_path` fields (if domain-aware)
 
 ## Audit Rules (Priority: HIGH)
 
@@ -346,6 +387,8 @@ score = max(0, 10 - penalty)
 ## Output Format
 
 Return JSON to coordinator:
+
+**Global mode output:**
 ```json
 {
   "category": "Architecture & Design",
@@ -355,54 +398,40 @@ Return JSON to coordinator:
   "high": 4,
   "medium": 4,
   "low": 2,
+  "findings": [...]
+}
+```
+
+**Domain-aware mode output (NEW):**
+```json
+{
+  "category": "Architecture & Design",
+  "score": 6,
+  "domain": "users",
+  "scan_path": "src/users",
+  "total_issues": 12,
+  "critical": 2,
+  "high": 4,
+  "medium": 4,
+  "low": 2,
   "findings": [
     {
       "severity": "CRITICAL",
-      "location": "src/components/UserList.tsx:45",
-      "issue": "UI component directly querying database (layer boundary break)",
+      "location": "src/users/controllers/UserController.ts:45",
+      "issue": "Controller directly uses Repository (layer boundary break)",
       "principle": "Layer Separation (Clean Architecture)",
-      "recommendation": "Add service layer between UI and database",
-      "effort": "L"
-    },
-    {
-      "severity": "CRITICAL",
-      "location": "src/controllers/UserController.ts:12",
-      "issue": "Controller directly imports and uses UserRepository (bypasses Service layer)",
-      "principle": "Layer Separation (Clean Architecture)",
-      "recommendation": "Create UserService to handle business logic, inject into controller",
-      "effort": "L"
+      "recommendation": "Create UserService, inject into controller",
+      "effort": "L",
+      "domain": "users"
     },
     {
       "severity": "HIGH",
-      "location": "src/middleware/error.ts:5-20",
-      "issue": "Error middleware handles errors directly instead of delegating to centralized handler",
-      "principle": "Single Responsibility Principle",
-      "recommendation": "Create ErrorHandler class, delegate from middleware",
-      "effort": "M"
-    },
-    {
-      "severity": "HIGH",
-      "location": "src/index.ts:45",
-      "issue": "Using process.on('uncaughtException') listener (Express anti-pattern)",
-      "principle": "Error Handling Best Practices",
-      "recommendation": "Remove uncaughtException listener, use PM2 or systemd for process restart",
-      "effort": "S"
-    },
-    {
-      "severity": "MEDIUM",
-      "location": "src/controllers/*.ts",
-      "issue": "No DI container - controllers instantiate services directly with 'new'",
-      "principle": "Dependency Inversion Principle",
-      "recommendation": "Use Inversify or Awilix for dependency injection",
-      "effort": "L"
-    },
-    {
-      "severity": "LOW",
-      "location": "docs/",
-      "issue": "No architecture/best practices guide for developers",
-      "principle": "Documentation Best Practices",
-      "recommendation": "Create docs/architecture.md documenting layering, error handling, DI patterns",
-      "effort": "S"
+      "location": "src/users/services/UserService.ts:45",
+      "issue": "DRY violation - duplicate validation logic",
+      "principle": "DRY Principle",
+      "recommendation": "Extract to shared validators module",
+      "effort": "M",
+      "domain": "users"
     }
   ]
 }
@@ -411,24 +440,26 @@ Return JSON to coordinator:
 ## Critical Rules
 
 - **Do not auto-fix:** Report only
+- **Domain-aware scanning:** If `domain_mode="domain-aware"`, scan ONLY `scan_path` (not entire codebase)
+- **Tag findings:** Include `domain` field in each finding when domain-aware
 - **Context-aware:** Use project's `principles.md` to define what's acceptable
 - **Age matters:** Old TODOs are higher severity than recent ones
 - **Effort realism:** S = <1h, M = 1-4h, L = >4h
 
 ## Definition of Done
 
-- contextStore parsed
-- All 9 checks completed:
-  - DRY (7 subcategories: identical code, validation logic, error messages, similar patterns, SQL queries, tests, API responses)
-  - KISS, YAGNI, Layer Breaks, TODOs, Error Handling, Centralized Errors, DI/Init, Best Practices Guide
-- Findings collected with severity, location, effort, recommendation
+- contextStore parsed (including domain_mode and current_domain)
+- scan_path determined (domain path or codebase root)
+- All 9 checks completed (scoped to scan_path):
+  - DRY (7 subcategories), KISS, YAGNI, Layer Breaks, TODOs, Error Handling, Centralized Errors, DI/Init, Best Practices Guide
+- Findings collected with severity, location, effort, recommendation, domain
 - Score calculated
-- JSON returned to coordinator
+- JSON returned to coordinator with domain metadata
 
 ## Reference Files
 
 - Architecture rules: [references/architecture_rules.md](references/architecture_rules.md)
 
 ---
-**Version:** 2.2.0
-**Last Updated:** 2025-12-21
+**Version:** 3.0.0
+**Last Updated:** 2025-12-22

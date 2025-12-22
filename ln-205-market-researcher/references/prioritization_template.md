@@ -1,0 +1,206 @@
+# Feature Prioritization: {{TOPIC}}
+
+<!-- SCOPE: RICE and ICE scoring for feature prioritization based on market research. -->
+
+**Research Date:** {{DATE}}
+**Scoring Method:** RICE + ICE
+**Confidence Level:** {{CONFIDENCE}}
+
+---
+
+## Executive Summary
+
+**Top 3 Priority Features:**
+1. {{Feature 1}} - RICE: {{score}}, ICE: {{score}}
+2. {{Feature 2}} - RICE: {{score}}, ICE: {{score}}
+3. {{Feature 3}} - RICE: {{score}}, ICE: {{score}}
+
+---
+
+## RICE Scoring
+
+### Formula
+```
+RICE Score = (Reach × Impact × Confidence) / Effort
+```
+
+### Scale Definitions
+
+| Factor | Scale | Description |
+|--------|-------|-------------|
+| **Reach** | 1-10 | Users/customers affected per quarter (1=100, 10=10,000+) |
+| **Impact** | 0.25-3 | 0.25=Minimal, 0.5=Low, 1=Medium, 2=High, 3=Massive |
+| **Confidence** | 0.5-1.0 | 0.5=Low, 0.8=Medium, 1.0=High (based on data quality) |
+| **Effort** | 1-10 | Person-months (1=<1 week, 5=1 month, 10=3+ months) |
+
+### RICE Scoring Table
+
+| # | Feature | Reach | Impact | Confidence | Effort | RICE Score |
+|---|---------|-------|--------|------------|--------|------------|
+| 1 | | | | | | |
+| 2 | | | | | | |
+| 3 | | | | | | |
+| 4 | | | | | | |
+| 5 | | | | | | |
+| 6 | | | | | | |
+| 7 | | | | | | |
+| 8 | | | | | | |
+| 9 | | | | | | |
+| 10 | | | | | | |
+
+---
+
+## ICE Scoring
+
+### Formula
+```
+ICE Score = Impact × Confidence × Ease
+```
+
+### Scale Definitions
+
+| Factor | Scale | Description |
+|--------|-------|-------------|
+| **Impact** | 1-10 | Business value (revenue, retention, acquisition) |
+| **Confidence** | 1-10 | How sure we are about Impact estimate |
+| **Ease** | 1-10 | Implementation simplicity (10=trivial, 1=very hard) |
+
+### ICE Scoring Table
+
+| # | Feature | Impact | Confidence | Ease | ICE Score |
+|---|---------|--------|------------|------|-----------|
+| 1 | | | | | |
+| 2 | | | | | |
+| 3 | | | | | |
+| 4 | | | | | |
+| 5 | | | | | |
+| 6 | | | | | |
+| 7 | | | | | |
+| 8 | | | | | |
+| 9 | | | | | |
+| 10 | | | | | |
+
+---
+
+## Combined Ranking
+
+| Rank | Feature | RICE | ICE | Avg Rank | Market Signal |
+|------|---------|------|-----|----------|---------------|
+| 1 | | | | | {{competitor gap / trend / customer need}} |
+| 2 | | | | | |
+| 3 | | | | | |
+| 4 | | | | | |
+| 5 | | | | | |
+| 6 | | | | | |
+| 7 | | | | | |
+| 8 | | | | | |
+| 9 | | | | | |
+| 10 | | | | | |
+
+---
+
+## Priority Matrix
+
+```
+                    HIGH IMPACT
+                        |
+    QUICK WINS      |   DO FIRST
+    (Low Effort,        |   (High Effort,
+     High Impact)       |    High Impact)
+                        |
+    LOW ----------------+---------------- HIGH
+    EFFORT              |              EFFORT
+                        |
+    FILL INS        |   STRATEGIC
+    (Low Effort,        |   (High Effort,
+     Low Impact)        |    Low Impact)
+                        |
+                    LOW IMPACT
+```
+
+**Quadrant Assignment:**
+- **Do First:** {{features}}
+- **Quick Wins:** {{features}}
+- **Strategic:** {{features}}
+- **Fill Ins:** {{features}}
+
+---
+
+## Market-Based Adjustments
+
+### Features with Strong Market Signals
+
+| Feature | Signal Type | Signal Strength | Score Adjustment |
+|---------|-------------|-----------------|------------------|
+| {{Feature}} | Competitor gap | Strong | +{{X}} to Impact |
+| {{Feature}} | Customer demand | Medium | +{{X}} to Reach |
+| {{Feature}} | Market trend | Strong | +{{X}} to Confidence |
+
+### Features with Weak Market Signals
+
+| Feature | Concern | Recommendation |
+|---------|---------|----------------|
+| {{Feature}} | No competitor offers | Validate demand first |
+| {{Feature}} | Low search volume | May be niche |
+
+---
+
+## Scoring Rationale
+
+### Feature 1: {{Name}}
+- **Reach:** {{X}} - {{rationale}}
+- **Impact:** {{X}} - {{rationale}}
+- **Confidence:** {{X}} - {{data sources}}
+- **Effort:** {{X}} - {{complexity factors}}
+
+### Feature 2: {{Name}}
+- **Reach:** {{X}} - {{rationale}}
+- **Impact:** {{X}} - {{rationale}}
+- **Confidence:** {{X}} - {{data sources}}
+- **Effort:** {{X}} - {{complexity factors}}
+
+### Feature 3: {{Name}}
+- **Reach:** {{X}} - {{rationale}}
+- **Impact:** {{X}} - {{rationale}}
+- **Confidence:** {{X}} - {{data sources}}
+- **Effort:** {{X}} - {{complexity factors}}
+
+---
+
+## Recommendations
+
+### Immediate Priorities (Next Quarter)
+1. **{{Feature 1}}** - {{1-sentence rationale}}
+2. **{{Feature 2}}** - {{1-sentence rationale}}
+3. **{{Feature 3}}** - {{1-sentence rationale}}
+
+### Backlog (Next 2-4 Quarters)
+4. {{Feature 4}}
+5. {{Feature 5}}
+6. {{Feature 6}}
+
+### Deprioritize / Validate First
+- {{Feature X}} - {{reason for caution}}
+- {{Feature Y}} - {{reason for caution}}
+
+---
+
+## Assumptions and Caveats
+
+| Assumption | Risk if Wrong | Mitigation |
+|------------|---------------|------------|
+| {{Assumption 1}} | {{risk}} | {{validation step}} |
+| {{Assumption 2}} | {{risk}} | {{validation step}} |
+
+---
+
+## Sources
+
+| Source | Used For | Date | URL |
+|--------|----------|------|-----|
+| | | | |
+
+---
+
+**Generated by:** ln-205-market-researcher
+**Template Version:** 1.0.0
