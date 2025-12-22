@@ -22,10 +22,11 @@ Coordinates 9 specialized audit workers to perform comprehensive codebase qualit
 1) **Discovery:** Load tech_stack.md, principles.md, package manifests, auto-discover Team ID
 2) **Research:** Query MCP tools for current best practices per major dependency ONCE
 3) **Build Context:** Create contextStore with best practices + tech stack metadata
-4) **Delegate:** Invoke 9 workers IN PARALLEL (single message, 9 Skill tool calls)
-5) **Aggregate:** Collect worker results, merge findings, calculate overall score
-6) **Generate Report:** Build consolidated report with Executive Summary, Compliance Score, Findings
-7) **Create Task:** Create Linear task in Epic 0 titled "Codebase Refactoring: [YYYY-MM-DD]"
+4) **Domain Discovery:** Detect project domains from folder structure (NEW)
+5) **Delegate:** Two-stage delegation - global workers + domain-aware workers (UPDATED)
+6) **Aggregate:** Collect worker results, group by domain, calculate scores
+7) **Generate Report:** Build consolidated report with Domain Health Summary, Findings by Domain
+8) **Create Task:** Create Linear task in Epic 0 titled "Codebase Refactoring: [YYYY-MM-DD]"
 
 ## Phase 1: Discovery
 
@@ -68,33 +69,111 @@ Coordinates 9 specialized audit workers to perform comprehensive codebase qualit
 }
 ```
 
-## Phase 3: Delegate to Workers (PARALLEL)
+## Phase 3: Domain Discovery
 
-**Invoke ALL 9 workers in PARALLEL** using single message with 9 Skill tool calls:
+**Purpose:** Detect project domains from folder structure for domain-aware auditing.
 
-| # | Worker | Priority | Categories | What It Audits |
-|---|--------|----------|------------|----------------|
-| 1 | ln-361-security-auditor | CRITICAL | Security | Hardcoded secrets, SQL injection, XSS, insecure deps, input validation |
-| 2 | ln-362-build-auditor | CRITICAL | Build Health | Compiler/linter errors, deprecations, type errors, failed tests |
-| 3 | ln-363-architecture-auditor | HIGH | Architecture + Design | DRY/KISS/YAGNI violations, layer breaks, TODO/FIXME, workarounds, error handling |
-| 4 | ln-364-code-quality-auditor | MEDIUM | Complexity + Algorithms + Constants | Cyclomatic complexity, nesting, O(n²), N+1 queries, magic numbers, decentralized constants |
-| 5 | ln-365-dependencies-auditor | MEDIUM | Dependencies + Wheel Reinvention | Outdated packages, unused deps, custom implementations, reimplemented algorithms |
-| 6 | ln-366-dead-code-auditor | LOW | Unused Code | Dead code, unused imports/variables, commented-out code |
-| 7 | ln-367-observability-auditor | MEDIUM | Observability | Structured logging, health checks, metrics, tracing, log levels |
-| 8 | ln-368-concurrency-auditor | HIGH | Concurrency | Race conditions, async/await, resource contention, thread safety, deadlocks |
-| 9 | ln-369-lifecycle-auditor | MEDIUM | Entry Points & Lifecycle | Bootstrap, graceful shutdown, resource cleanup, signal handling, probes |
+**Algorithm:**
 
-**Worker invocation:**
-```javascript
-FOR EACH worker IN [ln-361, ln-362, ..., ln-369]:
-  Skill(skill=worker, args=JSON.stringify(contextStore))
-  // All 9 workers run concurrently
+1. **Priority 1: Explicit domain folders**
+   - Check for: `src/domains/*/`, `src/features/*/`, `src/modules/*/`
+   - Monorepo patterns: `packages/*/`, `libs/*/`, `apps/*/`
+   - If found (>1 match) → use these as domains
+
+2. **Priority 2: Top-level src/* folders**
+   - List folders: `src/users/`, `src/orders/`, `src/payments/`
+   - Exclude infrastructure: `utils`, `shared`, `common`, `lib`, `helpers`, `config`, `types`, `interfaces`, `constants`, `middleware`, `infrastructure`, `core`
+   - If remaining >1 → use as domains
+
+3. **Priority 3: Fallback to global mode**
+   - If <2 domains detected → `domain_mode = "global"`
+   - All workers scan entire codebase (backward-compatible behavior)
+
+**Heuristics for domain detection:**
+
+| Heuristic | Indicator | Example |
+|-----------|-----------|---------|
+| File count | >5 files in folder | `src/users/` with 12 files |
+| Structure | controllers/, services/, models/ present | MVC/Clean Architecture |
+| Barrel export | index.ts/index.js exists | Module pattern |
+| README | README.md describes domain | Domain documentation |
+
+**Output:**
+```json
+{
+  "domain_mode": "domain-aware",
+  "all_domains": [
+    {"name": "users", "path": "src/users", "file_count": 45, "is_shared": false},
+    {"name": "orders", "path": "src/orders", "file_count": 32, "is_shared": false},
+    {"name": "shared", "path": "src/shared", "file_count": 15, "is_shared": true}
+  ]
+}
 ```
 
-## Phase 4: Aggregate Results
+**Shared folder handling:**
+- Folders named `shared`, `common`, `utils`, `lib`, `core` → mark `is_shared: true`
+- Shared code audited but grouped separately in report
+- Does not affect domain-specific scores
 
-**Collect results from each worker:**
-Each worker returns:
+## Phase 4: Delegate to Workers
+
+### Phase 4a: Global Workers (PARALLEL)
+
+**Global workers** scan entire codebase (not domain-aware):
+
+| # | Worker | Priority | What It Audits |
+|---|--------|----------|----------------|
+| 1 | ln-361-security-auditor | CRITICAL | Hardcoded secrets, SQL injection, XSS, insecure deps |
+| 2 | ln-362-build-auditor | CRITICAL | Compiler/linter errors, deprecations, type errors |
+| 5 | ln-365-dependencies-auditor | MEDIUM | Outdated packages, unused deps, custom implementations |
+| 6 | ln-366-dead-code-auditor | LOW | Dead code, unused imports/variables, commented-out code |
+| 7 | ln-367-observability-auditor | MEDIUM | Structured logging, health checks, metrics, tracing |
+| 8 | ln-368-concurrency-auditor | HIGH | Race conditions, async/await, resource contention |
+| 9 | ln-369-lifecycle-auditor | MEDIUM | Bootstrap, graceful shutdown, resource cleanup |
+
+**Invocation (7 workers in PARALLEL):**
+```javascript
+FOR EACH worker IN [ln-361, ln-362, ln-365, ln-366, ln-367, ln-368, ln-369]:
+  Skill(skill=worker, args=JSON.stringify(contextStore))
+```
+
+### Phase 4b: Domain-Aware Workers (PARALLEL per domain)
+
+**Domain-aware workers** run once per domain:
+
+| # | Worker | Priority | What It Audits |
+|---|--------|----------|----------------|
+| 3 | ln-363-architecture-auditor | HIGH | DRY/KISS/YAGNI violations, layer breaks, TODO/FIXME |
+| 4 | ln-364-code-quality-auditor | MEDIUM | Cyclomatic complexity, O(n²), N+1 queries, magic numbers |
+
+**Invocation (2 workers × N domains):**
+```javascript
+IF domain_mode == "domain-aware":
+  FOR EACH domain IN all_domains:
+    domain_context = {
+      ...contextStore,
+      domain_mode: "domain-aware",
+      current_domain: { name: domain.name, path: domain.path }
+    }
+    // Invoke both workers for this domain
+    Skill(skill="ln-363-architecture-auditor", args=JSON.stringify(domain_context))
+    Skill(skill="ln-364-code-quality-auditor", args=JSON.stringify(domain_context))
+ELSE:
+  // Fallback: invoke once for entire codebase (global mode)
+  Skill(skill="ln-363-architecture-auditor", args=JSON.stringify(contextStore))
+  Skill(skill="ln-364-code-quality-auditor", args=JSON.stringify(contextStore))
+```
+
+**Parallelism strategy:**
+- Phase 4a: All 7 global workers run in PARALLEL
+- Phase 4b: All (2 × N) domain-aware invocations run in PARALLEL
+- Example: 3 domains → 6 invocations (ln-363×3 + ln-364×3) in single message
+
+## Phase 5: Aggregate Results
+
+**Collect results from workers:**
+
+**Global worker output (unchanged):**
 ```json
 {
   "category": "Security",
@@ -104,27 +183,47 @@ Each worker returns:
   "high": 2,
   "medium": 2,
   "low": 0,
+  "findings": [...]
+}
+```
+
+**Domain-aware worker output (NEW):**
+```json
+{
+  "category": "Architecture & Design",
+  "score": 6,
+  "domain": "users",
+  "scan_path": "src/users",
+  "total_issues": 4,
+  "critical": 1,
+  "high": 2,
+  "medium": 1,
+  "low": 0,
   "findings": [
     {
       "severity": "CRITICAL",
-      "location": "src/api/auth.ts:45",
-      "issue": "Hardcoded API key in source code",
-      "principle": "Secrets Management (OWASP A02:2021)",
-      "recommendation": "Move to environment variable (.env), use secrets manager",
-      "effort": "S"
+      "location": "src/users/controllers/UserController.ts:45",
+      "issue": "Controller directly uses Repository",
+      "principle": "Layer Separation (Clean Architecture)",
+      "recommendation": "Create UserService",
+      "effort": "L",
+      "domain": "users"
     }
   ]
 }
 ```
 
-**Aggregate:**
-1. Merge all findings arrays → single findings list
-2. Calculate overall score → average of 9 category scores
-3. Build severity summary → sum critical/high/medium/low across all workers
-4. Generate Executive Summary → analyze overall health, major risks, strengths
-5. Build Compliance Score table → one row per worker category
-6. Build Findings by Category tables → group by category, include Principle Violated column
-7. Build Recommended Actions table → sort by priority, include Principle Violated column
+**Aggregation steps:**
+
+1. **Global workers** → merge findings (as before)
+2. **Domain-aware workers** → group by domain.name:
+   - Calculate domain-level scores (Architecture + Quality per domain)
+   - Build Domain Health Summary table
+3. **Overall score** → average of all category scores (Architecture/Quality averaged across domains)
+4. **Severity summary** → sum critical/high/medium/low across ALL workers
+5. **Findings grouping:**
+   - Global categories (Security, Build, etc.) → single table
+   - Domain-aware categories → subtables per domain
 
 ## Output Format
 
@@ -158,44 +257,73 @@ Each worker returns:
 | Medium | X |
 | Low | X |
 
+### Domain Health Summary (NEW - if domain_mode="domain-aware")
+
+| Domain | Files | Arch Score | Quality Score | Issues |
+|--------|-------|------------|---------------|--------|
+| users | 45 | 7/10 | 8/10 | 5 |
+| orders | 32 | 5/10 | 6/10 | 8 |
+| payments | 28 | 8/10 | 7/10 | 3 |
+| shared | 15 | 6/10 | 9/10 | 2 |
+| **Total** | **120** | **6.5/10** | **7.5/10** | **18** |
+
 ### Strengths
 - [What's done well in this codebase]
 - [Good patterns and practices identified]
 
 ### Findings by Category
 
-#### 1. Security
+#### 1. Security (Global)
 
 | Severity | Location | Issue | Principle Violated | Recommendation | Effort |
 |----------|----------|-------|-------------------|----------------|--------|
-| CRITICAL | src/api/auth.ts:45 | Hardcoded API key in source code | Secrets Management (OWASP A02:2021) | Move to environment variable (.env), use secrets manager | S |
-| HIGH | src/api/queries.ts:112 | SQL injection vulnerability (string concatenation) | Input Validation (OWASP A03:2021) | Use parameterized queries or ORM | M |
+| CRITICAL | src/api/auth.ts:45 | Hardcoded API key | Secrets Management | Move to .env | S |
 
-#### 2. Build Health
-
-| Severity | Location | Issue | Principle Violated | Recommendation | Effort |
-|----------|----------|-------|-------------------|----------------|--------|
-| CRITICAL | Multiple files (3 errors) | TypeScript strict mode errors | Type Safety | Fix type annotations, add proper types | S |
-| HIGH | package.json | 5 deprecated dependencies | Dependency Health | Update to non-deprecated versions | M |
-
-#### 3. Architecture & Design
+#### 2. Build Health (Global)
 
 | Severity | Location | Issue | Principle Violated | Recommendation | Effort |
 |----------|----------|-------|-------------------|----------------|--------|
-| CRITICAL | src/controllers/UserController.ts:12 | Controller directly uses Repository (bypass Service) | Layer Separation (Clean Architecture) | Create UserService, inject into controller | L |
-| HIGH | src/middleware/error.ts:5-20 | Error handling not centralized | Single Responsibility Principle | Create ErrorHandler class, delegate from middleware | M |
+| CRITICAL | Multiple files | TypeScript strict errors | Type Safety | Fix types | S |
 
-... (continue for all 9 categories)
+#### 3. Architecture & Design (Domain-Grouped)
+
+##### Domain: users (src/users/)
+
+| Severity | Location | Issue | Principle Violated | Recommendation | Effort |
+|----------|----------|-------|-------------------|----------------|--------|
+| CRITICAL | UserController.ts:12 | Controller→Repository bypass | Layer Separation | Add Service layer | L |
+
+##### Domain: orders (src/orders/)
+
+| Severity | Location | Issue | Principle Violated | Recommendation | Effort |
+|----------|----------|-------|-------------------|----------------|--------|
+| HIGH | OrderService.ts:45 | DRY violation (duplicate validation) | DRY Principle | Extract to validators/ | M |
+
+##### Domain: shared (src/shared/)
+
+| Severity | Location | Issue | Principle Violated | Recommendation | Effort |
+|----------|----------|-------|-------------------|----------------|--------|
+| MEDIUM | utils.ts:78 | TODO older than 6 months | Code Hygiene | Complete or remove | S |
+
+#### 4. Code Quality (Domain-Grouped)
+
+##### Domain: users (src/users/)
+
+| Severity | Location | Issue | Principle Violated | Recommendation | Effort |
+|----------|----------|-------|-------------------|----------------|--------|
+| HIGH | UserService.ts:120 | Complexity 25 | Maintainability | Split function | M |
+
+... (continue for remaining global categories: 5-9)
 
 ### Recommended Actions (Priority-Sorted)
 
-| Priority | Category | Location | Issue | Principle Violated | Recommendation | Effort |
-|----------|----------|----------|-------|-------------------|----------------|--------|
-| CRITICAL | Security | src/api/auth.ts:45 | Hardcoded API key | Secrets Management | Move to .env, use secrets manager | S |
-| CRITICAL | Build | Multiple files | TypeScript strict errors | Type Safety | Fix type annotations | S |
-| CRITICAL | Architecture | UserController.ts:12 | Controller→Repository bypass | Layer Separation | Add Service layer | L |
-| HIGH | Security | queries.ts:112 | SQL injection risk | Input Validation | Use parameterized queries | M |
-| HIGH | Architecture | error.ts:5-20 | Decentralized error handling | Single Responsibility | Create ErrorHandler class | M |
+| Priority | Category | Domain | Location | Issue | Recommendation | Effort |
+|----------|----------|--------|----------|-------|----------------|--------|
+| CRITICAL | Security | - | src/api/auth.ts:45 | Hardcoded API key | Move to .env | S |
+| CRITICAL | Architecture | users | UserController.ts:12 | Controller→Repository bypass | Add Service layer | L |
+| CRITICAL | Build | - | Multiple files | TypeScript strict errors | Fix types | S |
+| HIGH | Architecture | orders | OrderService.ts:45 | DRY violation | Extract to validators/ | M |
+| HIGH | Code Quality | users | UserService.ts:120 | Complexity 25 | Split function | M |
 
 ### Priority Actions
 1. Fix all Critical issues before next release
@@ -208,11 +336,11 @@ Each worker returns:
 - [Library] documentation: [URL from Context7]
 ```
 
-## Phase 5: Create Linear Task
+## Phase 6: Create Linear Task
 
 Create task in Epic 0:
 - Title: `Codebase Refactoring: [YYYY-MM-DD]`
-- Description: Full report from Phase 4 (markdown format)
+- Description: Full report from Phase 5 (markdown format)
 - Team: Auto-discovered from kanban_board.md
 - Epic: 0 (technical debt / refactoring epic)
 - Labels: `refactoring`, `technical-debt`, `audit`
@@ -220,9 +348,12 @@ Create task in Epic 0:
 
 ## Critical Rules
 
-- **Parallel execution:** ALL 9 workers must run in PARALLEL (single message, 9 Skill tool calls)
+- **Two-stage delegation:** Global workers (7) + Domain-aware workers (2 × N domains)
+- **Domain discovery:** Auto-detect domains from folder structure; fallback to global mode
+- **Parallel execution:** All workers (global + domain-aware) run in PARALLEL
 - **Single context gathering:** Research best practices ONCE, pass contextStore to all workers
 - **Metadata-only loading:** Coordinator loads metadata only; workers load full file contents
+- **Domain-grouped output:** Architecture & Code Quality findings grouped by domain
 - **Language preservation:** Task description in project's language (EN/RU from kanban_board.md)
 - **Single task:** Create ONE task with all findings; do not create multiple tasks
 - **Do not audit:** Coordinator orchestrates only; audit logic lives in workers
@@ -230,10 +361,13 @@ Create task in Epic 0:
 ## Definition of Done
 
 - Best practices researched via MCP tools for major dependencies
-- contextStore built with tech stack + best practices
-- All 9 workers invoked in PARALLEL
-- All 9 workers completed successfully (or reported errors)
-- Results aggregated into single consolidated report
+- Domain discovery completed (domain_mode determined)
+- contextStore built with tech stack + best practices + domain info
+- Global workers (7) invoked in PARALLEL
+- Domain-aware workers (2 × N domains) invoked in PARALLEL
+- All workers completed successfully (or reported errors)
+- Results aggregated with domain grouping
+- Domain Health Summary built (if domain_mode="domain-aware")
 - Compliance score (X/10) calculated per category + overall
 - Executive Summary and Strengths sections included
 - Linear task created in Epic 0 with full report
@@ -259,5 +393,5 @@ See individual worker SKILL.md files for detailed audit rules:
 - Kanban board: `docs/tasks/kanban_board.md`
 
 ---
-**Version:** 3.0.0
-**Last Updated:** 2025-12-21
+**Version:** 4.0.0
+**Last Updated:** 2025-12-22

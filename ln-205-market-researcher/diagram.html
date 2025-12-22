@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ln-205-market-researcher Workflow</title>
+    <link rel="stylesheet" href="../shared/css/diagram.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#4A90E2',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#2E5C8A',
+                lineColor: '#5C6BC0',
+                secondaryColor: '#7E57C2',
+                tertiaryColor: '#26A69A'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>ln-205-market-researcher: Market Researcher</h1>
+
+        <div class="diagram-section">
+            <h2>Workflow Diagram</h2>
+            <div class="mermaid">
+graph TD
+    Start([Input: topic, scope, goals, analyses]) --> Phase1[Phase 1: Input & Context]
+
+    Phase1 --> Validate[Validate Parameters<br/>topic required]
+    Validate --> CheckExist{Existing<br/>research?}
+    CheckExist -->|Yes| AskUpdate{Update or<br/>New?}
+    AskUpdate -->|Update| Phase2
+    AskUpdate -->|New| CreateDir[Create docs/market/topic/]
+    CheckExist -->|No| CreateDir
+    CreateDir --> Phase2
+
+    Phase2[Phase 2: Competitor Research] --> CompSearch[WebSearch:<br/>topic competitors 2025]
+    CompSearch --> ExtractComp[Extract Top-10:<br/>- Name, funding, employees<br/>- Features 5-10<br/>- Pricing, positioning]
+    ExtractComp --> FeatureMatrix[Build Feature Matrix<br/>+ Positioning Map]
+    FeatureMatrix --> SaveComp[Save: competitor_analysis.md]
+
+    SaveComp --> Phase3[Phase 3: Market Sizing]
+    Phase3 --> SizeSearch[WebSearch + Ref:<br/>topic market size TAM]
+    SizeSearch --> CalcTAM[Calculate TAM<br/>Top-down + Bottom-up]
+    CalcTAM --> CalcSAM[Calculate SAM<br/>Apply segment filters]
+    CalcSAM --> CalcSOM[Calculate SOM<br/>Realistic 3-5yr share]
+    CalcSOM --> SaveSize[Save: market_sizing.md]
+
+    SaveSize --> Phase4[Phase 4: Trend Analysis]
+    Phase4 --> TrendSearch[WebSearch + Context7:<br/>topic trends 2025-2026]
+    TrendSearch --> ExtractTrends[Extract 5-7 Trends:<br/>- Category, Impact, Timeframe<br/>- Evidence, Implications]
+    ExtractTrends --> TrendMatrix[Build Impact Matrix]
+    TrendMatrix --> SaveTrend[Save: trends.md]
+
+    SaveTrend --> Phase5[Phase 5: Customer Profile]
+    Phase5 --> CustSearch[WebSearch:<br/>topic customer segments]
+    CustSearch --> BuildJTBD[Build JTBD Framework:<br/>- Functional jobs<br/>- Emotional jobs<br/>- Social jobs]
+    BuildJTBD --> CreatePersonas[Create 2-3 Personas:<br/>- Demographics, Goals<br/>- Pain points, Buying behavior]
+    CreatePersonas --> SaveCust[Save: customer_profile.md]
+
+    SaveCust --> Phase6[Phase 6: Ocean Analysis]
+    Phase6 --> ClassifyOcean[Classify Ocean Type:<br/>Red vs Blue indicators]
+    ClassifyOcean --> StrategyCanvas[Build Strategy Canvas<br/>7 competition factors]
+    StrategyCanvas --> ERRC[Apply ERRC Grid:<br/>Eliminate, Reduce<br/>Raise, Create]
+    ERRC --> NonCustomers[Analyze Non-Customers<br/>3 tiers]
+    NonCustomers --> SaveOcean[Save: ocean_analysis.md]
+
+    SaveOcean --> Phase7[Phase 7: Prioritization & Summary]
+    Phase7 --> CollectFeatures[Collect Features from:<br/>- Competitor gaps<br/>- Customer pain points<br/>- Trend requirements<br/>- ERRC Create items]
+    CollectFeatures --> ScoreRICE[Score with RICE:<br/>Reach × Impact × Confidence / Effort]
+    ScoreRICE --> ScoreICE[Score with ICE:<br/>Impact × Confidence × Ease]
+    ScoreICE --> RankFeatures[Rank Top-10 Features]
+    RankFeatures --> SavePriority[Save: prioritization.md]
+    SavePriority --> GenSummary[Generate Executive Summary:<br/>- Key findings<br/>- Recommendations<br/>- Next steps]
+    GenSummary --> SaveSummary[Save: summary.md]
+    SaveSummary --> End([Output: 7 documents in<br/>docs/market/topic/])
+
+    style Start fill:#4A90E2,stroke:#2E5C8A,color:#fff
+    style End fill:#26A69A,stroke:#1B5E20,color:#fff
+    style Phase1 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase2 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase3 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase4 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase5 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase6 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style Phase7 fill:#7E57C2,stroke:#4A148C,color:#fff
+    style CheckExist fill:#FF9800,stroke:#E65100,color:#fff
+    style AskUpdate fill:#FF9800,stroke:#E65100,color:#fff
+    style SaveComp fill:#26A69A,stroke:#1B5E20,color:#fff
+    style SaveSize fill:#26A69A,stroke:#1B5E20,color:#fff
+    style SaveTrend fill:#26A69A,stroke:#1B5E20,color:#fff
+    style SaveCust fill:#26A69A,stroke:#1B5E20,color:#fff
+    style SaveOcean fill:#26A69A,stroke:#1B5E20,color:#fff
+    style SavePriority fill:#26A69A,stroke:#1B5E20,color:#fff
+    style SaveSummary fill:#26A69A,stroke:#1B5E20,color:#fff
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Key Information</h2>
+            <ul>
+                <li><strong>Type:</strong> Standalone L2 Worker</li>
+                <li><strong>Phases:</strong> 7 (sequential workflow)</li>
+                <li><strong>Input:</strong> topic (required), scope, goals, analyses</li>
+                <li><strong>Output:</strong> 7 Markdown documents in docs/market/[topic]/</li>
+                <li><strong>Time-box:</strong> 45-60 minutes total</li>
+                <li><strong>Position:</strong> Before ln-210-epic-coordinator</li>
+            </ul>
+        </div>
+
+        <div class="tools-section">
+            <h2>Tools Used</h2>
+            <ul>
+                <li><code>WebSearch</code> - Market data, competitors, trends, customer segments</li>
+                <li><code>mcp__Ref__ref_search_documentation()</code> - Industry reports, whitepapers</li>
+                <li><code>mcp__context7__get-library-docs()</code> - Technology adoption trends</li>
+                <li><code>Glob</code> - Check existing docs/market/ research</li>
+                <li><code>Write</code> - Save output documents</li>
+            </ul>
+        </div>
+
+        <div class="output-section">
+            <h2>Output Documents</h2>
+            <ul>
+                <li><code>competitor_analysis.md</code> - Top-10 competitors, feature matrix, positioning map</li>
+                <li><code>market_sizing.md</code> - TAM/SAM/SOM calculations with methodology</li>
+                <li><code>trends.md</code> - 5-7 key trends with impact assessment</li>
+                <li><code>customer_profile.md</code> - JTBD framework, 2-3 personas</li>
+                <li><code>ocean_analysis.md</code> - Blue/Red Ocean, ERRC grid, non-customers</li>
+                <li><code>prioritization.md</code> - RICE/ICE scored feature list</li>
+                <li><code>summary.md</code> - Executive summary with recommendations</li>
+            </ul>
+        </div>
+
+        <div class="notes-section">
+            <h2>Important Notes</h2>
+            <ul>
+                <li>Research done ONCE per topic, results inform Epic planning</li>
+                <li>All data must be sourced with dates (prefer 2024-2025)</li>
+                <li>Cross-reference key metrics (TAM, competitor count) with 2+ sources</li>
+                <li>Confidence levels (High/Medium/Low) assigned to all estimates</li>
+                <li>RICE/ICE scoring helps prioritize features for Epic scope</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

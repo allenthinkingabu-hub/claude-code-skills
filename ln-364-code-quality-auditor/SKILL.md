@@ -18,15 +18,56 @@ Specialized worker auditing code complexity, algorithms, and constants managemen
 
 ## Inputs (from Coordinator)
 
-Receives `contextStore` with tech stack, best practices, principles, codebase root.
+Receives `contextStore` with:
+- `tech_stack` - detected tech stack (languages, frameworks)
+- `best_practices` - researched best practices from MCP
+- `principles` - project-specific principles from docs/principles.md
+- `codebase_root` - root path of codebase
+
+**Domain-aware fields (NEW):**
+- `domain_mode`: `"domain-aware"` | `"global"` (optional, defaults to "global")
+- `current_domain`: `{name, path}` when domain_mode="domain-aware"
+
+**Example contextStore (domain-aware):**
+```json
+{
+  "tech_stack": {...},
+  "best_practices": {...},
+  "principles": {...},
+  "codebase_root": "/project",
+  "domain_mode": "domain-aware",
+  "current_domain": {
+    "name": "orders",
+    "path": "src/orders"
+  }
+}
+```
 
 ## Workflow
 
-1) Parse context from contextStore
-2) Scan codebase for violations (metrics, patterns, constants)
-3) Collect findings with severity, location, effort, recommendation
-4) Calculate score using penalty algorithm
-5) Return JSON result to coordinator
+1) **Parse context from contextStore**
+   - Extract tech_stack, best_practices, principles
+   - **Determine scan_path (NEW):**
+     ```
+     IF domain_mode == "domain-aware":
+       scan_path = codebase_root + "/" + current_domain.path
+       domain_name = current_domain.name
+     ELSE:
+       scan_path = codebase_root
+       domain_name = null
+     ```
+
+2) **Scan codebase for violations**
+   - All Grep/Glob patterns use `scan_path` (not codebase_root)
+   - Example: `Grep(pattern="if.*if.*if", path=scan_path)` for nesting detection
+
+3) **Collect findings with severity, location, effort, recommendation**
+   - Tag each finding with `domain: domain_name` (if domain-aware)
+
+4) **Calculate score using penalty algorithm**
+
+5) **Return JSON result to coordinator**
+   - Include `domain` and `scan_path` fields (if domain-aware)
 
 ## Audit Rules (Priority: MEDIUM)
 
@@ -178,6 +219,8 @@ score = max(0, 10 - penalty)
 ## Output Format
 
 Return JSON to coordinator:
+
+**Global mode output:**
 ```json
 {
   "category": "Code Quality",
@@ -187,30 +230,40 @@ Return JSON to coordinator:
   "high": 3,
   "medium": 5,
   "low": 3,
+  "findings": [...]
+}
+```
+
+**Domain-aware mode output (NEW):**
+```json
+{
+  "category": "Code Quality",
+  "score": 7,
+  "domain": "orders",
+  "scan_path": "src/orders",
+  "total_issues": 8,
+  "critical": 0,
+  "high": 2,
+  "medium": 4,
+  "low": 2,
   "findings": [
     {
       "severity": "HIGH",
-      "location": "src/utils/processor.ts:45",
-      "issue": "Cyclomatic complexity 25 (threshold: 10)",
+      "location": "src/orders/services/OrderService.ts:120",
+      "issue": "Cyclomatic complexity 22 (threshold: 10)",
       "principle": "Code Complexity / Maintainability",
-      "recommendation": "Split function into smaller methods, extract helper functions",
-      "effort": "L"
+      "recommendation": "Split into smaller methods",
+      "effort": "M",
+      "domain": "orders"
     },
     {
       "severity": "MEDIUM",
-      "location": "src/api/users.ts:78",
-      "issue": "Magic number '2' used for status check",
-      "principle": "Constants Management / Code Readability",
-      "recommendation": "Extract to named constant: const STATUS_ACTIVE = 2",
-      "effort": "S"
-    },
-    {
-      "severity": "MEDIUM",
-      "location": "Multiple files (5 occurrences)",
-      "issue": "Duplicate constant MAX_FILE_SIZE defined in 5 files",
-      "principle": "DRY (Don't Repeat Yourself)",
-      "recommendation": "Create central constants file, import from single source",
-      "effort": "M"
+      "location": "src/orders/controllers/OrderController.ts:45",
+      "issue": "Magic number '3' used for order status",
+      "principle": "Constants Management",
+      "recommendation": "Extract: const ORDER_STATUS_SHIPPED = 3",
+      "effort": "S",
+      "domain": "orders"
     }
   ]
 }
@@ -219,22 +272,26 @@ Return JSON to coordinator:
 ## Critical Rules
 
 - **Do not auto-fix:** Report only
+- **Domain-aware scanning:** If `domain_mode="domain-aware"`, scan ONLY `scan_path` (not entire codebase)
+- **Tag findings:** Include `domain` field in each finding when domain-aware
 - **Context-aware:** Small functions (n < 100) with O(n²) may be acceptable
 - **Constants detection:** Exclude test files, configs, examples
 - **Metrics tools:** Use existing tools when available (ESLint complexity plugin, radon, gocyclo)
 
 ## Definition of Done
 
-- contextStore parsed
-- All 8 checks completed (complexity, nesting, length, god classes, parameters, O(n²), N+1, constants)
-- Findings collected with severity, location, effort, recommendation
+- contextStore parsed (including domain_mode and current_domain)
+- scan_path determined (domain path or codebase root)
+- All 8 checks completed (scoped to scan_path):
+  - complexity, nesting, length, god classes, parameters, O(n²), N+1, constants
+- Findings collected with severity, location, effort, recommendation, domain
 - Score calculated
-- JSON returned to coordinator
+- JSON returned to coordinator with domain metadata
 
 ## Reference Files
 
 - Code quality rules: [references/code_quality_rules.md](references/code_quality_rules.md)
 
 ---
-**Version:** 1.0.0
-**Last Updated:** 2025-12-21
+**Version:** 2.0.0
+**Last Updated:** 2025-12-22

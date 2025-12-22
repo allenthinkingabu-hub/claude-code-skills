@@ -14,7 +14,7 @@ Detailed rules for test suite quality audit.
 | Custom validation rules | OUR requirements |
 | Data transformation logic | OUR business mapping |
 
-### What NOT to Test (Framework/Library)
+### What NOT to Test (Framework/Library/Infrastructure)
 
 | Don't Test | Why | Trust |
 |------------|-----|-------|
@@ -24,6 +24,10 @@ Detailed rules for test suite quality audit.
 | express.Router() | Framework behavior | Express has tests |
 | axios.get() / axios.post() | Library behavior | Axios has tests |
 | useState() / useEffect() | Framework behavior | React has tests |
+| **Performance/Load/Stress tests** | Infrastructure metrics | DevOps Epic with k6/JMeter |
+| "API handles 1000 concurrent requests" | Infrastructure capacity | Not business logic |
+| "Response time <100ms" | Environment-dependent | Flaky on CI |
+| "Memory stays under 256MB" | Infrastructure metric | Not code correctness |
 
 ### Detection Patterns
 
@@ -35,7 +39,26 @@ Detailed rules for test suite quality audit.
 (jwt|jsonwebtoken)\.(sign|verify|decode)
 (axios|fetch|got)\.(get|post|put|delete)
 (useState|useEffect|useContext|useReducer)
+
+# Performance/Load tests (flag for removal)
+(artillery|k6|jmeter|locust|autocannon|wrk|ab|siege)
+(concurrent|throughput|latency|p99|p95|p50|rps)
+(stress|load|benchmark|performance).*(test|spec)
+Date\.now\(\).*expect.*LessThan  # Timing assertions
+(memory|cpu|heap).*expect  # Resource assertions
 ```
+
+### Performance/Load Test Red Flags
+
+| Pattern | Example | Verdict |
+|---------|---------|---------|
+| `artillery.run()` | Load testing tool import | REMOVE |
+| `expect(p99).toBeLessThan(100)` | Latency percentile assertion | REMOVE |
+| `concurrent requests` in test name | Throughput test | REMOVE |
+| `Date.now()` timing measurement | Performance benchmark | REMOVE |
+| `benchmark`, `stress`, `load` in name | Performance test suite | REMOVE |
+
+**Rationale:** Performance tests measure infrastructure (servers, DB, network), not business logic. They belong in separate DevOps/Infrastructure Epic with specialized tools (k6, JMeter, Locust).
 
 ---
 
@@ -225,6 +248,46 @@ test('discount applied for bulk orders', () => { ... });
 **Problem:** Tests trivial side effects, avoids core logic.
 
 **Fix:** Identify core behavior, write test for it.
+
+### Performance Tester (Infrastructure Test)
+
+**Problem:** Tests infrastructure metrics, not business logic.
+
+```javascript
+// BAD: Testing infrastructure throughput
+test('API handles 1000 concurrent requests', async () => {
+  const results = await artillery.run(endpoint, { rate: 1000 });
+  expect(results.p99).toBeLessThan(100); // Infrastructure metric!
+});
+
+// BAD: Testing response time
+test('Query completes in <50ms', () => {
+  const start = Date.now();
+  await db.query('SELECT * FROM users');
+  expect(Date.now() - start).toBeLessThan(50); // Benchmark!
+});
+
+// BAD: Testing memory usage
+test('Memory stays under 256MB with 1M records', () => {
+  // Infrastructure constraint, not business logic
+});
+```
+
+**Why bad:**
+- Tests infrastructure (servers, DB, network), not business logic correctness
+- Results depend on deployment environment (CI runner ≠ production)
+- Requires specialized tools (k6, JMeter, Locust) outside Jest/pytest
+- Flaky: passes locally, fails on CI (resource variance)
+
+**Fix:** Remove from Story test task. Create separate DevOps/Infrastructure Epic for performance testing with appropriate tools.
+
+```javascript
+// GOOD: Test business logic correctness
+test('Payment creates order with correct total', async () => {
+  const response = await request(app).post('/payments').send(validPayment);
+  expect(response.body.total).toBe(100.00); // Business logic!
+});
+```
 
 ---
 

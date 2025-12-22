@@ -10,7 +10,7 @@ Runs a single Story final test task (from ln-350-story-test-planner) through imp
 ## Purpose & Scope
 - Handle only tasks labeled "tests"; other tasks go to ln-331.
 - Follow the 11-section test task plan (E2E/Integration/Unit, infra/docs/cleanup).
-- Enforce risk-based constraints: Priority ≤15; E2E 2-5, Integration 0-8, Unit 0-15, total 10-28; no framework/DB/library tests.
+- Enforce risk-based constraints: Priority ≤15; E2E 2-5, Integration 0-8, Unit 0-15, total 10-28; no framework/DB/library/performance tests.
 - Update Linear/kanban for this task only: Todo -> In Progress -> To Review.
 
 ## Workflow (concise)
@@ -24,7 +24,7 @@ Runs a single Story final test task (from ln-350-story-test-planner) through imp
 - Single-task only; no bulk updates.
 - Do not mark Done; ln-332 approves. Task must end in To Review.
 - Keep language (EN/RU) consistent with task.
-- No framework/library/DB tests; focus on business behavior.
+- No framework/library/DB/performance/load tests; focus on business logic correctness (not infrastructure throughput).
 - Respect limits and priority; if violated, stop and return with findings.
 
 ## Definition of Done

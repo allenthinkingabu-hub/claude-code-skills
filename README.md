@@ -2,7 +2,7 @@
 
 > A comprehensive collection of skills for Claude Code, providing end-to-end Agile workflow automation integrated with Linear for modern software development teams.
 
-![Version](https://img.shields.io/badge/version-12.0.0-blue) ![Skills](https://img.shields.io/badge/skills-51-green) ![Updated](https://img.shields.io/badge/updated-Dec%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
+![Version](https://img.shields.io/badge/version-12.0.0-blue) ![Skills](https://img.shields.io/badge/skills-52-green) ![Updated](https://img.shields.io/badge/updated-Dec%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
 
 ---
 
@@ -69,6 +69,12 @@ This repository contains **51 production-ready skills** for [Claude Code](https:
 ### 2. Planning (200-range)
 
 Orchestrator-Worker Pattern applied to decomposition workflow. **ln-200-scope-decomposer** (TOP orchestrator) automates full decomposition (scope → Epics → Stories) by delegating to **ln-210-epic-coordinator** (CREATE/REPLAN Epics) → **ln-220-story-coordinator** (CREATE/REPLAN Stories with Phase 2 standards research via **ln-221-standards-researcher**).
+
+**Market Research (Standalone):**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-205-market-researcher](ln-205-market-researcher/)** | **Standalone L2 Worker** for market research before Epic planning. Competitor Analysis (Top-10, feature matrix), Market Sizing (TAM/SAM/SOM), Trend Analysis, Customer Profile (JTBD, personas), Ocean Analysis (Blue/Red), RICE/ICE feature prioritization. Generates 7 documents in docs/market/[topic]/. Time-boxed: 45-60 minutes. | 1.0.0 | ✅ |
 
 **Orchestrator:**
 

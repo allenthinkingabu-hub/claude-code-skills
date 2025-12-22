@@ -26,10 +26,11 @@ Coordinates comprehensive test suite audit across 6 quality categories using 5 s
 
 **Key Principles:**
 1. **Test business logic, not frameworks** — bcrypt/Prisma/Express already tested
-2. **Risk-based prioritization** — Priority ≥15 or remove
-3. **E2E for critical paths only** — Money/Security/Data (Priority ≥20)
-4. **Usefulness over quantity** — One useful test > 10 useless tests
-5. **Every test must justify existence** — Impact × Probability ≥15
+2. **No performance/load/stress tests** — Tests infrastructure, not code correctness (use k6/JMeter separately)
+3. **Risk-based prioritization** — Priority ≥15 or remove
+4. **E2E for critical paths only** — Money/Security/Data (Priority ≥20)
+5. **Usefulness over quantity** — One useful test > 10 useless tests
+6. **Every test must justify existence** — Impact × Probability ≥15
 
 ## Workflow
 
@@ -64,32 +65,97 @@ Coordinates comprehensive test suite audit across 6 quality categories using 5 s
 
 **Key Benefit:** Context gathered ONCE → passed to all workers → token-efficient
 
-### Phase 3: Delegate to Workers (PARALLEL)
+### Phase 3: Domain Discovery (NEW)
 
-**Invoke ALL 5 workers in PARALLEL** using single message with 5 Skill tool calls:
+**Purpose:** Detect project domains from production code folder structure for domain-aware coverage analysis.
+
+**Algorithm:** (same as ln-360-codebase-auditor)
+
+1. **Priority 1: Explicit domain folders**
+   - Check for: `src/domains/*/`, `src/features/*/`, `src/modules/*/`
+   - Monorepo patterns: `packages/*/`, `libs/*/`, `apps/*/`
+   - If found (>1 match) → use as domains
+
+2. **Priority 2: Top-level src/* folders**
+   - List folders: `src/users/`, `src/orders/`, `src/payments/`
+   - Exclude infrastructure: `utils`, `shared`, `common`, `lib`, `helpers`, `config`, `types`, `interfaces`, `constants`, `middleware`, `infrastructure`, `core`
+   - If remaining >1 → use as domains
+
+3. **Priority 3: Fallback to global mode**
+   - If <2 domains detected → `domain_mode = "global"`
+   - All workers scan entire codebase (backward-compatible behavior)
+
+**Heuristics for domain detection:**
+
+| Heuristic | Indicator | Example |
+|-----------|-----------|---------|
+| File count | >5 files in folder | `src/users/` with 12 files |
+| Structure | controllers/, services/, models/ present | MVC/Clean Architecture |
+| Barrel export | index.ts/index.js exists | Module pattern |
+| README | README.md describes domain | Domain documentation |
+
+**Output:**
+```json
+{
+  "domain_mode": "domain-aware",
+  "all_domains": [
+    {"name": "users", "path": "src/users", "file_count": 45},
+    {"name": "orders", "path": "src/orders", "file_count": 32},
+    {"name": "shared", "path": "src/shared", "file_count": 15, "is_shared": true}
+  ]
+}
+```
+
+**Shared folder handling:**
+- Folders named `shared`, `common`, `utils`, `lib`, `core` → mark `is_shared: true`
+- Shared code audited but grouped separately in report
+
+### Phase 4: Delegate to Workers
+
+#### Phase 4a: Global Workers (PARALLEL)
+
+**Global workers** scan entire test suite (not domain-aware):
 
 | # | Worker | Category | What It Audits |
 |---|--------|----------|----------------|
 | 1 | [ln-371-test-business-logic-auditor](../ln-371-test-business-logic-auditor/) | Business Logic Focus | Framework/Library tests (Prisma, Express, bcrypt, JWT, axios, React hooks) → REMOVE |
 | 2 | [ln-372-test-e2e-priority-auditor](../ln-372-test-e2e-priority-auditor/) | E2E Priority | E2E baseline (2/endpoint), Pyramid validation, Missing E2E tests |
 | 3 | [ln-373-test-value-auditor](../ln-373-test-value-auditor/) | Risk-Based Value | Usefulness Score = Impact × Probability<br>Decisions: ≥15 KEEP, 10-14 REVIEW, <10 REMOVE |
-| 4 | [ln-374-test-coverage-auditor](../ln-374-test-coverage-auditor/) | Coverage Gaps | Missing tests for critical paths (Money 20+, Security 20+, Data 15+, Core Flows 15+) |
 | 5 | [ln-375-test-isolation-auditor](../ln-375-test-isolation-auditor/) | Isolation + Anti-Patterns | Isolation (6 categories), Determinism, Anti-Patterns (6 types) |
 
-**Invocation Pattern:**
+**Invocation (4 workers in PARALLEL):**
 ```javascript
-// Pseudocode for parallel delegation
-const workers = [
-  { skill: "ln-371-test-business-logic-auditor", contextStore, testFiles },
-  { skill: "ln-372-test-e2e-priority-auditor", contextStore, testFiles },
-  { skill: "ln-373-test-value-auditor", contextStore, testFiles },
-  { skill: "ln-374-test-coverage-auditor", contextStore, testFiles },
-  { skill: "ln-375-test-isolation-auditor", contextStore, testFiles }
-];
-
-// ALL 5 workers run in PARALLEL (single message, 5 tool calls)
-const results = await Promise.all(workers.map(w => Skill(w)));
+FOR EACH worker IN [ln-371, ln-372, ln-373, ln-375]:
+  Skill(skill=worker, args=JSON.stringify(contextStore))
 ```
+
+#### Phase 4b: Domain-Aware Worker (PARALLEL per domain)
+
+**Domain-aware worker** runs once per domain:
+
+| # | Worker | Category | What It Audits |
+|---|--------|----------|----------------|
+| 4 | [ln-374-test-coverage-auditor](../ln-374-test-coverage-auditor/) | Coverage Gaps | Missing tests for critical paths per domain (Money 20+, Security 20+, Data 15+, Core Flows 15+) |
+
+**Invocation:**
+```javascript
+IF domain_mode == "domain-aware":
+  FOR EACH domain IN all_domains:
+    domain_context = {
+      ...contextStore,
+      domain_mode: "domain-aware",
+      current_domain: { name: domain.name, path: domain.path }
+    }
+    Skill(skill="ln-374-test-coverage-auditor", args=JSON.stringify(domain_context))
+ELSE:
+  // Fallback: invoke once for entire codebase (global mode)
+  Skill(skill="ln-374-test-coverage-auditor", args=JSON.stringify(contextStore))
+```
+
+**Parallelism strategy:**
+- Phase 4a: All 4 global workers run in PARALLEL
+- Phase 4b: All N domain-aware invocations run in PARALLEL
+- Example: 3 domains → 3 ln-374 invocations in single message
 
 **Each worker returns structured JSON:**
 ```json
@@ -111,23 +177,31 @@ const results = await Promise.all(workers.map(w => Skill(w)));
 }
 ```
 
-### Phase 4: Aggregate Results
+### Phase 5: Aggregate Results
 
-**Goal:** Merge all worker results into unified Test Suite Audit Report
+**Goal:** Merge all worker results into unified Test Suite Audit Report with domain grouping
 
 **Actions:**
-1. **Collect results** from all 5 workers
-2. **Merge findings** into decision categories:
+1. **Collect results** from all workers (global + domain-aware)
+2. **Global workers (ln-371, ln-372, ln-373, ln-375)** → merge findings (as before)
+3. **Domain-aware worker (ln-374)** → group by domain.name:
+   - Aggregate coverage gaps per domain
+   - Build Domain Coverage Summary table
+4. **Merge findings** into decision categories:
    - **Tests to REMOVE** (Usefulness Score <10)
    - **Tests to REVIEW** (Usefulness Score 10-14)
    - **Tests to KEEP** (Usefulness Score ≥15)
-   - **Missing Tests** (Priority/Justification)
+   - **Missing Tests** (Priority/Justification) — grouped by domain if domain_mode="domain-aware"
    - **Anti-Patterns Found** (counts + examples)
-3. **Calculate compliance scores** (6 categories, each /10)
-4. **Build decision summary** (KEEP/REVIEW/REMOVE counts)
-5. **Generate Executive Summary** (2-3 sentences)
-6. **Create Linear task** in Epic 0 with full report (see Output Format below)
-7. **Return summary** to user
+5. **Calculate compliance scores** (6 categories, each /10)
+6. **Build decision summary** (KEEP/REVIEW/REMOVE counts)
+7. **Generate Executive Summary** (2-3 sentences)
+8. **Create Linear task** in Epic 0 with full report (see Output Format below)
+9. **Return summary** to user
+
+**Findings grouping:**
+- Categories 1-3, 5-6 (Business Logic, E2E, Value, Isolation, Anti-Patterns) → single tables (global)
+- Category 4 (Coverage Gaps) → subtables per domain (if domain_mode="domain-aware")
 
 ## Output Format
 
@@ -158,6 +232,15 @@ const results = await Promise.all(workers.map(w => Skill(w)));
 | Anti-Patterns | X/10 | X anti-patterns found |
 | **Overall** | **X/10** | |
 
+### Domain Coverage Summary (NEW - if domain_mode="domain-aware")
+
+| Domain | Critical Paths | Tested | Coverage % | Gaps |
+|--------|---------------|--------|------------|------|
+| users | 8 | 6 | 75% | 2 |
+| orders | 12 | 8 | 67% | 4 |
+| payments | 6 | 5 | 83% | 1 |
+| **Total** | **26** | **19** | **73%** | **7** |
+
 ### Audit Findings
 
 | Severity | Location | Issue | Violated Principle | Recommendation | Effort |
@@ -170,6 +253,22 @@ const results = await Promise.all(workers.map(w => Skill(w)));
 | **MEDIUM** | order.test.ts:200-350 | Giant test (>100 lines) | Anti-pattern: The Giant | Split into focused tests (one scenario per test) | M |
 | **MEDIUM** | test.ts:45 | No assertions in test | Anti-pattern: The Liar | Add specific assertions or delete test | S |
 | **LOW** | auth.test.ts | Only positive login scenarios | Anti-pattern: Happy Path Only | Add negative tests (invalid credentials, expired tokens) | M |
+
+### Coverage Gaps by Domain (if domain_mode="domain-aware")
+
+#### Domain: users (src/users/)
+
+| Severity | Category | Missing Test | Location | Priority | Effort |
+|----------|----------|--------------|----------|----------|--------|
+| CRITICAL | Money | E2E: processRefund() | services/user.ts:120 | 20 | M |
+| HIGH | Security | Unit: validatePermissions() | middleware/auth.ts:45 | 18 | S |
+
+#### Domain: orders (src/orders/)
+
+| Severity | Category | Missing Test | Location | Priority | Effort |
+|----------|----------|--------------|----------|----------|--------|
+| CRITICAL | Money | E2E: applyDiscount() | services/order.ts:45 | 25 | M |
+| HIGH | Data | Integration: orderTransaction() | repositories/order.ts:78 | 16 | M |
 ```
 
 ## Worker Architecture
@@ -188,10 +287,15 @@ Each worker:
 
 ## Critical Rules
 
+- **Two-stage delegation:** Global workers (4) + Domain-aware worker (ln-374 × N domains)
+- **Domain discovery:** Auto-detect domains from folder structure; fallback to global mode if <2 domains
+- **Parallel execution:** All workers (global + domain-aware) run in PARALLEL
+- **Domain-grouped output:** Coverage Gaps findings grouped by domain (if domain_mode="domain-aware")
 - **Delete > Archive:** Remove useless tests, don't comment out
 - **E2E baseline:** Every endpoint needs 2 E2E (positive + negative)
 - **Justify each test:** If can't explain Priority ≥15, remove it
 - **Trust frameworks:** Don't test Express/Prisma/bcrypt behavior
+- **No performance/load tests:** Flag and REMOVE tests measuring throughput/latency/memory (DevOps Epic territory)
 - **Code is truth:** If test contradicts code behavior, update test
 - **Language preservation:** Report in project's language (EN/RU)
 
@@ -199,11 +303,16 @@ Each worker:
 
 - All test files discovered via Glob
 - Context gathered from testing best practices (MCP Ref/Context7)
-- All 5 workers invoked in PARALLEL
-- Results aggregated into unified report
+- Domain discovery completed (domain_mode determined)
+- contextStore built with test metadata + domain info
+- Global workers (4) invoked in PARALLEL
+- Domain-aware worker (ln-374) invoked per domain in PARALLEL
+- All workers completed successfully (or reported errors)
+- Results aggregated with domain grouping (if domain_mode="domain-aware")
+- Domain Coverage Summary built (if domain_mode="domain-aware")
 - Compliance scores calculated (6 categories)
 - Keep/Remove/Refactor decisions for each test
-- Missing tests identified with Priority
+- Missing tests identified with Priority (grouped by domain if applicable)
 - Anti-patterns catalogued
 - Linear task created in Epic 0 with full report
 - Summary returned to user
@@ -222,5 +331,5 @@ Each worker:
   - [../ln-360-codebase-auditor](../ln-360-codebase-auditor/) — Codebase audit coordinator (similar pattern)
 
 ---
-**Version:** 2.0.0
-**Last Updated:** 2025-12-21
+**Version:** 3.0.0
+**Last Updated:** 2025-12-22

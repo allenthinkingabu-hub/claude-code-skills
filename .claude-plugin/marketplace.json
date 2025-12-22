@@ -32,6 +32,7 @@
         "./ln-160-docs-auditor",
         "./ln-170-code-comments-auditor",
         "./ln-200-scope-decomposer",
+        "./ln-205-market-researcher",
         "./ln-210-epic-coordinator",
         "./ln-220-story-coordinator",
         "./ln-221-standards-researcher",
