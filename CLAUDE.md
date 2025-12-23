@@ -47,9 +47,9 @@ All skills have state diagrams in `diagram.html` files for visualizing workflows
 
 ### Available Skills
 
-**51 skills** in 5 categories (Documentation, Planning, Execution). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
+**52 skills** in 6 categories (0XX Shared/Research, 1XX Documentation, 2XX Planning, 3XX Task Management, 4XX Execution, 5XX Quality, 6XX Audit). See [README.md](README.md#-features) for complete skill list with descriptions and versions.
 
-**Key workflow:** ln-100-documents-pipeline → ln-200-scope-decomposer → ln-300-story-pipeline → ln-340-story-quality-gate
+**Key workflow:** ln-100-documents-pipeline → ln-200-scope-decomposer → ln-400-story-pipeline → ln-500-story-quality-gate
 
 ## Key Concepts
 
@@ -61,21 +61,21 @@ See [README.md](README.md#-key-concepts) for detailed structure, principles, and
 
 ## Decomposition Workflow
 
-Three levels: Scope → Epics (ln-210) → Stories (ln-220) → Tasks (ln-310). See [README.md](README.md#-key-concepts) for complete flow, optimal counts by complexity, and Decompose-First Pattern details.
+Four levels: Scope → Epics (ln-210) → Stories (ln-220) → RICE Prioritization (ln-230) → Tasks (ln-300). See [README.md](README.md#-key-concepts) for complete flow, optimal counts by complexity, and Decompose-First Pattern details.
 
 ## Skill Workflows
 
-All 51 skills documented in [README.md](README.md#-features) feature tables with workflows in each skill's SKILL.md file. Follow Orchestrator-Worker Pattern per [SKILL_ARCHITECTURE_GUIDE.md](docs/SKILL_ARCHITECTURE_GUIDE.md).
+All 52 skills documented in [README.md](README.md#-features) feature tables with workflows in each skill's SKILL.md file. Follow Orchestrator-Worker Pattern per [SKILL_ARCHITECTURE_GUIDE.md](docs/SKILL_ARCHITECTURE_GUIDE.md).
 
 ## Important Details
 
-**Structural Validation:** ln-320-story-validator auto-fixes Stories/Tasks against template compliance. See [ln-320-story-validator/SKILL.md](ln-320-story-validator/SKILL.md) Phase 1.
+**Structural Validation:** ln-310-story-validator auto-fixes Stories/Tasks against template compliance. See [ln-310-story-validator/SKILL.md](ln-310-story-validator/SKILL.md) Phase 1.
 
-**Testing:** Risk-Based Testing (2-5 E2E, 3-8 Integration, 5-15 Unit, Priority ≥15). See [risk_based_testing_guide.md](ln-350-story-test-planner/references/risk_based_testing_guide.md).
+**Testing:** Risk-Based Testing (2-5 E2E, 3-8 Integration, 5-15 Unit, Priority ≥15). See [risk_based_testing_guide.md](ln-510-test-planner/references/risk_based_testing_guide.md).
 
 **Code Comments:** 15-20% ratio. Explain WHY, not WHAT. NO Epic/Task IDs, NO historical notes, NO code examples. Only critical technical details (DB optimizations, API quirks, constraints).
 
-**Documentation Language:** All docs in English except Stories/Tasks in Linear (can be English/Russian). ln-320-story-validator preserves original language.
+**Documentation Language:** All docs in English except Stories/Tasks in Linear (can be English/Russian). ln-310-story-validator preserves original language.
 
 **Sequential Numbering:** Phases/Sections/Steps: 1, 2, 3, 4 (NOT 1, 1.5, 2). Exceptions: Phase 4a (CREATE), 4b (REPLAN) for conditional branching.
 
@@ -181,4 +181,4 @@ links. Kept only repository-specific content: Configuration Auto-Discovery, Code
 Comments rules, Documentation Language policy, Versioning workflow.
 ```
 
-**Last Updated:** 2025-12-21
+**Last Updated:** 2025-12-23

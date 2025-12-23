@@ -70,9 +70,9 @@ Documents use placeholders for registry updates:
 
 | Placeholder | Location | Purpose | Updated By |
 |-------------|----------|---------|------------|
-| `{{ADR_LIST}}` | reference/README.md | ADR registry | ln-321-best-practices-researcher |
-| `{{GUIDE_LIST}}` | reference/README.md | Guide registry | ln-321-best-practices-researcher |
-| `{{MANUAL_LIST}}` | reference/README.md | Manual registry | ln-321-best-practices-researcher |
+| `{{ADR_LIST}}` | reference/README.md | ADR registry | ln-002-best-practices-researcher |
+| `{{GUIDE_LIST}}` | reference/README.md | Guide registry | ln-002-best-practices-researcher |
+| `{{MANUAL_LIST}}` | reference/README.md | Manual registry | ln-002-best-practices-researcher |
 
 **Usage**: Skills automatically add new entries BEFORE the placeholder using Edit tool.
 
@@ -143,7 +143,7 @@ Reusable knowledge base and architecture decisions:
 
 **Purpose**: Document HOW we build (patterns, decisions, APIs).
 
-**Created by**: ln-321-best-practices-researcher
+**Created by**: ln-002-best-practices-researcher
 
 ---
 
@@ -196,8 +196,8 @@ When updating documentation:
 |------|---------------|--------|
 | **Standards** | [documentation_standards.md](documentation_standards.md) | ln-111-project-docs-creator, ln-121-structure-validator |
 | **Project** | [requirements.md](project/requirements.md), [architecture.md](project/architecture.md), [technical_specification.md](project/technical_specification.md) | ln-111-project-docs-creator, ln-122-content-updater |
-| **Reference** | [ADRs](reference/adrs/), [Guides](reference/guides/), [Manuals](reference/manuals/) | ln-321-best-practices-researcher |
-| **Tasks** | [kanban_board.md](tasks/kanban_board.md), [README.md](tasks/README.md) | ln-210-epic-coordinator, ln-220-story-coordinator, ln-310-story-decomposer |
+| **Reference** | [ADRs](reference/adrs/), [Guides](reference/guides/), [Manuals](reference/manuals/) | ln-002-best-practices-researcher |
+| **Tasks** | [kanban_board.md](tasks/kanban_board.md), [README.md](tasks/README.md) | ln-210-epic-coordinator, ln-220-story-coordinator, ln-300-task-coordinator |
 
 ---
 

@@ -105,7 +105,7 @@
 - Example: `axios-1.6.md` → "Axios 1.6 API Manual"
 
 **MCP Ref Hints:**
-- N/A (manuals are package-specific, created by ln-321-best-practices-researcher)
+- N/A (manuals are package-specific, created by ln-002-best-practices-researcher)
 <!-- QUESTION_END: 3 -->
 
 ---

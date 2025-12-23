@@ -1,6 +1,6 @@
 ---
 name: ln-220-story-coordinator
-description: CREATE/REPLAN Stories for Epic (5-10 Stories). Delegates ln-221-standards-researcher for standards research. Decompose-First Pattern. Auto-discovers team/Epic.
+description: CREATE/REPLAN Stories for Epic (5-10 Stories). Delegates ln-001-standards-researcher for standards research. Decompose-First Pattern. Auto-discovers team/Epic.
 ---
 
 # Story Coordinator
@@ -18,8 +18,8 @@ Use when:
 ## Core Pattern: Decompose-First
 
 **Key principle:** Build IDEAL Story plan FIRST, THEN check existing Stories to determine mode:
-- **No existing Stories** → CREATE MODE (delegate to ln-222-story-creator)
-- **Has existing Stories** → REPLAN MODE (delegate to ln-223-story-replanner)
+- **No existing Stories** → CREATE MODE (delegate to ln-221-story-creator)
+- **Has existing Stories** → REPLAN MODE (delegate to ln-222-story-replanner)
 
 **Rationale:** Ensures consistent Story decomposition based on current Epic requirements, independent of existing Story structure (may be outdated).
 
@@ -119,8 +119,8 @@ For each question with no answer from Step 2-3:
 **Process:**
 
 1. **Parse Epic for domain keywords:** Extract domain from Epic goal/Scope In (authentication, rate limiting, payments)
-2. **Delegate to ln-221-standards-researcher:**
-   - Call `Skill(skill: "ln-221-standards-researcher", epic_description="[Epic full description]", story_domain="[domain]")`
+2. **Delegate to ln-001-standards-researcher:**
+   - Call `Skill(skill: "ln-001-standards-researcher", epic_description="[Epic full description]", story_domain="[domain]")`
    - Wait for Standards Research (Markdown string)
 3. **Store:** Cache for Phase 5a/5b (workers insert in Story Technical Notes)
 
@@ -131,7 +131,7 @@ For each question with no answer from Step 2-3:
 - Story domain is trivial CRUD
 - Epic says "research not needed"
 
-**Time-box:** 15-20 minutes (handled by ln-221)
+**Time-box:** 15-20 minutes (handled by ln-001)
 
 **Note:** Research done ONCE per Epic, results reused for all Stories (5-10 Stories benefit from single research)
 
@@ -184,7 +184,7 @@ Each Story = ONE vertical slice of user capability (end-to-end: UI → API → S
    - Each Story: persona + capability + business value
    - Each Story: 3-5 testable AC (Given-When-Then)
    - Stories ordered by dependency
-   - Each Story: Test Strategy section exists but is **empty** (tests planned later by ln-350-story-test-planner)
+   - Each Story: Test Strategy section exists but is **empty** (tests planned later by ln-510-test-planner)
    - Each Story: Technical Notes (architecture, integrations, **Standards Research from Phase 2**, guide links)
 
 **INVEST Checklist:**
@@ -224,9 +224,9 @@ list_issues(project=Epic.id, label="user-story")
 
 | Condition | Mode | Delegate To |
 |-----------|------|-------------|
-| Count = 0 | **CREATE** | Phase 5a: ln-222-story-creator |
-| Count ≥ 1 AND ADD keywords | **ADD** | Phase 5c: ln-222-story-creator (appendMode) |
-| Count ≥ 1 AND REPLAN keywords | **REPLAN** | Phase 5b: ln-223-story-replanner |
+| Count = 0 | **CREATE** | Phase 5a: ln-221-story-creator |
+| Count ≥ 1 AND ADD keywords | **ADD** | Phase 5c: ln-221-story-creator (appendMode) |
+| Count ≥ 1 AND REPLAN keywords | **REPLAN** | Phase 5b: ln-222-story-replanner |
 | Count ≥ 1 AND ambiguous | **ASK USER** | "Add new Story or revise the plan?" |
 
 **Important:** Orchestrator loads metadata ONLY (ID, title, status). Workers load FULL descriptions (token efficiency).
@@ -241,11 +241,11 @@ list_issues(project=Epic.id, label="user-story")
 
 **Delegation:**
 
-Call ln-222-story-creator via Skill tool:
+Call ln-221-story-creator via Skill tool:
 
 ```javascript
 Skill(
-  skill: "ln-222-story-creator",
+  skill: "ln-221-story-creator",
   epicData: {id, title, description},
   idealPlan: [ /* 5-10 Stories from Phase 3 */ ],
   standardsResearch: "Standards Research from Phase 2",
@@ -272,11 +272,11 @@ Skill(
 
 **Delegation:**
 
-Call ln-223-story-replanner via Skill tool:
+Call ln-222-story-replanner via Skill tool:
 
 ```javascript
 Skill(
-  skill: "ln-223-story-replanner",
+  skill: "ln-222-story-replanner",
   epicData: {id, title, description},
   idealPlan: [ /* 5-10 Stories from Phase 3 */ ],
   standardsResearch: "Standards Research from Phase 2",
@@ -304,11 +304,11 @@ Skill(
 
 **Delegation:**
 
-Call ln-222-story-creator via Skill tool with appendMode:
+Call ln-221-story-creator via Skill tool with appendMode:
 
 ```javascript
 Skill(
-  skill: "ln-222-story-creator",
+  skill: "ln-221-story-creator",
   appendMode: true,  // ADD to existing, don't replace
   epicData: {id, title, description},
   newStoryDescription: userRequestedStory,  // Single Story from user request
@@ -350,9 +350,9 @@ Mark each as in_progress when starting, completed when done.
 ## Integration with Ecosystem
 
 **Calls:**
-- **ln-221-standards-researcher** (Phase 2) - research standards/patterns for Epic
-- **ln-222-story-creator** (Phase 5a, 5c) - CREATE and ADD worker
-- **ln-223-story-replanner** (Phase 5b) - REPLAN worker
+- **ln-001-standards-researcher** (Phase 2) - research standards/patterns for Epic
+- **ln-221-story-creator** (Phase 5a, 5c) - CREATE and ADD worker
+- **ln-222-story-replanner** (Phase 5b) - REPLAN worker
 
 **Called by:**
 - **ln-200-scope-decomposer** (Phase 3) - automated full decomposition (scope → Epics → Stories)
@@ -362,9 +362,9 @@ Mark each as in_progress when starting, completed when done.
 - **ln-210-epic-coordinator** - creates Epics (prerequisite for Story creation)
 
 **Downstream:**
-- **ln-310-story-decomposer** - creates implementation tasks for each Story
-- **ln-320-story-validator** - validates Story structure/content
-- **ln-330-story-executor** - orchestrates task execution for Story
+- **ln-300-task-coordinator** - creates implementation tasks for each Story
+- **ln-310-story-validator** - validates Story structure/content
+- **ln-410-story-executor** - orchestrates task execution for Story
 
 ---
 
@@ -380,7 +380,7 @@ Mark each as in_progress when starting, completed when done.
 
 **✅ Phase 2: Standards Research Complete:**
 - [ ] Epic parsed for domain keywords
-- [ ] ln-221-standards-researcher invoked with Epic description + Story domain
+- [ ] ln-001-standards-researcher invoked with Epic description + Story domain
 - [ ] Standards Research cached for workers
 - [ ] OR Phase 2 skipped (trivial CRUD, no standards, explicit skip)
 
@@ -396,7 +396,7 @@ Mark each as in_progress when starting, completed when done.
 - [ ] Execution mode determined (CREATE or REPLAN)
 
 **✅ Phase 5: Delegation Complete:**
-- [ ] Called ln-222-story-creator (Phase 5a) OR ln-223-story-replanner (Phase 5b) via Skill tool
+- [ ] Called ln-221-story-creator (Phase 5a) OR ln-222-story-replanner (Phase 5b) via Skill tool
 - [ ] Passed epicData, idealPlan, standardsResearch, teamId, autoApprove
 - [ ] Received output from worker (Story URLs + summary + next steps)
 
@@ -411,10 +411,10 @@ Mark each as in_progress when starting, completed when done.
 
 **Process:**
 1. Phase 1: Context Assembly → Discovery (Team "API", Epic 7, US004), Extract (Persona: API client, Value: secure API access), Frontend Research (HTML login/register forms → AC), Fallback Search (requirements.md for personas)
-2. Phase 2: Standards Research → Epic mentions "OAuth 2.0", delegate ln-221 → Standards Research with RFC 6749, patterns
+2. Phase 2: Standards Research → Epic mentions "OAuth 2.0", delegate ln-001 → Standards Research with RFC 6749, patterns
 3. Phase 3: Planning → Build IDEAL (5 Stories: "Register client", "Request token", "Validate token", "Refresh token", "Revoke token")
 4. Phase 4: Check Existing → Count = 0 → CREATE MODE
-5. Phase 5a: Delegate CREATE → Call ln-222-story-creator → US004-US008 created with Standards Research
+5. Phase 5a: Delegate CREATE → Call ln-221-story-creator → US004-US008 created with Standards Research
 
 **REPLAN MODE (Requirements Changed):**
 ```
@@ -423,10 +423,10 @@ Mark each as in_progress when starting, completed when done.
 
 **Process:**
 1. Phase 1: Context Assembly → Discovery (Team "API", Epic 7, has US004-US008), Extract (Removed custom formats, added scopes)
-2. Phase 2: Standards Research → Epic mentions "OAuth 2.0 scopes", delegate ln-221 → Updated Standards Research with RFC 6749 Section 3.3
+2. Phase 2: Standards Research → Epic mentions "OAuth 2.0 scopes", delegate ln-001 → Updated Standards Research with RFC 6749 Section 3.3
 3. Phase 3: Planning → Build IDEAL (5 Stories: "Register client", "Request token", "Validate token", "Refresh token", "Manage scopes")
 4. Phase 4: Check Existing → Count = 5 → REPLAN MODE
-5. Phase 5b: Delegate REPLAN → Call ln-223-story-replanner → KEEP 4, UPDATE Technical Notes (scope research), OBSOLETE US008, CREATE US009
+5. Phase 5b: Delegate REPLAN → Call ln-222-story-replanner → KEEP 4, UPDATE Technical Notes (scope research), OBSOLETE US008, CREATE US009
 
 ---
 
@@ -435,14 +435,14 @@ Mark each as in_progress when starting, completed when done.
 **Story Content:**
 - **Research-First:** Always perform Phase 2 research (standards/patterns) before Story generation
   - **Story level:** STANDARDS/PATTERNS (OAuth RFC 6749, middleware pattern)
-  - **Task level:** LIBRARIES (authlib vs oauthlib) - delegated by ln-310
+  - **Task level:** LIBRARIES (authlib vs oauthlib) - delegated by ln-300
 - **Business-oriented Stories:** Each Story = USER JOURNEY (what user does, what they get), NOT technical tasks
   - ✅ GOOD: "As API client, I want to refresh expired token, so that I maintain session without re-authentication"
   - ❌ BAD: "Create token refresh endpoint in API" (Task, not Story)
 - **Vertical Slicing:** Each Story delivers end-to-end functionality (UI → API → Service → DB)
 - **One capability per Story:** Clear, focused persona + capability + value
 - **Testable AC:** Given-When-Then, 3-5 AC, specific criteria ("<200ms" not "fast")
-- **Test Strategy:** Section exists but is **empty** at Story creation (tests planned later by ln-350-story-test-planner)
+- **Test Strategy:** Section exists but is **empty** at Story creation (tests planned later by ln-510-test-planner)
 - **Standards Research:** Include Phase 2 research in ALL Story Technical Notes
 
 **Story Decomposition:**
@@ -464,5 +464,5 @@ Mark each as in_progress when starting, completed when done.
 
 ---
 
-**Version:** 4.0.0 (BREAKING: Decomposed to Orchestrator-Worker pattern. Phase 4a/4b removed, replaced with Phase 5a/5b delegation to ln-222-story-creator/ln-223-story-replanner. Orchestrator loads metadata only, workers load full descriptions for token efficiency. Progressive Loading now handled by ln-223-story-replanner, not orchestrator. Story execution logic moved to workers, orchestrator focuses on context assembly, standards research, planning, mode determination, delegation.)
+**Version:** 4.0.0 (BREAKING: Decomposed to Orchestrator-Worker pattern. Phase 4a/4b removed, replaced with Phase 5a/5b delegation to ln-221-story-creator/ln-222-story-replanner. Orchestrator loads metadata only, workers load full descriptions for token efficiency. Progressive Loading now handled by ln-222-story-replanner, not orchestrator. Story execution logic moved to workers, orchestrator focuses on context assembly, standards research, planning, mode determination, delegation.)
 **Last Updated:** 2025-11-20

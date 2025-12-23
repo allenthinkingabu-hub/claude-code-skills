@@ -53,7 +53,7 @@ tests/
 
 ## Story-Level Test Task Pattern
 
-**Rule**: All tests (E2E/Integration/Unit) are written in the **final Story test task** (created by ln-350-story-test-planner after manual testing).
+**Rule**: All tests (E2E/Integration/Unit) are written in the **final Story test task** (created by ln-510-test-planner after manual testing).
 
 **Why**:
 - **Single source of truth**: All Story tests in one place
@@ -63,8 +63,8 @@ tests/
 
 **Workflow**:
 1. Implementation tasks completed → Manual testing → Bugs fixed
-2. ln-350-story-test-planner creates Story Finalizer test task
-3. ln-334-test-executor implements all tests (E2E/Integration/Unit) in final task
+2. ln-510-test-planner creates Story Finalizer test task
+3. ln-414-test-executor implements all tests (E2E/Integration/Unit) in final task
 4. All tests pass → Story marked Done
 
 ---

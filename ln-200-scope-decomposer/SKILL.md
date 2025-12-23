@@ -56,7 +56,7 @@ Do NOT use if:
 
 **Coordinators:**
 - **ln-210-epic-coordinator:** Creates 3-7 Epics (Epic 0 for Infrastructure if applicable, Epic 1-N for business domains)
-- **ln-220-story-coordinator:** Creates 5-10 Stories per Epic (with standards research via ln-221)
+- **ln-220-story-coordinator:** Creates 5-10 Stories per Epic (with standards research via ln-001)
 
 ### Sequential Story Decomposition
 
@@ -146,7 +146,7 @@ Skill(skill: "ln-220-story-coordinator", epic_number="Epic N")
 
 **ln-220-story-coordinator will (per Epic):**
 - Phase 1: Auto-extract Q1-Q6 from Epic + Fallback search (requirements.md, tech_stack.md)
-- Phase 2: Research standards via ln-221-standards-researcher (auto)
+- Phase 2: Research standards via ln-001-standards-researcher (auto)
 - Phase 3: Build IDEAL Story plan (5-10 Stories)
 - Phase 4a: Generate ALL Story documents → Show preview → User confirms → Create all Stories
 - Return: Story URLs + summary
@@ -186,9 +186,9 @@ Initiative Decomposition Summary:
 - Location: docs/tasks/kanban_board.md
 
 Next Steps:
-1. Run ln-320-story-validator to validate all Stories
-2. Use ln-300-story-pipeline to process each Story (tasks → execution → Done)
-   OR use ln-310-story-decomposer to create tasks manually for each Story
+1. Run ln-310-story-validator to validate all Stories
+2. Use ln-400-story-pipeline to process each Story (tasks → execution → Done)
+   OR use ln-300-task-coordinator to create tasks manually for each Story
 ```
 
 **Output:** Summary message with full decomposition results
@@ -284,9 +284,9 @@ Users directly: "Decompose initiative: [initiative name]" or "Create epics and s
 ### Downstream
 
 After ln-200-scope-decomposer completes:
-- **ln-320-story-validator** - validates all created Stories before task creation
-- **ln-300-story-pipeline** - processes each Story (tasks → execution → Done)
-  - OR **ln-310-story-decomposer** - creates tasks manually for each Story
+- **ln-310-story-validator** - validates all created Stories before task creation
+- **ln-400-story-pipeline** - processes each Story (tasks → execution → Done)
+  - OR **ln-300-task-coordinator** - creates tasks manually for each Story
 
 ---
 
@@ -377,8 +377,8 @@ After ln-200-scope-decomposer completes:
    - Location: docs/tasks/kanban_board.md
 
    Next Steps:
-   1. Run ln-320-story-validator to validate all Stories
-   2. Use ln-300-story-pipeline to process each Story (tasks → execution → Done)
+   1. Run ln-310-story-validator to validate all Stories
+   2. Use ln-400-story-pipeline to process each Story (tasks → execution → Done)
    ```
 
 **Result:** 6 Epics + 36 Stories created through full pipeline automation
@@ -394,5 +394,5 @@ Use emoji prefix for visual differentiation:
 
 ---
 
-**Version:** 2.0.0 (BREAKING: Complete rewrite following ln-300 Pure Orchestrator Pattern. Removed Phase 1 User Confirmation. Removed false "AUTOMATIC" claims. Added Epic 0 for Infrastructure. Added Sequential Story Decomposition explanation. Added Critical Rules section. Realistic time estimates (2-3h). Removed REPLAN mode (not applicable to top orchestrator - use ln-210/ln-220 REPLAN modes instead).)
+**Version:** 2.0.0 (BREAKING: Complete rewrite following ln-400 Pure Orchestrator Pattern. Removed Phase 1 User Confirmation. Removed false "AUTOMATIC" claims. Added Epic 0 for Infrastructure. Added Sequential Story Decomposition explanation. Added Critical Rules section. Realistic time estimates (2-3h). Removed REPLAN mode (not applicable to top orchestrator - use ln-210/ln-220 REPLAN modes instead).)
 **Last Updated:** 2025-11-20

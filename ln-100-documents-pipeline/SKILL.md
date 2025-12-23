@@ -21,8 +21,8 @@ ln-100-documents-pipeline (L1 Top Orchestrator - this skill)
 ├── ln-130-tasks-docs-creator (L2 Worker)
 ├── ln-140-test-docs-creator (L2 Worker - optional)
 ├── ln-150-presentation-creator (L2 Worker)
-├── ln-160-docs-auditor (L2 Worker - optional)
-└── ln-170-code-comments-auditor (L2 Worker - optional)
+├── ln-600-docs-auditor (L2 Worker - optional)
+└── ln-610-code-comments-auditor (L2 Worker - optional)
 ```
 
 ## When to Use This Skill
@@ -446,8 +446,8 @@ Links:
 **5.1 Ask User**:
 ```
 📊 Documentation Audit Options:
-1. AUDIT DOCS: Run ln-160-docs-auditor (6 categories)
-2. AUDIT COMMENTS: Run ln-170-code-comments-auditor (6 categories)
+1. AUDIT DOCS: Run ln-600-docs-auditor (6 categories)
+2. AUDIT COMMENTS: Run ln-610-code-comments-auditor (6 categories)
 3. BOTH: Run both auditors
 4. SKIP: Continue to summary
 
@@ -456,10 +456,10 @@ Choose option (1/2/3/4): _
 
 **5.2 Run Selected Auditors**:
 - If AUDIT DOCS selected:
-  - **Invocation**: `Skill(skill: "ln-160-docs-auditor")` → AUTOMATIC
+  - **Invocation**: `Skill(skill: "ln-600-docs-auditor")` → AUTOMATIC
   - **Output**: Compliance Score X/10 per category + Findings
 - If AUDIT COMMENTS selected:
-  - **Invocation**: `Skill(skill: "ln-170-code-comments-auditor")` → AUTOMATIC
+  - **Invocation**: `Skill(skill: "ln-610-code-comments-auditor")` → AUTOMATIC
   - **Output**: Compliance Score X/10 per category + Findings
 
 **5.3 Show Audit Summary**:
@@ -558,10 +558,10 @@ project_root/
 1. **ln-100-documents-pipeline** (this skill) - Create complete documentation system
 2. **ln-210-epic-coordinator** - Decompose scope into Epics (Linear Projects)
 3. **ln-220-story-coordinator** - Create User Stories for each Epic (automatic decomposition + replan)
-4. **ln-310-story-decomposer** - Break down Stories into implementation tasks (automatic decomposition + replan)
-5. **ln-320-story-validator** - Verify Stories before development
-6. **ln-330-story-executor** - Orchestrate Story implementation
-7. **ln-340-story-quality-gate** - Review completed Stories
+4. **ln-300-task-coordinator** - Break down Stories into implementation tasks (automatic decomposition + replan)
+5. **ln-310-story-validator** - Verify Stories before development
+6. **ln-410-story-executor** - Orchestrate Story implementation
+7. **ln-500-story-quality-gate** - Review completed Stories
 
 ---
 
@@ -585,7 +585,7 @@ project_root/
 
 **When to use manual approach instead:**
 - Need only HTML rebuild → use [ln-150-presentation-creator](../ln-150-presentation-creator/SKILL.md)
-- Need one specific ADR/guide/manual → use [ln-321-best-practices-researcher](../ln-321-best-practices-researcher/SKILL.md)
+- Need one specific ADR/guide/manual → use [ln-002-best-practices-researcher](../ln-002-best-practices-researcher/SKILL.md)
 
 ---
 
@@ -669,8 +669,8 @@ Before completing work, verify ALL checkpoints:
 
 **✅ Documentation Audit (Phase 5 - if selected):**
 - [ ] User selected audit option (AUDIT DOCS / AUDIT COMMENTS / BOTH / SKIP)
-- [ ] If AUDIT DOCS: ln-160-docs-auditor invoked, compliance score displayed
-- [ ] If AUDIT COMMENTS: ln-170-code-comments-auditor invoked, compliance score displayed
+- [ ] If AUDIT DOCS: ln-600-docs-auditor invoked, compliance score displayed
+- [ ] If AUDIT COMMENTS: ln-610-code-comments-auditor invoked, compliance score displayed
 - [ ] Audit summary shown with scores per category
 
 **✅ Summary Displayed (Phase 6):**

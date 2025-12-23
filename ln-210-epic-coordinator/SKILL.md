@@ -469,7 +469,7 @@ Before completing work, verify ALL checkpoints:
 
 ## Reference Files
 
-- **linear_integration.md:** Discovery patterns + Linear API reference
+- **linear_integration.md:** Discovery patterns + Linear API reference (moved to `shared/templates/linear_integration.md`)
 - **epic_template_universal.md:** Epic template structure
 - **replan_workflow.md:** Complete REPLAN mode workflow (Phase 5b)
 
