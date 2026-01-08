@@ -102,20 +102,25 @@ Example 3: No duplication (skip warning)
 
 **Templates:** `task_template_implementation.md`, `refactoring_task_template.md`, `test_task_template.md`
 
-**Loading Logic (for each template based on taskType):**
-1. Check if `docs/templates/{template}.md` exists in target project
-2. IF NOT EXISTS: Copy from `shared/templates/{template}.md`
-3. Replace placeholders with project values:
-   - `{{TEAM_ID}}` → from `docs/tasks/kanban_board.md`
-   - `{{DOCS_PATH}}` → "docs" (standard)
-4. Use local copy (`docs/templates/{template}.md`) for all operations
-
 **Template Selection by taskType:**
 - `implementation` → `task_template_implementation.md`
 - `refactoring` → `refactoring_task_template.md`
 - `test` → `test_task_template.md`
 
-**Rationale:** Centralized templates in `shared/templates/` with project-specific copies ensure isolation and consistency across skills.
+**Loading Logic (for each template):**
+1. Check if `docs/templates/{template}.md` exists in target project
+2. IF NOT EXISTS:
+   a. Create `docs/templates/` directory if missing
+   b. Copy `shared/templates/{template}.md` → `docs/templates/{template}.md`
+   c. Replace placeholders in the LOCAL copy:
+      - `{{TEAM_ID}}` → from `docs/tasks/kanban_board.md`
+      - `{{DOCS_PATH}}` → "docs" (standard)
+3. Use LOCAL copy (`docs/templates/{template}.md`) for all operations
+
+**Rationale:** Templates are copied to target project on first use, ensuring:
+- Project independence (no dependency on skills repository)
+- Customization possible (project can modify local templates)
+- Placeholder replacement happens once at copy time
 
 ## Reference Files
 - Templates (centralized): `shared/templates/task_template_implementation.md`, `shared/templates/refactoring_task_template.md`, `shared/templates/test_task_template.md`

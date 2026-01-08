@@ -522,6 +522,39 @@ test('Payment creates order with correct total', async () => {
 ✅ **"Story has 5 tests, all test OUR business logic, all Priority ≥15"** → Justified and minimal
 ✅ **"Skipped 8 scenarios - all were framework/library behavior"** → Good filtering!
 
+## When New Tests Fail
+
+**Principle:** Test = specification. If test fails, first assume **CODE IS WRONG**.
+
+### Anti-Pattern: "Подгонка теста под результат"
+
+❌ **BAD:** Test fails → change assertion to match actual output
+```javascript
+// Test expected 100, got 90. BAD: Change to expect 90
+expect(result).toBe(90); // ← WRONG! Hiding bug in code
+```
+
+✅ **GOOD:** Test fails → investigate why code returns wrong value
+```javascript
+// Test expected 100, got 90. GOOD: Find bug in calculation
+// Bug found: missing 10% bonus in calculateTotal()
+expect(result).toBe(100); // ← Keep correct expectation, fix code
+```
+
+### Decision Matrix
+
+| Scenario | Test Correct? | Action |
+|----------|---------------|--------|
+| Expected 100, got 90, AC says "total with 10% bonus" | ✅ Yes | Fix code (missing bonus) |
+| Expected USD, got EUR, AC says "user's currency" | ❌ No | Fix test (wrong expectation) |
+| Expected array, got object, AC unclear | ❓ Uncertain | Query MCP Ref, ask user |
+
+### Mandatory MCP Query When Uncertain
+
+```
+ref_search_documentation(query="[domain] [operation] expected return type best practices")
+```
+
 ## References
 
 - Kent Beck, "Test Desiderata" (2018)

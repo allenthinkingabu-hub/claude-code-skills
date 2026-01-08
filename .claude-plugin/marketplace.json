@@ -36,6 +36,7 @@
         "./ln-220-story-coordinator",
         "./ln-221-story-creator",
         "./ln-222-story-replanner",
+        "./ln-230-story-prioritizer",
         "./ln-300-task-coordinator",
         "./ln-301-task-creator",
         "./ln-302-task-replanner",
@@ -67,8 +68,7 @@
         "./ln-632-test-e2e-priority-auditor",
         "./ln-633-test-value-auditor",
         "./ln-634-test-coverage-auditor",
-        "./ln-635-test-isolation-auditor",
-        "./ln-230-story-prioritizer"
+        "./ln-635-test-isolation-auditor"
       ]
     }
   ]

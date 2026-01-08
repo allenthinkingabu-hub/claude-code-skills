@@ -34,6 +34,35 @@ Runs a single Story final test task (label "tests") through implementation/execu
 - Docs/infra updates applied per task plan.
 - Task set to To Review; kanban moved; summary comment added with commands and coverage.
 
+## Test Failure Analysis Protocol
+
+**CRITICAL:** When a **newly written test** fails, STOP and analyze BEFORE changing anything.
+
+**Step 1: Verify Test Correctness**
+- Does test match AC requirements exactly? (Given/When/Then from Story)
+- Is expected value correct per business logic?
+- If uncertain: Query `ref_search_documentation(query="[domain] expected behavior")`
+
+**Step 2: Decision**
+| Test matches AC? | Action |
+|------------------|--------|
+| YES | **BUG IN CODE** → Fix implementation, not test |
+| NO | Test is wrong → Fix test assertion |
+| UNCERTAIN | **MANDATORY:** Query MCP Ref + ask user before changing |
+
+**Step 3: Document in Linear comment**
+"Test [name] failed. Analysis: [test correct / test wrong]. Action: [fixed code / fixed test]. Reason: [justification]"
+
+**RED FLAGS (require user confirmation):**
+- ⚠️ Changing assertion to match actual output ("make test green")
+- ⚠️ Removing test case that "doesn't work"
+- ⚠️ Weakening expectations (e.g., `toContain` instead of `toEqual`)
+
+**GREEN LIGHTS (safe to proceed):**
+- ✅ Fixing typo in test setup/mock data
+- ✅ Fixing code to match AC requirements
+- ✅ Adding missing test setup step
+
 ## Reference Files
 - Kanban format: `docs/tasks/kanban_board.md`
 

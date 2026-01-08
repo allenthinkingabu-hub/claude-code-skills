@@ -20,7 +20,8 @@ Manually verifies Story AC on running code and reports structured results for th
 1) Check if `tests/manual/` folder exists in project root
 2) If missing, create structure:
    - `tests/manual/config.sh` — shared configuration (BASE_URL, helpers, colors)
-   - `tests/manual/README.md` — folder documentation
+   - `tests/manual/README.md` — folder documentation (see README.md template below)
+   - `tests/manual/test-all.sh` — master script to run all test suites (see test-all.sh template below)
 3) If exists, read existing `config.sh` to reuse settings (BASE_URL, tokens)
 
 ### Phase 2: Create Story test script
@@ -31,6 +32,14 @@ Manually verifies Story AC on running code and reports structured results for th
    - Test function per AC + edge/error cases
    - Summary output (PASSED/FAILED/TOTAL)
 4) Make script executable (`chmod +x`)
+
+### Phase 2.5: Update Documentation
+1) Update `tests/manual/README.md`:
+   - Add new test to "Available Test Suites" table
+   - Include Story ID, AC covered, run command
+2) Update `tests/manual/test-all.sh`:
+   - Add call to new script in SUITES array
+   - Maintain execution order (00-setup first, then numbered suites)
 
 ### Phase 3: Execute and report
 1) Rebuild Docker containers (no cache), ensure healthy
@@ -49,13 +58,114 @@ Manually verifies Story AC on running code and reports structured results for th
 - Script must be idempotent (can rerun anytime).
 
 ## Definition of Done
-- `tests/manual/` structure exists (config.sh, README.md created if missing).
+- `tests/manual/` structure exists (config.sh, README.md, test-all.sh created if missing).
 - Test script created at `tests/manual/{NN}-{story-slug}/test-{story-slug}.sh`.
 - Script is executable and idempotent.
+- **README.md updated** with new test suite in "Available Test Suites" table.
+- **test-all.sh updated** with call to new script in SUITES array.
 - App rebuilt and running; tests executed.
 - Verdict and Linear comment posted with script path and rerun command.
 
 ## Script Templates
+
+### README.md (created once per project)
+
+```markdown
+# Manual Testing Scripts
+
+> **SCOPE:** Bash scripts for manual API testing. Complements automated tests with CLI-based workflows.
+
+## Quick Start
+
+```bash
+cd tests/manual
+./00-setup/create-account.sh  # (if auth required)
+./test-all.sh                 # Run ALL test suites
+```
+
+## Prerequisites
+
+- Docker containers running (`docker compose ps`)
+- jq installed (`apt-get install jq` or `brew install jq`)
+
+## Folder Structure
+
+```
+tests/manual/
+├── config.sh          # Shared configuration (BASE_URL, helpers, colors)
+├── README.md          # This file
+├── test-all.sh        # Run all test suites
+├── 00-setup/          # Account & token setup (if auth required)
+│   ├── create-account.sh
+│   └── get-token.sh
+└── {NN}-{topic}/      # Test suites by Story
+    └── test-{slug}.sh
+```
+
+## Available Test Suites
+
+<!-- Add new test suites here when creating new tests -->
+
+| Suite | Story | AC Covered | Run Command |
+|-------|-------|------------|-------------|
+| — | — | — | — |
+
+## Adding New Tests
+
+1. Create script in `{NN}-{topic}/test-{slug}.sh`
+2. **Update this README** (Available Test Suites table)
+3. **Update `test-all.sh`** (add to SUITES array)
+```
+
+### test-all.sh (created once per project)
+
+```bash
+#!/bin/bash
+# =============================================================================
+# Run all manual test suites
+# =============================================================================
+set -e
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/config.sh"
+
+echo "=========================================="
+echo "Running ALL Manual Test Suites"
+echo "=========================================="
+
+check_jq
+check_api
+
+# Setup (if exists)
+[ -f "$SCRIPT_DIR/00-setup/create-account.sh" ] && "$SCRIPT_DIR/00-setup/create-account.sh"
+[ -f "$SCRIPT_DIR/00-setup/get-token.sh" ] && "$SCRIPT_DIR/00-setup/get-token.sh"
+
+# Test suites (add new suites here)
+SUITES=(
+    # "01-auth/test-auth-flow.sh"
+    # "02-translation/test-translation.sh"
+)
+
+PASSED=0; FAILED=0
+for suite in "${SUITES[@]}"; do
+    echo ""
+    echo "=========================================="
+    echo "Running: $suite"
+    echo "=========================================="
+    if "$SCRIPT_DIR/$suite"; then
+        ((++PASSED))
+        print_status "PASS" "$suite"
+    else
+        ((++FAILED))
+        print_status "FAIL" "$suite"
+    fi
+done
+
+echo ""
+echo "=========================================="
+echo "TOTAL: $PASSED suites passed, $FAILED failed"
+echo "=========================================="
+[ $FAILED -eq 0 ] && exit 0 || exit 1
+```
 
 ### config.sh (created once per project)
 
