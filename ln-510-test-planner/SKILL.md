@@ -279,17 +279,16 @@ Skill(skill: "ln-510-test-planner", storyId: "US001")
 
 **Usage**: ln-510-test-planner uses this guide in Phase 4 (Risk-Based Test Planning)
 
-### test_task_template.md (MOVED)
+### test_task_template.md (CENTRALIZED)
 
 **Purpose**: Story finalizer task structure (11 sections: tests + fixes + infrastructure + docs + cleanup)
 
-**Location**: Moved to [ln-301-task-creator/references/test_task_template.md](../ln-301-task-creator/references/test_task_template.md)
+**Location**: `shared/templates/test_task_template.md` (centralized)
+**Local Copy**: `docs/templates/test_task_template.md` (in target project)
 
-**Ownership**: ln-301-task-creator (universal factory owns all product templates)
+**Rationale**: Templates centralized in `shared/templates/` with project-specific copies ensure isolation across skills.
 
-**Rationale**: Templates moved to universal factory (ln-301-task-creator) which creates ALL 3 task types (implementation, refactoring, test). ln-301-task-creator owns all product templates.
-
-**Usage**: Workers (ln-301-task-creator, ln-302-task-replanner) read this template when generating test task documents (via `taskType: "test"`)
+**Usage**: Workers (ln-301-task-creator, ln-302-task-replanner) load via Template Loading logic when generating test task documents (via `taskType: "test"`)
 
 ### linear_integration.md (Shared Reference)
 

@@ -1,12 +1,12 @@
 # Task Title
-<!-- Task Size Guideline: Optimal 3-5 hours development time (atomic, testable unit). Too small < 3h → combine with related work. Too large > 8h → decompose further. -->
+<!-- Task Size Guideline: Optimal 3-5 hours development time (atomic, testable unit). Too small < 3h -> combine with related work. Too large > 8h -> decompose further. -->
 <!-- SCOPE: Implementation tasks ONLY. DO NOT create new tests in this task.
-     New tests (E2E/Integration/Unit) are created separately by ln-510-test-planner after manual testing passes.
+     New tests (E2E/Integration/Unit) are created separately by test planner after manual testing passes.
      This task may update existing tests if implementation changes break them. -->
 
 **Epic:** [Epic N - Epic Name](link) *(optional)*
-**User Story:** [USXXX Story Name](link) *(parent task - this task will have parentId=USXXX)*
-**Related:** TEAM-XX, TEAM-YY
+**User Story:** [{{TEAM_ID}}XXX Story Name](link) *(parent task - this task will have parentId={{TEAM_ID}}XXX)*
+**Related:** {{TEAM_ID}}-XX, {{TEAM_ID}}-YY
 
 ---
 
@@ -139,7 +139,7 @@
 
 ### Documentation (REQUIRED in this task)
 - `README.md` - Feature documentation
-- `docs/api.md` - API updates
+- `{{DOCS_PATH}}/api.md` - API updates
 
 ---
 
@@ -150,7 +150,7 @@
 
 ### Tests to Update (ONLY Existing Tests Affected by This Task)
 **SCOPE:** ONLY list existing tests that break due to implementation changes (refactoring, logic updates).
-DO NOT create new tests here. New tests are created by ln-510-test-planner after manual testing.
+DO NOT create new tests here. New tests are created by test planner after manual testing.
 
 **Examples of valid updates:**
 - Mock/stub changes when function signatures change
@@ -160,7 +160,7 @@ DO NOT create new tests here. New tests are created by ln-510-test-planner after
 - `tests/path/test_file` - Why this existing test needs updates
 
 ### Documentation to Update
-- `docs/file.md` - Existing docs to update
+- `{{DOCS_PATH}}/file.md` - Existing docs to update
 
 ---
 
@@ -169,11 +169,22 @@ DO NOT create new tests here. New tests are created by ln-510-test-planner after
 - [ ] All acceptance criteria met
 - [ ] All existing code refactored (no backward compatibility / legacy code left)
 - [ ] All existing tests updated (if any were affected by implementation changes)
-- [ ] NO new tests created (new tests are in Story's final test task by ln-510-test-planner)
+- [ ] NO new tests created (new tests are in Story's final test task by test planner)
 - [ ] Documentation updated
 - [ ] Code reviewed
 
 ---
 
-**Template Version:** 7.0.0 (Added Error Handling Strategy + Logging Requirements sections)
-**Last Updated:** 2025-12-12
+## Template Placeholders
+
+When copying this template to a project, replace these placeholders:
+
+| Placeholder | Source | Example |
+|-------------|--------|---------|
+| `{{TEAM_ID}}` | docs/tasks/kanban_board.md | "API" |
+| `{{DOCS_PATH}}` | Standard path | "docs" |
+
+---
+
+**Template Version:** 8.0.0 (Moved to shared/templates/, added placeholders, removed skill-specific references)
+**Last Updated:** 2025-01-07

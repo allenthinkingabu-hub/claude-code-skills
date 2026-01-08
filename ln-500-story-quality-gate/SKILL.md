@@ -10,7 +10,7 @@ Two-pass Story review that fails fast, creates needed fix/refactor/test tasks, a
 ## Purpose & Scope
 - Pass 1 (after impl tasks Done): run code-quality, lint, regression, and manual testing; if all pass, create/confirm test task; otherwise create targeted fix/refactor tasks and stop.
 - Pass 2 (after test task Done): verify tests/coverage/priority limits and close Story to Done or create fix tasks.
-- Delegates work to 341/342/343 workers and ln-510-test-planner; invoked by ln-410-story-executor.
+- Delegates work to 341/342/343 workers and ln-510-test-planner; invoked by ln-400-story-executor.
 
 ## When to Use
 - Pass 1: all implementation tasks Done; test task missing or not Done.
@@ -29,7 +29,7 @@ Two-pass Story review that fails fast, creates needed fix/refactor/test tasks, a
   1) Load Story/test task; read test plan/results and manual testing comment from Pass 1.
   2) Verify limits and priority: Priority ≤15; E2E 2-5, Integration 0-8, Unit 0-15, total 10-28; tests focus on business logic (no framework/DB/library tests).
   3) Ensure Priority ≤15 scenarios and Story AC are covered by tests; infra/docs updates present.
-  4) If pass -> mark Story Done in Linear; minimal kanban cleanup if needed. If fail -> create fix tasks (Backlog) and stop; ln-410 will loop.
+  4) If pass -> mark Story Done in Linear; minimal kanban cleanup if needed. If fail -> create fix tasks (Backlog) and stop; ln-400 will loop.
 
 **TodoWrite format (mandatory):**
 Add pass steps to todos before starting:
@@ -49,7 +49,7 @@ Mark each as in_progress when starting, completed when done. On failure, mark re
 
 ## Critical Rules
 - Early-exit: any failure creates a specific task and stops Pass 1/2.
-- Single source of truth: rely on Linear metadata for tasks; kanban is updated by workers/ln-410.
+- Single source of truth: rely on Linear metadata for tasks; kanban is updated by workers/ln-400.
 - Task creation via skills only (ln-510/ln-301); this skill never edits tasks directly.
 - Pass 2 only runs when test task is Done; otherwise return error/status.
 - Language preservation in comments (EN/RU).

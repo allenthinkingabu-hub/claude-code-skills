@@ -15,9 +15,8 @@ Worker that re-syncs existing tasks to the latest requirements for any task type
 - Update Linear issues and kanban_board.md accordingly
 
 ## Invocation (who/when)
-- ln-300-task-coordinator: REPLAN mode when implementation tasks already exist.
-- ln-500-story-quality-gate: Refactoring task needs updates after new findings.
-- ln-510-test-planner: Test task needs updates after manual testing changes.
+- **ln-300-task-coordinator:** REPLAN mode when implementation tasks already exist.
+- **Orchestrators (other groups):** Replan refactoring or test tasks as needed.
 - Not user-invoked directly.
 
 ## Inputs
@@ -26,8 +25,27 @@ Worker that re-syncs existing tasks to the latest requirements for any task type
 - Refactoring: codeQualityIssues, refactoringPlan, affectedComponents.
 - Test: manualTestResults, testPlan (E2E 2-5, Integration 0-8, Unit 0-15, Priority ≤15), infra/doc/cleanup items.
 
+## Template Loading
+
+**Templates:** `task_template_implementation.md`, `refactoring_task_template.md`, `test_task_template.md`
+
+**Loading Logic (for each template based on taskType):**
+1. Check if `docs/templates/{template}.md` exists in target project
+2. IF NOT EXISTS: Copy from `shared/templates/{template}.md`
+3. Replace placeholders with project values:
+   - `{{TEAM_ID}}` → from `docs/tasks/kanban_board.md`
+   - `{{DOCS_PATH}}` → "docs" (standard)
+4. Use local copy (`docs/templates/{template}.md`) for all operations
+
+**Template Selection by taskType:**
+- `implementation` → `task_template_implementation.md`
+- `refactoring` → `refactoring_task_template.md`
+- `test` → `test_task_template.md`
+
+**Rationale:** Centralized templates in `shared/templates/` with project-specific copies ensure isolation and consistency across skills.
+
 ## Workflow (concise)
-1) Load templates per taskType from ln-301-task-creator/references and fetch full existing task descriptions.
+1) Load templates per taskType (see Template Loading) and fetch full existing task descriptions.
 2) Normalize both sides (IDEAL vs existing sections) and run replan algorithm to classify KEEP/UPDATE/OBSOLETE/CREATE.
 3) Present summary (counts, titles, key diffs). Confirmation required if running interactively.
 4) Execute operations in Linear: update descriptions, cancel obsolete, **create missing with state="Backlog"**, preserve parentId for updates.
@@ -57,7 +75,8 @@ Worker that re-syncs existing tasks to the latest requirements for any task type
 - Summary returned (KEEP/UPDATE/OBSOLETE/CREATE counts, URLs, warnings).
 
 ## Reference Files
-- Templates: `../ln-301-task-creator/references/task_template_implementation.md`, `../ln-301-task-creator/references/refactoring_task_template.md`, `../ln-301-task-creator/references/test_task_template.md`
+- Templates (centralized): `shared/templates/task_template_implementation.md`, `shared/templates/refactoring_task_template.md`, `shared/templates/test_task_template.md`
+- Local copies: `docs/templates/*.md` (in target project)
 - Replan algorithm: `references/replan_algorithm.md`
 - Kanban format: `docs/tasks/kanban_board.md`
 

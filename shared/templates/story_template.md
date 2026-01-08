@@ -63,13 +63,13 @@ Use **Given-When-Then** format:
 
 ## Implementation Tasks
 
-Tasks created separately (parentId → this Story):
-- [API-XX: Task Name](link) - Brief description
-- [API-YY: Task Name](link) - Brief description
+Tasks created separately (parentId -> this Story):
+- [{{TEAM_ID}}-XX: Task Name](link) - Brief description
+- [{{TEAM_ID}}-YY: Task Name](link) - Brief description
 
 > [!NOTE]
-> Order tasks Consumer → Service → Provider (API endpoint → Service → Repository → Database). Consumer Tasks may mock provider layers until implemented.
-> Test task is NOT created here — it will be added later by ln-510-test-planner after manual testing passes.
+> Order tasks Consumer -> Service -> Provider (API endpoint -> Service -> Repository -> Database). Consumer Tasks may mock provider layers until implemented.
+> Test task is NOT created here - it will be added later by test planner after manual testing passes.
 
 ---
 
@@ -77,8 +77,7 @@ Tasks created separately (parentId → this Story):
 
 > [!NOTE]
 > This section is intentionally **empty** at Story creation.
-> Tests are planned later by **ln-510-test-planner** after manual testing passes (ln-500-story-quality-gate Pass 1).
-> Reference: `ln-510-test-planner/references/risk_based_testing_guide.md`
+> Tests are planned later by **test planner** after manual testing passes (quality gate Pass 1).
 
 *Test planning deferred to execution phase.*
 
@@ -110,7 +109,7 @@ Tasks created separately (parentId → this Story):
 - [Standard/RFC]: [how Story complies - brief description, e.g., "RFC 6749 OAuth 2.0 - uses authorization code flow"]
 
 > [!NOTE]
-> This section populated by ln-220-story-coordinator Phase 0 (Library & Standards Research). Tasks reference these specifications in their Technical Approach sections.
+> This section populated by story coordinator during Library & Standards Research phase. Tasks reference these specifications in their Technical Approach sections.
 
 ### API Technical Aspects
 
@@ -152,11 +151,11 @@ Tasks created separately (parentId → this Story):
 - Security considerations
 
 ### Related Guides
-- [Guide XX: Pattern Name](../guides/guide_XXX_pattern_name.md) - [when to use this pattern]
-- [Guide YY: Pattern Name](../guides/guide_YYY_pattern_name.md) - [when to use this pattern]
+- [Guide XX: Pattern Name]({{DOCS_PATH}}/guides/guide_XXX_pattern_name.md) - [when to use this pattern]
+- [Guide YY: Pattern Name]({{DOCS_PATH}}/guides/guide_YYY_pattern_name.md) - [when to use this pattern]
 
 > [!NOTE]
-> Guide links inserted by ln-310-story-validator Phase 3 (auto-creates missing guides via ln-002-best-practices-researcher, then links them here).
+> Guide links inserted by story validator (auto-creates missing guides via best practices researcher, then links them here).
 
 ---
 
@@ -168,7 +167,7 @@ Tasks created separately (parentId → this Story):
 
 ### Testing
 - [ ] All implementation tasks completed
-- [ ] Test task created and completed (by ln-510-test-planner)
+- [ ] Test task created and completed (by test planner)
 - [ ] All tests passing
 
 ### Code Quality
@@ -193,5 +192,16 @@ Tasks created separately (parentId → this Story):
 
 ---
 
-**Template Version:** 8.0.0 (Added API Technical Aspects: Rate Limiting, Auth, Error Handling, Logging)
-**Last Updated:** 2025-12-12
+## Template Placeholders
+
+When copying this template to a project, replace these placeholders:
+
+| Placeholder | Source | Example |
+|-------------|--------|---------|
+| `{{TEAM_ID}}` | docs/tasks/kanban_board.md | "API" |
+| `{{DOCS_PATH}}` | Standard path | "docs" |
+
+---
+
+**Template Version:** 9.0.0 (Moved to shared/templates/, added placeholders, removed skill-specific references)
+**Last Updated:** 2025-01-07

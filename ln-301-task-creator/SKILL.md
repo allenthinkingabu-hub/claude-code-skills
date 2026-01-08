@@ -16,8 +16,7 @@ Worker that generates task documents and creates Linear issues for implementatio
 
 ## Invocation (who/when)
 - **ln-300-task-coordinator:** CREATE (no tasks) or ADD (appendMode) for implementation tasks.
-- **ln-500-story-quality-gate:** Create refactoring task when issues found.
-- **ln-510-test-planner:** Create final test task after manual testing.
+- **Orchestrators (other groups):** Create refactoring or test tasks as needed.
 - Never called directly by users.
 
 ## Inputs
@@ -45,7 +44,7 @@ Worker that generates task documents and creates Linear issues for implementatio
        ```
    - **IF no duplication** → Proceed without warning
    - Rationale: Prevents code duplication BEFORE implementation starts
-2) **Template select:** Read template from `references/` based on taskType.
+2) **Template select:** Load template based on taskType (see "Template Loading" section).
 3) **Generate docs:** Fill sections for each task in plan/request using provided data, guide links, and DRY warnings.
 4) **Validate type rules:** Stop with error if violation (see table below).
 5) **Preview:** Show titles/goals/estimates/AC/components, DRY warnings count, and totals.
@@ -99,8 +98,28 @@ Example 3: No duplication (skip warning)
 - kanban_board.md updated under correct Epic/Story with indentation.
 - Summary returned with URLs, totals, DRY warnings count, and next steps.
 
+## Template Loading
+
+**Templates:** `task_template_implementation.md`, `refactoring_task_template.md`, `test_task_template.md`
+
+**Loading Logic (for each template based on taskType):**
+1. Check if `docs/templates/{template}.md` exists in target project
+2. IF NOT EXISTS: Copy from `shared/templates/{template}.md`
+3. Replace placeholders with project values:
+   - `{{TEAM_ID}}` → from `docs/tasks/kanban_board.md`
+   - `{{DOCS_PATH}}` → "docs" (standard)
+4. Use local copy (`docs/templates/{template}.md`) for all operations
+
+**Template Selection by taskType:**
+- `implementation` → `task_template_implementation.md`
+- `refactoring` → `refactoring_task_template.md`
+- `test` → `test_task_template.md`
+
+**Rationale:** Centralized templates in `shared/templates/` with project-specific copies ensure isolation and consistency across skills.
+
 ## Reference Files
-- Templates (owned here): `references/task_template_implementation.md`, `references/refactoring_task_template.md`, `references/test_task_template.md`
+- Templates (centralized): `shared/templates/task_template_implementation.md`, `shared/templates/refactoring_task_template.md`, `shared/templates/test_task_template.md`
+- Local copies: `docs/templates/*.md` (in target project)
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---

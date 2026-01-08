@@ -76,7 +76,7 @@ Invoked by ln-220-story-coordinator (Phase 5a for CREATE, Phase 5c for ADD).
 
 ### Phase 1: Generate Story Documents
 
-Read `references/story_template_universal.md` (8 sections).
+Load story template (see "Template Loading" section) and use 8 sections.
 
 For EACH Story in IDEAL plan:
 
@@ -229,14 +229,28 @@ NEXT STEPS:
 - [ ] kanban_board.md updated (Backlog + Epic Story Counters)
 - [ ] Summary returned (URLs + next steps)
 
+## Template Loading
+
+**Template:** `story_template.md`
+
+**Loading Logic:**
+1. Check if `docs/templates/story_template.md` exists in target project
+2. IF NOT EXISTS: Copy from `shared/templates/story_template.md`
+3. Replace placeholders with project values:
+   - `{{TEAM_ID}}` → from `docs/tasks/kanban_board.md`
+   - `{{DOCS_PATH}}` → "docs" (standard)
+4. Use local copy (`docs/templates/story_template.md`) for all operations
+
+**Rationale:** Centralized templates in `shared/templates/` with project-specific copies ensure isolation and consistency across skills.
+
 ## Reference Files
 
-### story_template_universal.md
+### story_template.md
 
-**Location:** `references/` (owned by this skill)
+**Location:** `shared/templates/story_template.md` (centralized)
+**Local Copy:** `docs/templates/story_template.md` (in target project)
 **Purpose:** Universal Story template (8 sections)
-**Template Version:** 7.0.0
-**Usage:** ln-222-story-replanner reads from ln-221/references/ for UPDATE/CREATE operations
+**Template Version:** 9.0.0
 
 ## Integration
 

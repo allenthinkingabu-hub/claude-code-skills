@@ -119,7 +119,7 @@ Backlog/Postponed → Todo → In Progress → To Review → Done
 1. Implementation tasks (1-6 tasks) → To Review → Done
 2. ln-500-story-quality-gate Pass 1 → Manual testing
 3. ln-510-test-planner → Creates Story Finalizer test task
-4. ln-414-test-executor → Implements all tests (E2E, Integration, Unit)
+4. ln-404-test-executor → Implements all tests (E2E, Integration, Unit)
 
 **Rationale**: Atomic testing strategy, prevents test duplication, ensures comprehensive coverage.
 
@@ -238,11 +238,11 @@ Single hierarchical view: **Status → Epic → User Story → Tasks**
 | | ln-300-task-coordinator | Decompose Story → 1-6 Implementation Tasks |
 | | ln-510-test-planner | Plan Story Finalizer test task (after manual testing) |
 | **Validation** | ln-310-story-validator | Auto-fix Stories/Tasks → Approve (Backlog → Todo) |
-| **Execution** | ln-400-story-pipeline | Orchestrate Story execution (delegates to ln-41/ln-44/ln-42) |
-| | ln-410-story-executor | Execute implementation tasks (Todo → In Progress → To Review) |
-| | ln-414-test-executor | Execute Story Finalizer test tasks (11 sections) |
-| | ln-412-task-reviewer | Review tasks (To Review → Done/Rework) |
-| | ln-413-task-rework | Fix tasks after review (To Rework → To Review) |
+| **Execution** | ln-400-story-executor | Orchestrate Story execution (delegates to ln-401/ln-404/ln-402) |
+| | ln-401-task-executor | Execute implementation tasks (Todo → In Progress → To Review) |
+| | ln-404-test-executor | Execute Story Finalizer test tasks (11 sections) |
+| | ln-402-task-reviewer | Review tasks (To Review → Done/Rework) |
+| | ln-403-task-rework | Fix tasks after review (To Rework → To Review) |
 | **Quality** | ln-500-story-quality-gate | Two-pass review (Code Quality → Regression → Manual Testing) |
 | | ln-501-code-quality-checker | Analyze code for DRY/KISS/YAGNI violations |
 | | ln-502-regression-checker | Run existing test suite |

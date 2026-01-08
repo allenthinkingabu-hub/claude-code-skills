@@ -364,7 +364,7 @@ Mark each as in_progress when starting, completed when done.
 **Downstream:**
 - **ln-300-task-coordinator** - creates implementation tasks for each Story
 - **ln-310-story-validator** - validates Story structure/content
-- **ln-410-story-executor** - orchestrates task execution for Story
+- **ln-400-story-executor** - orchestrates task execution for Story
 
 ---
 

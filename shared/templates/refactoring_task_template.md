@@ -1,8 +1,8 @@
 # Task Title: Refactor [Component/Feature Name]
 
 **Epic:** [Epic N - Epic Name](link) *(optional)*
-**User Story:** [USXXX Story Name](link) *(parent task - this task will have parentId=USXXX)*
-**Related:** TEAM-XX, TEAM-YY
+**User Story:** [{{TEAM_ID}}XXX Story Name](link) *(parent task - this task will have parentId={{TEAM_ID}}XXX)*
+**Related:** {{TEAM_ID}}-XX, {{TEAM_ID}}-YY
 
 ---
 
@@ -12,7 +12,7 @@
 
 **Problems Found During Code Review:**
 
-Review conducted in ln-500-story-quality-gate Pass 1 identified the following code quality issues requiring refactoring.
+Review conducted in quality gate Pass 1 identified the following code quality issues requiring refactoring.
 
 **Current State:**
 - Code has quality issues (DRY/KISS/YAGNI/Architecture violations)
@@ -54,7 +54,7 @@ Review conducted in ln-500-story-quality-gate Pass 1 identified the following co
 ```
 
 **Benefits:**
-- [Benefit 1: e.g., "DRY: 45 lines → 21 lines (53% reduction)"]
+- [Benefit 1: e.g., "DRY: 45 lines -> 21 lines (53% reduction)"]
 - [Benefit 2: e.g., "Maintainability: Fix bugs once, not 3 times"]
 - [Benefit 3: e.g., "Testability: Unit test validator separately"]
 
@@ -135,13 +135,13 @@ Resolve all identified code quality issues while preserving 100% of existing fun
 ### Phase 1: Analysis & Preparation
 
 **Baseline Capture:**
-- [ ] Run existing test suite → Record pass/fail count (baseline for Phase 3)
+- [ ] Run existing test suite -> Record pass/fail count (baseline for Phase 3)
 - [ ] Document current behavior:
   - Take screenshots of key UI states (if UI changes)
   - Capture API responses for key endpoints (if backend changes)
   - Record timing benchmarks (if performance-sensitive)
 - [ ] Identify all affected tests:
-  - `rg "ClassName|functionName" tests/` → Find tests that exercise refactored code
+  - `rg "ClassName|functionName" tests/` -> Find tests that exercise refactored code
   - Review test files to understand test coverage
 - [ ] Create backup branch (git branch backup/refactor-[feature-name])
 
@@ -152,7 +152,7 @@ Resolve all identified code quality issues while preserving 100% of existing fun
 - [ ] Research KISS simplification (if applicable)
   - Query: "simplify [over-engineered pattern] [language]"
   - Find simpler alternatives to current implementation
-- [ ] Review project guides (CLAUDE.md, docs/guides/)
+- [ ] Review project guides (CLAUDE.md, {{DOCS_PATH}}/guides/)
   - Verify patterns referenced in Story Technical Notes
   - Ensure refactoring aligns with project standards
 
@@ -163,7 +163,7 @@ Resolve all identified code quality issues while preserving 100% of existing fun
 
 ### Phase 2: Refactoring Execution
 
-**Execute refactorings in priority order (HIGH → MEDIUM → LOW):**
+**Execute refactorings in priority order (HIGH -> MEDIUM -> LOW):**
 
 **Issue 1: [HIGH Priority]**
 - [ ] [Step 1: Specific action - e.g., "Create shared utility function in utils/validators.py"]
@@ -185,7 +185,7 @@ Resolve all identified code quality issues while preserving 100% of existing fun
 - Fix one issue at a time
 - Run tests after each fix (catch regressions immediately)
 - Commit after each successful fix (git commit -m "refactor: fix [issue]")
-- If any test fails → STOP, analyze, fix refactoring (not test)
+- If any test fails -> STOP, analyze, fix refactoring (not test)
 
 ### Phase 3: Regression Verification
 
@@ -194,7 +194,7 @@ Resolve all identified code quality issues while preserving 100% of existing fun
 - [ ] **Run test suite again:**
   - Compare with Phase 1 baseline
   - MUST match exactly (same pass/fail count, same test names)
-  - If ANY test fails → Refactoring introduced bug, MUST fix
+  - If ANY test fails -> Refactoring introduced bug, MUST fix
 
 - [ ] **Compare behavior with baseline:**
   - API responses MUST be identical (diff outputs)
@@ -221,8 +221,7 @@ Resolve all identified code quality issues while preserving 100% of existing fun
 ## Regression Testing Strategy
 
 > [!WARNING]
-
-> Refactoring NEVER changes functionality. If tests fail after refactoring → Implementation error.
+> Refactoring NEVER changes functionality. If tests fail after refactoring -> Implementation error.
 
 ### Baseline Capture (Phase 1)
 
@@ -256,17 +255,17 @@ pytest --benchmark-only > baseline_benchmarks.txt
 ### Verification Protocol (Phase 3)
 
 **Step 1: Test Suite Comparison**
-- Run test suite again → Compare with baseline
+- Run test suite again -> Compare with baseline
 - **Expected:** Exact match (same tests pass/fail)
 - **If mismatch:** STOP, analyze failure, fix refactoring
 
 **Step 2: Behavior Comparison**
-- Capture API responses again → Diff with baseline
+- Capture API responses again -> Diff with baseline
 - **Expected:** Identical responses (diff shows no changes)
 - **If different:** STOP, analyze, fix refactoring
 
 **Step 3: Performance Comparison**
-- Run benchmarks again → Compare with baseline
+- Run benchmarks again -> Compare with baseline
 - **Expected:** Within 5% of baseline timing
 - **If degraded >5%:** Analyze, optimize refactoring
 
@@ -298,15 +297,15 @@ pytest --benchmark-only > baseline_benchmarks.txt
 
 ## Code Simplification Principles
 
-Apply these principles during Phase 2 refactoring (from Claude Code PR Toolkit `code-simplifier` agent):
+Apply these principles during Phase 2 refactoring:
 
 ### 1. Preserve Functionality (HARD RULE)
 
 **Rule:** NEVER change what code does - only HOW it does it.
 
-- ❌ **Forbidden:** Change outputs, modify behavior, alter features
-- ✅ **Allowed:** Change structure, consolidate logic, rename variables
-- ✅ **Verification:** All existing tests MUST pass after refactoring
+- X **Forbidden:** Change outputs, modify behavior, alter features
+- V **Allowed:** Change structure, consolidate logic, rename variables
+- V **Verification:** All existing tests MUST pass after refactoring
 
 **Example:**
 ```python
@@ -344,12 +343,12 @@ function getUser(id: string): User | null { ... }
 ### 3. Enhance Clarity
 
 **Reduce complexity, improve readability:**
-- ✅ Reduce nesting (extract nested logic to functions)
-- ✅ Eliminate redundant code (DRY principle)
-- ✅ Clear names (intent-revealing variable/function names)
-- ✅ Consolidate related logic (group cohesive operations)
-- ✅ Remove unnecessary comments (self-documenting code)
-- ✅ Avoid nested ternaries (use switch/if-else for multiple conditions)
+- V Reduce nesting (extract nested logic to functions)
+- V Eliminate redundant code (DRY principle)
+- V Clear names (intent-revealing variable/function names)
+- V Consolidate related logic (group cohesive operations)
+- V Remove unnecessary comments (self-documenting code)
+- V Avoid nested ternaries (use switch/if-else for multiple conditions)
 
 **Example:**
 ```python
@@ -369,10 +368,10 @@ return user.data
 ### 4. Maintain Balance (DON'T Over-Simplify)
 
 **Avoid extreme simplification:**
-- ❌ Don't reduce clarity for brevity (explicit > compact)
-- ❌ Don't combine too many concerns (single responsibility)
-- ❌ Don't remove helpful abstractions
-- ❌ Don't prioritize "fewer lines" over readability
+- X Don't reduce clarity for brevity (explicit > compact)
+- X Don't combine too many concerns (single responsibility)
+- X Don't remove helpful abstractions
+- X Don't prioritize "fewer lines" over readability
 
 **Example:**
 ```javascript
@@ -389,17 +388,17 @@ return user.data;
 ### 5. Focus Scope
 
 **Only refactor what's in scope:**
-- ✅ Refactor code identified in Code Quality Issues section
-- ✅ Refactor closely related code (within same module/class)
-- ❌ Don't expand scope beyond identified issues
-- ❌ Don't refactor unrelated files
+- V Refactor code identified in Code Quality Issues section
+- V Refactor closely related code (within same module/class)
+- X Don't expand scope beyond identified issues
+- X Don't refactor unrelated files
 
 **Example:**
 ```
 Issue: Duplicate validation in api/routes/users.py and api/routes/auth.py
-✅ Refactor: Extract validation to utils/validators.py
-✅ Refactor: Update imports in both route files
-❌ Don't refactor: Other unrelated routes (outside scope)
+V Refactor: Extract validation to utils/validators.py
+V Refactor: Update imports in both route files
+X Don't refactor: Other unrelated routes (outside scope)
 ```
 
 ---
@@ -416,7 +415,7 @@ Issue: Duplicate validation in api/routes/users.py and api/routes/auth.py
 - [ ] **KISS:** Solutions simplified where possible (removed over-engineering)
 - [ ] **YAGNI:** No unused features remain (verified with grep/rg, dead code eliminated)
 - [ ] **Architecture:** Clean layer boundaries (no violations of project patterns)
-- [ ] **Guides:** Implementation aligns with project guides (CLAUDE.md, docs/guides/)
+- [ ] **Guides:** Implementation aligns with project guides (CLAUDE.md, {{DOCS_PATH}}/guides/)
 - [ ] **Regression:** All existing tests pass (Phase 3 verification successful)
 - [ ] **Behavior:** Functionality unchanged (manual testing confirms same behavior)
 - [ ] **Quality Gates:** Type checking + linting pass (no new warnings)
@@ -437,7 +436,7 @@ Issue: Duplicate validation in api/routes/users.py and api/routes/auth.py
 ### Documentation to Update
 - `README.md` - [What to update: e.g., "Remove references to old pattern"]
 - `ARCHITECTURE.md` - [What to update: e.g., "Update component diagram"]
-- `docs/guides/[guide].md` - [What to update: e.g., "Update code examples"]
+- `{{DOCS_PATH}}/guides/[guide].md` - [What to update: e.g., "Update code examples"]
 
 ---
 
@@ -460,7 +459,7 @@ Issue: Duplicate validation in api/routes/users.py and api/routes/auth.py
 ### Tests to Update (ONLY Existing Tests Affected)
 
 **SCOPE:** ONLY list existing tests that may break due to refactoring (signature changes, mock updates, etc.).
-DO NOT create new tests here. New tests were created in Story's final test task by ln-510-test-planner.
+DO NOT create new tests here. New tests were created in Story's final test task by test planner.
 
 **Examples of valid test updates:**
 - Mock/stub updates when function signatures change
@@ -473,7 +472,7 @@ DO NOT create new tests here. New tests were created in Story's final test task 
 - **Update Needed:** [Specific change - e.g., "Update mock to use new signature"]
 
 ### Documentation to Update
-- `docs/file.md` - [Existing docs to update - e.g., "Update architecture diagram"]
+- `{{DOCS_PATH}}/file.md` - [Existing docs to update - e.g., "Update architecture diagram"]
 - `README.md` - [What to update - e.g., "Remove references to deprecated pattern"]
 
 ---
@@ -511,5 +510,16 @@ DO NOT create new tests here. New tests were created in Story's final test task 
 
 ---
 
-**Template Version:** 2.0.0 (Expanded with Code Quality Issues, Refactoring Plan, Regression Testing Strategy, Code Simplification Principles)
-**Last Updated:** 2025-11-13
+## Template Placeholders
+
+When copying this template to a project, replace these placeholders:
+
+| Placeholder | Source | Example |
+|-------------|--------|---------|
+| `{{TEAM_ID}}` | docs/tasks/kanban_board.md | "API" |
+| `{{DOCS_PATH}}` | Standard path | "docs" |
+
+---
+
+**Template Version:** 3.0.0 (Moved to shared/templates/, added placeholders, removed skill-specific references)
+**Last Updated:** 2025-01-07

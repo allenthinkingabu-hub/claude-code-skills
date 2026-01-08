@@ -37,7 +37,7 @@ Analyzes Done implementation tasks for code-quality issues and reports findings 
 
 ## Reference Files
 - Guides: `docs/guides/`
-- Templates for context: `../ln-301-task-creator/references/task_template_implementation.md`
+- Templates for context: `shared/templates/task_template_implementation.md` (or local `docs/templates/` in target project)
 
 ---
 **Version:** 3.0.0 (Condensed worker flow)

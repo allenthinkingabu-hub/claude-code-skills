@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ln-330-story-executor - State Diagram</title>
+    <title>ln-400-story-executor - State Diagram</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <link rel="stylesheet" href="../shared/css/diagram.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🔄 ln-330-story-executor</h1>
+            <h1>🔄 ln-400-story-executor</h1>
             <p class="subtitle">Story Execution Orchestrator - State Diagram</p>
         </header>
 
@@ -20,7 +20,7 @@
                 <li><strong>Purpose:</strong> Orchestrate complete Story execution from tasks through quality gates to Story Done (FULL AUTOMATION)</li>
                 <li><strong>Priority Order:</strong> 🔴 To Review → 🟡 To Rework → 🟢 Todo (Phase 3 loop)</li>
                 <li><strong>Loop Control:</strong> Explicit LoopEntry/ReturnToLoop points with thick arrows (==>) for cycle clarity</li>
-                <li><strong>Phase 4 Delegation:</strong> ln-340-story-quality-gate Pass 1 (auto-verifies new tasks) → Pass 2 (auto-invoked after test task Done) → Story Done</li>
+                <li><strong>Phase 4 Delegation:</strong> ln-500-story-quality-gate Pass 1 (auto-verifies new tasks) → Pass 2 (auto-invoked after test task Done) → Story Done</li>
                 <li><strong>Key Feature:</strong> Lazy loading (metadata only in Phase 2, saves 10,000+ tokens)</li>
                 <li><strong>Self-Healing:</strong> Pass 1 creates fix/refactor/test task → auto-verifies (Backlog → Todo) → loops back to Phase 3</li>
                 <li><strong>Full Automation:</strong> Todo → In Progress → To Review → Done (no manual intervention)</li>
@@ -74,17 +74,17 @@ graph TD
         Phase3[Read kanban_board.md<br/>Count tasks by status]
 
         Phase3 --> Priority0{🔴 PRIORITY 0<br/>Has To Review?}
-        Priority0 -->|Yes| InvokeReviewer[[ln-332-task-reviewer<br/>via Skill tool]]
+        Priority0 -->|Yes| InvokeReviewer[[ln-402-task-reviewer<br/>via Skill tool]]
         InvokeReviewer -->|Task reviewed| ReloadAfterReview[Reload state]
         ReloadAfterReview ==> LoopEntry
 
         Priority0 -->|No| Priority1{🟡 PRIORITY 1<br/>Has To Rework?}
-        Priority1 -->|Yes| InvokeRework[[ln-333-task-rework<br/>via Skill tool]]
+        Priority1 -->|Yes| InvokeRework[[ln-403-task-rework<br/>via Skill tool]]
         InvokeRework -->|Task fixed| ReloadAfterRework[Reload state]
         ReloadAfterRework ==> LoopEntry
 
         Priority1 -->|No| Priority2{🟢 PRIORITY 2<br/>Has Todo?}
-        Priority2 -->|Yes| InvokeExecutor[[ln-331-task-executor<br/>or ln-334-test-executor<br/>via Skill tool]]
+        Priority2 -->|Yes| InvokeExecutor[[ln-401-task-executor<br/>or ln-404-test-executor<br/>via Skill tool]]
         InvokeExecutor -->|Task executed| ReloadAfterExec[Reload state]
         ReloadAfterExec ==> LoopEntry
 
@@ -97,12 +97,12 @@ graph TD
 
         Phase4Start[All implementation tasks Done]
 
-        Phase4Start --> InvokePass1[Invoke ln-340-story-quality-gate Pass 1<br/>via Skill tool]
+        Phase4Start --> InvokePass1[Invoke ln-500-story-quality-gate Pass 1<br/>via Skill tool]
         InvokePass1 --> Pass1Execution[Pass 1 executes:<br/>Code Quality → Regression → Manual Testing]
 
         Pass1Execution --> Pass1Verdict{Pass 1 Verdict?}
-        Pass1Verdict -->|Test task created| AutoVerifyTest[Auto-verify via ln-320-story-validator<br/>Backlog → Todo]
-        Pass1Verdict -->|Fix/refactor task created| AutoVerifyFix[Auto-verify via ln-320-story-validator<br/>Backlog → Todo]
+        Pass1Verdict -->|Test task created| AutoVerifyTest[Test task created in Backlog → Todo]
+        Pass1Verdict -->|Fix/refactor task created| AutoVerifyFix[Fix/refactor task created in Backlog → Todo]
 
         AutoVerifyTest --> LoopBackTest[GOTO Phase 3<br/>Execute test task]
         AutoVerifyFix --> LoopBackFix[GOTO Phase 3<br/>Execute fix/refactor task]
@@ -110,7 +110,7 @@ graph TD
         LoopBackTest -.->|Test task Done| InvokePass2
         LoopBackFix -.->|Fix Done| InvokePass1
 
-        InvokePass2[Update Story: In Progress → To Review<br/>Invoke ln-340-story-quality-gate Pass 2<br/>via Skill tool]
+        InvokePass2[Update Story: In Progress → To Review<br/>Invoke ln-500-story-quality-gate Pass 2<br/>via Skill tool]
         InvokePass2 --> Pass2Execution[Pass 2 executes:<br/>Test verification Priority ≥15]
 
         Pass2Execution --> Pass2Verdict{Pass 2 Verdict?}
@@ -159,17 +159,17 @@ graph TD
         <div class="info-box">
             <h3>🔍 Phase 4: Story Quality Delegation (Orchestrator-Worker Pattern)</h3>
             <ul>
-                <li><strong>Pass 1 Invocation:</strong> ln-330-story-executor delegates to ln-340-story-quality-gate Pass 1 (Code Quality → Regression → Manual Testing with Early Exit)</li>
-                <li><strong>Auto-Verification:</strong> New tasks (test/fix/refactor) created in Backlog are automatically verified by ln-320-story-validator (invoked via Skill tool)</li>
+                <li><strong>Pass 1 Invocation:</strong> ln-400-story-executor delegates to ln-500-story-quality-gate Pass 1 (Code Quality → Regression → Manual Testing with Early Exit)</li>
+                <li><strong>Task Creation:</strong> New tasks (test/fix/refactor) created by ln-500 in Backlog are moved to Todo for execution</li>
                 <li><strong>Loop Back:</strong> After auto-verification moves tasks to Todo, orchestration loop continues via Priority 2 (Todo execution)</li>
-                <li><strong>Pass 2 Invocation:</strong> When test task Done, Story status updates to To Review and ln-340-story-quality-gate Pass 2 is invoked automatically</li>
+                <li><strong>Pass 2 Invocation:</strong> When test task Done, Story status updates to To Review and ln-500-story-quality-gate Pass 2 is invoked automatically</li>
                 <li><strong>Story Done:</strong> Pass 2 verifies tests (Priority ≥15, 10-28 total), updates Story status to Done, workflow complete</li>
-                <li><strong>Self-Healing:</strong> Pass 2 failures create fix tasks in Backlog → ln-320-story-validator auto-verification → loop back to Phase 3</li>
+                <li><strong>Self-Healing:</strong> Pass 2 failures create fix tasks in Backlog → loop back to Phase 3 for execution</li>
             </ul>
         </div>
 
         <footer>
-            <p>ln-330-story-executor v6.0.0 | Full automation: Todo → In Progress → To Review → Done (no manual intervention)</p>
+            <p>ln-400-story-executor v6.0.0 | Full automation: Todo → In Progress → To Review → Done (no manual intervention)</p>
             <p>Diagram format: Mermaid.js | Orchestrator-Worker Pattern | Last updated: 2025-11-14</p>
         </footer>
     </div>

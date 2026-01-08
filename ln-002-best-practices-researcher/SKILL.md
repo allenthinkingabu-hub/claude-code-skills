@@ -16,7 +16,7 @@ Research industry standards and create project documentation in one workflow.
 - Return document path for linking in Stories/Tasks
 
 ## When to Use
-- ln-320-story-validator detects missing documentation
+- ln-310-story-validator detects missing documentation
 - Need to document a pattern, library, or decision
 - Replaces: ln-321-guide-creator, ln-322-adr-creator, ln-323-manual-creator
 

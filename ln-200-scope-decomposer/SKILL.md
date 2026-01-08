@@ -187,7 +187,7 @@ Initiative Decomposition Summary:
 
 Next Steps:
 1. Run ln-310-story-validator to validate all Stories
-2. Use ln-400-story-pipeline to process each Story (tasks → execution → Done)
+2. Use ln-400-story-executor to process each Story (tasks → execution → Done)
    OR use ln-300-task-coordinator to create tasks manually for each Story
 ```
 
@@ -285,7 +285,7 @@ Users directly: "Decompose initiative: [initiative name]" or "Create epics and s
 
 After ln-200-scope-decomposer completes:
 - **ln-310-story-validator** - validates all created Stories before task creation
-- **ln-400-story-pipeline** - processes each Story (tasks → execution → Done)
+- **ln-400-story-executor** - processes each Story (tasks → execution → Done)
   - OR **ln-300-task-coordinator** - creates tasks manually for each Story
 
 ---
@@ -378,7 +378,7 @@ After ln-200-scope-decomposer completes:
 
    Next Steps:
    1. Run ln-310-story-validator to validate all Stories
-   2. Use ln-400-story-pipeline to process each Story (tasks → execution → Done)
+   2. Use ln-400-story-executor to process each Story (tasks → execution → Done)
    ```
 
 **Result:** 6 Epics + 36 Stories created through full pipeline automation

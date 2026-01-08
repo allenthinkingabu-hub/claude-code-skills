@@ -8,6 +8,8 @@ Detailed rules for Story/Tasks structure, Story statement, and Acceptance Criter
 
 **Check:** Story description follows template structure with 8 sections in order
 
+**Penalty:** LOW (1 point)
+
 ⚠️ **Important:** Request FULL Story description from Linear (not truncated) to validate all 8 sections.
 
 **Required Sections (in order):**
@@ -15,7 +17,7 @@ Detailed rules for Story/Tasks structure, Story statement, and Acceptance Criter
 2. **Context** (Current Situation + Desired Outcome)
 3. **Acceptance Criteria** (Given-When-Then: Main Scenarios + Edge Cases + Error Handling)
 4. **Implementation Tasks** (List with links)
-5. **Test Strategy** (empty placeholder, testing planned by ln-510)
+5. **Test Strategy** (empty placeholder, testing planned separately)
 6. **Technical Notes** (Architecture Considerations + Integration Points + Performance & Security)
 7. **Definition of Done** (Functionality + Testing + Code Quality)
 8. **Dependencies** (Depends On + Blocks)
@@ -38,7 +40,7 @@ Detailed rules for Story/Tasks structure, Story statement, and Acceptance Criter
 4. Update Linear issue via `mcp__linear-server__update_issue`
 5. Add comment to Linear explaining changes
 
-**Template Reference:** [ln-220-story-coordinator/references/story_template_universal.md](../../ln-220-story-coordinator/references/story_template_universal.md)
+**Template Reference:** Story template (8 sections structure)
 
 **Skip Fix When:**
 - Story in Done/Canceled status
@@ -49,6 +51,8 @@ Detailed rules for Story/Tasks structure, Story statement, and Acceptance Criter
 ## Criterion #2: Tasks Structure (Template Compliance - EVERY Task)
 
 **Check:** All child Task descriptions follow template structure
+
+**Penalty:** LOW (1 point per Task)
 
 **Equally Critical:** This check is as important as Story validation (#1). EVERY Task must comply with task_template_implementation.md.
 
@@ -92,6 +96,8 @@ Detailed rules for Story/Tasks structure, Story statement, and Acceptance Criter
 
 **Check:** Clear, specific, user-focused (As a / I want / So that)
 
+**Penalty:** LOW (1 point)
+
 ✅ **GOOD:** "As a API client, I want to authenticate with OAuth2 tokens, So that users can securely access their data"
 ❌ **BAD:** "Improve authentication" (vague, no user context)
 
@@ -117,6 +123,8 @@ Detailed rules for Story/Tasks structure, Story statement, and Acceptance Criter
 ## Criterion #4: Acceptance Criteria (Testable, GWT Format)
 
 **Check:** Specific, testable, Given/When/Then format covering Story goal
+
+**Penalty:** MEDIUM (3 points)
 
 ✅ **GOOD:**
 - "Given valid OAuth2 token, When API request sent, Then user authenticated and data returned"
@@ -151,5 +159,5 @@ Detailed rules for Story/Tasks structure, Story statement, and Acceptance Criter
 
 ---
 
-**Version:** 1.0.0
-**Last Updated:** 2025-12-21
+**Version:** 2.0.0
+**Last Updated:** 2025-01-07

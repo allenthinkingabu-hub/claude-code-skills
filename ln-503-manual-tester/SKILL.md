@@ -148,8 +148,8 @@ echo "=========================================="
 
 ## Reference Files
 - Script format reference: prompsit-api `tests/manual/` (production example)
-- AC format: `../ln-510-test-planner/references/test_task_template.md`
-- Risk-based context: `../ln-510-test-planner/references/risk_based_testing_guide.md`
+- AC format: `shared/templates/test_task_template.md` (or local `docs/templates/` in target project)
+- Risk-based context: `ln-510-test-planner/references/risk_based_testing_guide.md`
 
 ---
 **Version:** 3.0.0 (Reusable scripts in tests/manual/, prompsit-api format)

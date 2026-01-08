@@ -147,7 +147,7 @@ chmod +x scripts/tmp_US001.sh
 
 **Purpose:** Re-run manual tests after refactoring/fixes without typing commands again.
 
-**Lifecycle:** Deleted by ln-414-test-executor Step 6 after E2E/Integration/Unit tests implemented.
+**Lifecycle:** Deleted by ln-404-test-executor Step 6 after E2E/Integration/Unit tests implemented.
 ```
 
 **Structure:**
@@ -214,7 +214,7 @@ chmod +x scripts/tmp_US001.sh
 
 **Purpose:** Re-run manual tests after refactoring/fixes without typing commands again.
 
-**Lifecycle:** Deleted by ln-414-test-executor Step 6 after E2E/Integration/Unit tests implemented.
+**Lifecycle:** Deleted by ln-404-test-executor Step 6 after E2E/Integration/Unit tests implemented.
 ```
 
 ---

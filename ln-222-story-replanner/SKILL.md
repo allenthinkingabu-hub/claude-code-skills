@@ -153,7 +153,7 @@ Type "confirm" to execute.
 **Sequence:** UPDATE → OBSOLETE → CREATE → Update kanban
 
 **UPDATE operations:**
-1. Generate new Story document (story_template_universal.md from ln-221/references/)
+1. Generate new Story document (load via Template Loading logic)
 2. Validate INVEST (same as ln-221-story-creator Phase 2)
 3. `update_issue(id, description=new_description)`
 4. Add comment: "Story updated: AC changed (AC5 added), Standards Research updated (RFC 7636)"
@@ -238,6 +238,20 @@ NEXT STEPS:
 - [ ] kanban_board.md updated
 - [ ] Summary returned (URLs + warnings)
 
+## Template Loading
+
+**Template:** `story_template.md`
+
+**Loading Logic:**
+1. Check if `docs/templates/story_template.md` exists in target project
+2. IF NOT EXISTS: Copy from `shared/templates/story_template.md`
+3. Replace placeholders with project values:
+   - `{{TEAM_ID}}` → from `docs/tasks/kanban_board.md`
+   - `{{DOCS_PATH}}` → "docs" (standard)
+4. Use local copy (`docs/templates/story_template.md`) for all operations
+
+**Rationale:** Centralized templates in `shared/templates/` with project-specific copies ensure isolation and consistency across skills.
+
 ## Reference Files
 
 ### replan_algorithm_stories.md
@@ -247,11 +261,12 @@ NEXT STEPS:
 **Contents:** KEEP/UPDATE/OBSOLETE/CREATE rules, Match criteria, Status constraints, Edge cases, Examples
 **Usage:** Applied in Phase 2
 
-### story_template_universal.md
+### story_template.md
 
-**Location:** `ln-221-story-creator/references/` (ln-221 ownership)
+**Location:** `shared/templates/story_template.md` (centralized)
+**Local Copy:** `docs/templates/story_template.md` (in target project)
 **Purpose:** Universal Story template (8 sections)
-**Usage:** Read when generating updated Story documents for UPDATE/CREATE operations
+**Usage:** Load via Template Loading logic when generating updated Story documents for UPDATE/CREATE operations
 
 ## Integration
 

@@ -1,5 +1,5 @@
 ---
-name: ln-411-task-executor
+name: ln-401-task-executor
 description: Executes implementation tasks (Todo -> In Progress -> To Review). Follows KISS/YAGNI, guides, quality checks. Not for test tasks.
 ---
 
@@ -12,11 +12,11 @@ Executes a single implementation (or refactor) task from Todo to To Review using
 - Follow task Technical Approach/plan/AC; apply KISS/YAGNI and guide patterns.
 - Update Linear/kanban for this task: Todo -> In Progress -> To Review.
 - Run typecheck/lint; update docs/tests/config per task instructions.
-- Not for test tasks (label "tests" goes to ln-414-test-executor).
+- Not for test tasks (label "tests" goes to ln-404-test-executor).
 
 ## Workflow (concise)
 1) **Load context:** Fetch full task description; read linked guides/manuals/ADRs; auto-discover team/config if needed.
-2) **Pick task:** If ID provided, use it; otherwise list Todo tasks and select one.
+2) **Receive task:** Get task ID from orchestrator (ln-400); load full task description.
 3) **Start work:** Update this task to In Progress in Linear; move it in kanban (keep Epic/Story indent).
 4) **Implement:** Follow checkboxes/plan; keep it simple; avoid hardcoded values; reuse existing components; add Task ID comment (`// See PROJ-123`) to new code blocks; update docs noted in Affected Components; update existing tests if impacted (no new tests here).
 5) **Quality:** Run typecheck and lint (or project equivalents); ensure instructions in Existing Code Impact are addressed.
@@ -38,7 +38,6 @@ Executes a single implementation (or refactor) task from Todo to To Review using
 - Task set to To Review; kanban moved to To Review; summary comment added.
 
 ## Reference Files
-- Task template: `../ln-301-task-creator/references/task_template_implementation.md`
 - Guides/manuals/ADRs: `docs/guides/`, `docs/manuals/`, `docs/adrs/`
 - Kanban format: `docs/tasks/kanban_board.md`
 

@@ -64,7 +64,7 @@ tests/
 **Workflow**:
 1. Implementation tasks completed → Manual testing → Bugs fixed
 2. ln-510-test-planner creates Story Finalizer test task
-3. ln-414-test-executor implements all tests (E2E/Integration/Unit) in final task
+3. ln-404-test-executor implements all tests (E2E/Integration/Unit) in final task
 4. All tests pass → Story marked Done
 
 ---

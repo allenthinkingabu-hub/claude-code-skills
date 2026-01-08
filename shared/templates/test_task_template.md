@@ -1,6 +1,6 @@
 # Tests for Story: [Story Title]
 
-**User Story:** [USXXX Story Name](link) *(parent task - this is the FINAL task of Story)*
+**User Story:** [{{TEAM_ID}}XXX Story Name](link) *(parent task - this is the FINAL task of Story)*
 **Epic:** [Epic N - Epic Name](link)
 
 ---
@@ -12,8 +12,8 @@
 
 ### Implemented Features
 List of completed implementation tasks in this Story:
-- [API-XX: Task Name](link) - What was implemented
-- [API-YY: Task Name](link) - What was implemented
+- [{{TEAM_ID}}-XX: Task Name](link) - What was implemented
+- [{{TEAM_ID}}-YY: Task Name](link) - What was implemented
 
 ### What to Test
 All business logic implemented across Story Tasks:
@@ -24,8 +24,6 @@ All business logic implemented across Story Tasks:
 ---
 
 ## Risk Priority Matrix
-
-**Reference:** See `risk_based_testing_guide.md` for detailed methodology
 
 **Priority Formula:** Priority = Business Impact (1-5) × Probability of Failure (1-5)
 
@@ -430,7 +428,7 @@ Before adding new tests, update existing tests that might have broken due to log
 
 **Entry to add:**
 ```markdown
-## [Version] - 2025-11-03
+## [Version] - YYYY-MM-DD
 
 ### Tested
 - [Feature/Story tested]
@@ -538,5 +536,15 @@ Before adding new tests, update existing tests that might have broken due to log
 
 ---
 
-**Template Version:** 3.0.0 (Added sections 8-11: Test Fixes + Infrastructure + Documentation + Cleanup)
-**Last Updated:** 2025-11-03
+## Template Placeholders
+
+When copying this template to a project, replace these placeholders:
+
+| Placeholder | Source | Example |
+|-------------|--------|---------|
+| `{{TEAM_ID}}` | docs/tasks/kanban_board.md | "API" |
+
+---
+
+**Template Version:** 4.0.0 (Moved to shared/templates/, added placeholders, removed skill-specific references)
+**Last Updated:** 2025-01-07

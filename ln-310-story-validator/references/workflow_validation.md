@@ -1,6 +1,67 @@
-# Workflow & Principles Validation (Criteria #9-#12)
+# Workflow Validation (Criteria #7-#13)
 
-Detailed rules for Story size, test cleanup, YAGNI, and KISS principles.
+Detailed rules for test strategy, documentation integration, Story size, test cleanup, YAGNI, KISS, and task order.
+
+---
+
+## Criterion #7: Test Strategy Section (Empty Placeholder)
+
+**Check:** Test Strategy section exists but is EMPTY (testing planned separately)
+
+**Penalty:** LOW (1 point)
+
+**GOOD:**
+```markdown
+## Test Strategy
+
+_Testing will be planned in final Task_
+```
+
+**BAD:**
+```markdown
+## Test Strategy
+
+Unit tests:
+- Test login() function
+- Test token validation
+```
+
+**Auto-fix actions:**
+1. Check if Test Strategy section exists
+2. IF missing -> Add empty section with placeholder
+3. IF contains content -> Clear content, add placeholder
+4. Update Linear issue via `mcp__linear-server__update_issue`
+
+**Rationale:** Test planner analyzes ALL implementation Tasks to create Risk-Based Test Plan. Premature test planning = incomplete coverage.
+
+---
+
+## Criterion #8: Documentation Integration (No Standalone Doc Tasks)
+
+**Check:** No separate Tasks for documentation - docs integrated into implementation Tasks
+
+**Penalty:** MEDIUM (3 points)
+
+**GOOD (Integrated):**
+```markdown
+1. **[Task] Implement OAuth 2.0 token endpoint**
+   - Definition of Done:
+     - [ ] Endpoint accepts grant_type parameter
+     - [ ] **API docs updated in docs/api/authentication.md**
+```
+
+**BAD (Separate Doc Tasks):**
+```markdown
+1. [Task] Implement OAuth endpoint
+2. [Task] Write API documentation  <- Separate doc task
+```
+
+**Auto-fix actions:**
+1. Identify standalone doc Tasks (keywords: "Write docs", "Update README", "Document API")
+2. IF found -> Remove and add doc requirement to related Task's Definition of Done
+3. Update Linear issue
+
+**Rationale:** Documentation should be created WITH implementation, not after.
 
 ---
 
@@ -8,171 +69,48 @@ Detailed rules for Story size, test cleanup, YAGNI, and KISS principles.
 
 **Check:** Story has 3-8 implementation Tasks (optimal decomposition)
 
-⚠️ **Important:** Task count indicates proper decomposition. Too few = monolithic, too many = over-decomposed.
+**Penalty:** MEDIUM (3 points)
 
-✅ **GOOD:**
-- 3 Tasks: Small feature (add API endpoint + validation + tests)
-- 5 Tasks: Medium feature (OAuth integration: DB schema + service + routes + middleware + tests)
-- 8 Tasks: Large feature (User management: models + CRUD + auth + permissions + profile + tests + docs + migration)
-
-❌ **BAD:**
-- 1-2 Tasks: Monolithic (entire feature in one Task)
-- 10+ Tasks: Over-decomposed (each file = separate Task)
-
-**Optimal Task Count by Complexity:**
+**Optimal Task Count:**
 
 | Complexity | Task Count | Example |
 |------------|------------|---------|
 | Simple | 3-4 | Add single endpoint with validation |
 | Medium | 5-6 | Integrate external service (OAuth, Stripe) |
-| Complex | 7-8 | Implement multi-step workflow (registration, checkout) |
+| Complex | 7-8 | Implement multi-step workflow |
 
 **Auto-fix actions:**
-1. Count implementation Tasks (exclude final test Task created by ln-510)
-2. IF <3 Tasks:
-   - Suggest decomposition: "Story too large - consider splitting into multiple Stories"
-   - Add comment to Linear: "Large Story detected - recommend decomposition"
-   - **DO NOT auto-split** (requires user decision)
-3. IF >8 Tasks:
-   - **INVOKE ln-300-task-coordinator** in REPLAN mode:
-     ```
-     Skill(skill="ln-300-task-coordinator",
-          args="story_id=[STORY_ID] mode=REPLAN")
-     ```
-   - ln-300 will:
-     - Build IDEAL plan with optimal task count (3-8)
-     - Delegate to ln-302-task-replanner to update existing Tasks
-     - Return summary with updated Task URLs
-   - Update kanban_board.md with new Task structure
-   - Add Linear comment: "Story decomposed via ln-300 - optimal task count achieved"
-4. Add comment: "Story size optimized - [N] Tasks (within 3-8 range)"
-
-**Example transformation:**
-
-**Before (Over-decomposed - 12 Tasks):**
-```markdown
-## Implementation Tasks
-
-1. Create User model
-2. Create User repository
-3. Create User service
-4. Create User controller
-5. Create GET /users route
-6. Create GET /users/:id route
-7. Create POST /users route
-8. Create PUT /users/:id route
-9. Create DELETE /users/:id route
-10. Add validation middleware
-11. Add error handling
-12. Write tests
-```
-
-**After (Consolidated - 5 Tasks):**
-```markdown
-## Implementation Tasks
-
-1. **[Task] User model + repository layer** - US-123-T1
-   - Create User model (schema, types)
-   - Implement repository (CRUD operations)
-
-2. **[Task] User service layer** - US-123-T2
-   - Business logic (validation, transformation)
-   - Error handling
-
-3. **[Task] User API endpoints** - US-123-T3
-   - Implement all 5 routes (GET, POST, PUT, DELETE)
-   - Request validation middleware
-
-4. **[Task] Integration tests** - US-123-T4
-   - E2E tests for all endpoints
-   - Error scenarios
-
-5. **[Task] Final test suite** - US-123-T5 (created by ln-510)
-```
-
-**Integration with ln-300:**
-- ln-310 invokes ln-300 when >8 Tasks detected
-- ln-300 builds IDEAL plan (Foundation-First order)
-- ln-300 delegates to ln-302 for existing Task updates
-- ln-310 receives summary and continues validation
-
-**Skip Fix When:**
-- Story in Done/Canceled status
-- User explicitly requested specific Task count
+1. Count implementation Tasks (exclude final test Task)
+2. IF <3 Tasks -> Add warning: "Story may need splitting"
+3. IF >8 Tasks -> Consolidate related Tasks
+4. Update Linear issue
 
 ---
 
 ## Criterion #10: Test Cleanup (No Premature Test Tasks)
 
-**Check:** No separate test Tasks BEFORE final Task (testing handled by ln-510 in final Task)
+**Check:** No separate test Tasks BEFORE final Task (testing handled separately)
 
-⚠️ **Critical:** Only ln-510-test-planner creates test Task as FINAL Task. No premature test Tasks allowed.
+**Penalty:** MEDIUM (3 points)
 
-✅ **GOOD:**
+**GOOD:**
 ```markdown
-## Implementation Tasks
-
-1. [Task] Implement login endpoint - US-123-T1
-2. [Task] Add token validation - US-123-T2
-3. [Task] Add rate limiting - US-123-T3
-4. [Task] Comprehensive test suite - US-123-T4 (ln-510 creates this)
+1. [Task] Implement login endpoint
+2. [Task] Add token validation
+3. [Task] Comprehensive test suite (created by test planner)
 ```
 
-❌ **BAD:**
+**BAD:**
 ```markdown
-## Implementation Tasks
-
-1. [Task] Implement login endpoint - US-123-T1
-2. [Task] Write unit tests for login - US-123-T2  ❌ Premature
-3. [Task] Add token validation - US-123-T3
-4. [Task] Write integration tests - US-123-T4  ❌ Premature
-5. [Task] Final test suite - US-123-T5
+1. [Task] Implement login endpoint
+2. [Task] Write unit tests for login  <- Premature
+3. [Task] Add token validation
 ```
 
 **Auto-fix actions:**
-1. Grep Implementation Tasks list for test-related keywords: "test", "spec", "e2e", "integration", "unit"
-2. IF test Task found BEFORE final Task:
-   - Remove premature test Tasks from list
-   - Add testing note to related implementation Task's Definition of Done
-3. Ensure ONLY final Task mentions comprehensive testing
-4. Update Linear issue via `mcp__linear-server__update_issue`
-5. Add comment: "Test Tasks consolidated - ln-510 will create comprehensive test plan in final Task"
-
-**Rationale:**
-- ln-510 analyzes ALL implementation Tasks to create Risk-Based Test Plan
-- Premature test Tasks = incomplete coverage (don't know all functionality yet)
-- Final comprehensive test Task covers all scenarios identified by ln-510
-
-**Example transformation:**
-
-**Before:**
-```markdown
-## Implementation Tasks
-
-1. [Task] Create User model - US-123-T1
-2. [Task] Unit tests for User model - US-123-T2  ❌
-3. [Task] Create User API - US-123-T3
-4. [Task] Integration tests for API - US-123-T4  ❌
-5. [Task] Final E2E tests - US-123-T5
-```
-
-**After:**
-```markdown
-## Implementation Tasks
-
-1. **[Task] Create User model** - US-123-T1
-   - Definition of Done includes: Model passes basic validation
-
-2. **[Task] Create User API** - US-123-T2
-   - Definition of Done includes: Endpoints return correct status codes
-
-3. **[Task] Comprehensive test suite** - US-123-T3 (ln-510 creates)
-   - Risk-based test plan covering all scenarios
-```
-
-**Skip Fix When:**
-- Story in Done/Canceled status
-- Final Task already created by ln-510
+1. Find test Tasks before final Task (keywords: "test", "spec", "e2e")
+2. IF found -> Remove and add testing note to related Task's DoD
+3. Update Linear issue
 
 ---
 
@@ -180,74 +118,34 @@ Detailed rules for Story size, test cleanup, YAGNI, and KISS principles.
 
 **Check:** Story scope limited to current requirements (no speculative features)
 
-⚠️ **CRITICAL:** YAGNI applies UNLESS Industry Standards (#16) require it. Standards override YAGNI.
+**Penalty:** MEDIUM (3 points)
+
+**CRITICAL:** YAGNI applies UNLESS Industry Standards (#5) require it. Standards override YAGNI.
 
 **YAGNI Hierarchy:**
 ```
-Level 1: Industry Standards (RFC, OWASP, REST) → CANNOT remove
-Level 2: Security Standards (Auth, Encryption) → CANNOT remove
-Level 3: YAGNI → Apply ONLY if no conflict with Level 1-2
+Level 1: Industry Standards (RFC, OWASP) -> CANNOT remove
+Level 2: Security Standards -> CANNOT remove
+Level 3: YAGNI -> Apply ONLY if no conflict with Level 1-2
 ```
 
-✅ **GOOD (Standards Override YAGNI):**
-- OAuth Story includes refresh token flow (RFC 6749 requires it, even if "not needed yet")
-- Error handling includes all HTTP status codes (RFC 7231 defines them, even if "won't use 451")
-- API includes CORS headers (Security standard, even if "no external clients yet")
+**GOOD (Standards Override YAGNI):**
+- OAuth includes refresh tokens (RFC 6749 requires, even if "not needed yet")
+- Error handling includes all HTTP codes (RFC 7231 defines them)
 
-✅ **GOOD (YAGNI Applies - No Standard):**
-- Login Story does NOT include social auth (GitHub, Google) if not required now
-- User API does NOT include export to CSV/PDF if not required now
-- Payment does NOT include multi-currency if only USD needed now
+**GOOD (YAGNI Applies):**
+- Login does NOT include social auth if not required now
+- API does NOT include GraphQL if REST sufficient
 
-❌ **BAD (Violates YAGNI - No Standard Justification):**
-- "Add support for 10 languages (only English needed now)" ❌
-- "Implement caching layer (no performance issue yet)" ❌
-- "Add GraphQL API (REST sufficient for now)" ❌
-
-❌ **BAD (Violates Standards by Invoking YAGNI):**
-- "Skip refresh tokens for simplicity" (violates RFC 6749) ❌
-- "Only return 200/500 errors for simplicity" (violates RFC 7231) ❌
-- "Use custom auth for simplicity" (violates OAuth RFC 6749) ❌
+**BAD (Violates Standards):**
+- "Skip refresh tokens for simplicity" (violates RFC 6749)
 
 **Auto-fix actions:**
-1. Parse Technical Notes → Identify speculative features (keywords: "future-proof", "might need", "prepare for", "in case")
-2. Check if feature required by Industry Standard:
-   - IF YES → Keep feature, add justification: "Required by [RFC/Standard]"
-   - IF NO → Remove feature, add TODO comment: "Future: [feature] when needed"
-3. Update Linear issue via `mcp__linear-server__update_issue`
-4. Add comment: "YAGNI applied - removed speculative features (or kept per RFC X)"
-
-**Example transformation:**
-
-**Before:**
-```markdown
-## Technical Notes
-
-### Architecture Considerations
-- Multi-tenant database (might need in future)
-- WebSocket support (in case of real-time requirements)
-- OAuth + SAML + LDAP (future-proof auth)
-```
-
-**After:**
-```markdown
-## Technical Notes
-
-### Architecture Considerations
-- Single-tenant database (current requirement)
-- REST API with polling (sufficient for now)
-- OAuth 2.0 only (RFC 6749 compliant, SAML/LDAP when needed)
-
-### Future Considerations (Not in Scope)
-- Multi-tenancy: Implement when second customer onboarded
-- Real-time: Add WebSocket when polling latency >5s
-- SAML/LDAP: Add when enterprise customers require SSO
-```
-
-**Skip Fix When:**
-- Feature required by RFC/OWASP/Industry Standard
-- Feature required by Security Standard
-- Story in Done/Canceled status
+1. Identify speculative features (keywords: "future-proof", "might need", "prepare for")
+2. Check if feature required by Standard:
+   - IF YES -> Keep feature, add justification
+   - IF NO -> Remove feature, add TODO comment
+3. Update Linear issue
 
 ---
 
@@ -255,82 +153,73 @@ Level 3: YAGNI → Apply ONLY if no conflict with Level 1-2
 
 **Check:** Solution uses simplest approach that meets requirements
 
-⚠️ **CRITICAL:** KISS applies UNLESS Industry Standards (#16) require complexity. Standards override KISS.
+**Penalty:** MEDIUM (3 points)
+
+**CRITICAL:** KISS applies UNLESS Industry Standards (#5) require complexity. Standards override KISS.
 
 **KISS Hierarchy:**
 ```
-Level 1: Industry Standards (RFC, OWASP, REST) → CANNOT simplify
-Level 2: Security Standards → CANNOT simplify
-Level 3: KISS → Apply ONLY if no conflict with Level 1-2
+Level 1: Industry Standards -> CANNOT simplify
+Level 2: Security Standards -> CANNOT simplify
+Level 3: KISS -> Apply ONLY if no conflict with Level 1-2
 ```
 
-✅ **GOOD (Standards Override KISS):**
-- OAuth 2.0 flow with grant_type, redirect_uri, state parameters (RFC 6749 requires, even if "complex")
-- Helmet.js with 11 security headers (OWASP requires, even if "seems excessive")
-- RESTful API with proper HTTP methods (REST principles require, even if "GET only simpler")
+**GOOD (Standards Override KISS):**
+- OAuth 2.0 with all required parameters (RFC 6749 requires)
+- Helmet.js with security headers (OWASP requires)
 
-✅ **GOOD (KISS Applies - No Standard):**
-- Use bcrypt for password hashing (simpler than Argon2, sufficient for most cases)
-- Use environment variables for config (simpler than Vault, sufficient for small apps)
-- Use SQLite for local dev (simpler than Docker Postgres)
+**GOOD (KISS Applies):**
+- Monolith instead of microservices (for small apps)
+- SQLite instead of PostgreSQL (for dev/small apps)
 
-❌ **BAD (Over-engineered - No Standard Justification):**
-- "Use microservices for 3-endpoint API" (monolith simpler, no scale requirement) ❌
-- "Use Kubernetes for single server" (Docker Compose simpler) ❌
-- "Use Redis caching before any performance issue" (in-memory simpler) ❌
-
-❌ **BAD (Violates Standards by Invoking KISS):**
-- "Use session cookies instead of JWT for simplicity" (violates stateless REST if API) ❌
-- "Skip HTTPS for simplicity" (violates OWASP, security standard) ❌
-- "Use MD5 for passwords for simplicity" (violates security standards) ❌
+**BAD (Over-engineered):**
+- "Microservices for 3-endpoint API" (no scale requirement)
+- "Kubernetes for single server" (Docker Compose sufficient)
 
 **Auto-fix actions:**
-1. Parse Technical Notes → Identify over-engineered solutions (keywords: "microservice", "kubernetes", "distributed", "event-driven")
+1. Identify over-engineered solutions (keywords: "microservice", "kubernetes", "distributed")
 2. Check if complexity justified by Standard:
-   - IF YES → Keep solution, add justification: "Required by [RFC/Standard]"
-   - IF NO → Simplify solution, suggest simpler alternative
-3. Evaluate if simpler alternative meets requirements:
-   - Monolith before microservices
-   - In-memory before Redis
-   - SQLite before PostgreSQL (for dev/small apps)
-4. Update Linear issue via `mcp__linear-server__update_issue`
-5. Add comment: "KISS applied - simplified solution (or kept per RFC X)"
+   - IF YES -> Keep, add justification
+   - IF NO -> Simplify, suggest alternative
+3. Update Linear issue
 
-**Example transformation:**
+---
 
-**Before:**
-```markdown
-## Technical Notes
+## Criterion #13: Foundation-First Task Order
 
-### Architecture Considerations
-- Microservices architecture (user-service, auth-service, notification-service)
-- Kubernetes deployment with 3 replicas per service
-- Redis for caching + RabbitMQ for messaging
-- Event-driven architecture with CQRS pattern
+**Check:** Tasks ordered bottom-up (Database -> Service -> API -> UI)
+
+**Penalty:** MEDIUM (3 points)
+
+**Correct Order:**
+```
+1. Database (schema, migrations, models)
+2. Repository (data access, ORM queries)
+3. Service (business logic, validation)
+4. API/Routes (controllers, endpoints)
+5. Middleware (auth, rate limiting)
+6. UI/Frontend (if applicable)
+7. Tests (final Task by test planner)
 ```
 
-**After (Simplified - No Scale Requirement):**
+**GOOD (Bottom-Up):**
 ```markdown
-## Technical Notes
-
-### Architecture Considerations
-- Monolithic Node.js/Express application (3 endpoints, <100 users)
-- Single Docker container deployment
-- In-memory caching (sufficient for <1000 req/min)
-- Direct function calls (no messaging needed for synchronous operations)
-
-### When to Scale
-- Microservices: When >5 teams working independently
-- Kubernetes: When >10 containers or multi-region deployment
-- Redis: When in-memory cache >1GB or multi-instance deployment
-- Messaging: When async operations >1000/min
+1. [Task] Database schema + migrations
+2. [Task] Service layer (business logic)
+3. [Task] API routes (controllers)
 ```
 
-**Skip Fix When:**
-- Complexity required by RFC/OWASP/Industry Standard
-- Complexity required by Security Standard
-- Scale requirements documented (>10,000 users, >1M req/day)
-- Story in Done/Canceled status
+**BAD (Top-Down):**
+```markdown
+1. [Task] API routes  <- Can't implement without service
+2. [Task] Database schema  <- Should be first
+```
+
+**Auto-fix actions:**
+1. Identify layer for each Task (keywords: "schema", "repository", "service", "route")
+2. Check if ordered bottom-up
+3. IF out of order -> Reorder Tasks
+4. Update Linear issue
 
 ---
 
@@ -338,46 +227,41 @@ Level 3: KISS → Apply ONLY if no conflict with Level 1-2
 
 **Order of Checks:**
 ```
-1. Industry Standards (#16) → CHECKED FIRST
-2. Security Standards → CHECKED SECOND
-3. KISS/YAGNI (#11-#12) → CHECKED LAST
+1. Industry Standards (#5) -> CHECKED FIRST
+2. Security Standards -> CHECKED SECOND
+3. KISS/YAGNI (#11-#12) -> CHECKED LAST
 ```
 
 **Decision Flow:**
 ```
-Does solution violate Industry Standard (RFC, OWASP, REST)?
-  → YES: Keep complex solution, add standard justification
-  → NO: Continue to KISS/YAGNI check
+Does solution violate Industry Standard?
+  -> YES: Keep complex solution, add justification
+  -> NO: Continue to KISS/YAGNI check
 
 Does simplified solution compromise security?
-  → YES: Keep complex solution, add security justification
-  → NO: Apply KISS/YAGNI simplification
+  -> YES: Keep complex solution
+  -> NO: Apply KISS/YAGNI simplification
 ```
-
-**Example Scenarios:**
 
 | Proposed Simplification | Standard Check | Decision |
 |-------------------------|----------------|----------|
-| "Skip refresh tokens" | RFC 6749 requires | ❌ REJECT - Keep refresh tokens |
-| "Use GET for mutations" | REST violates | ❌ REJECT - Use POST/PUT/DELETE |
-| "Skip CORS headers" | Security standard | ❌ REJECT - Keep CORS |
-| "Remove Redis caching" | No standard | ✅ ACCEPT - Use in-memory |
-| "Remove microservices" | No standard | ✅ ACCEPT - Use monolith |
-| "Remove Kubernetes" | No standard | ✅ ACCEPT - Use Docker Compose |
+| "Skip refresh tokens" | RFC 6749 requires | REJECT |
+| "Use GET for mutations" | REST violates | REJECT |
+| "Remove Redis caching" | No standard | ACCEPT |
+| "Remove microservices" | No standard | ACCEPT |
 
 ---
 
 ## Execution Notes
 
 **Sequential Dependency:**
-- Criteria #9-#12 depend on #5-#8 being completed first
-- Cannot apply YAGNI/KISS (#11-#12) until Industry Standards verified (#16)
-- Cannot check test cleanup (#10) until Tasks decomposed
+- Criteria #7-#13 depend on #1-#6 being completed first
+- Cannot apply YAGNI/KISS (#11-#12) until Standards verified (#5)
+- Cannot check task order (#13) until Tasks exist (#9)
 
 **Priority Enforcement:**
 - Industry Standards > Security > KISS/YAGNI
 - Never compromise standards for simplicity
-- Document standard justification for complex solutions
 
 **Linear Updates:**
 - Each criterion auto-fix updates Linear issue once
@@ -385,5 +269,5 @@ Does simplified solution compromise security?
 
 ---
 
-**Version:** 1.0.0
-**Last Updated:** 2025-12-21
+**Version:** 3.0.0
+**Last Updated:** 2025-01-07

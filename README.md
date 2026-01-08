@@ -2,13 +2,13 @@
 
 > A comprehensive collection of skills for Claude Code, providing end-to-end Agile workflow automation integrated with Linear for modern software development teams.
 
-![Version](https://img.shields.io/badge/version-3.0.0-blue) ![Skills](https://img.shields.io/badge/skills-52-green) ![Updated](https://img.shields.io/badge/updated-Dec%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
+![Version](https://img.shields.io/badge/version-3.0.0-blue) ![Skills](https://img.shields.io/badge/skills-51-green) ![Updated](https://img.shields.io/badge/updated-Dec%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
 
 ---
 
 ## 📖 About
 
-This repository contains **52 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From initial documentation to story execution and quality assurance, these skills work together to create a complete Agile development workflow.
+This repository contains **51 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From initial documentation to story execution and quality assurance, these skills work together to create a complete Agile development workflow.
 
 **What You Get:**
 - 🎯 **Complete Agile Workflow** - From Epic decomposition to task execution and review
@@ -129,28 +129,22 @@ Task planning and Story validation workflows. **ln-300-task-coordinator** decomp
 
 ### 4. Execution (4XX)
 
-**ln-400-story-pipeline** (Top Orchestrator) automates complete Story workflow from task planning to Done. Delegates to **ln-410-story-executor** for task execution with priority-based workflow (To Review → To Rework → Todo).
+**ln-400-story-executor** (Orchestrator) automates complete Story workflow with priority-based task execution (To Review → To Rework → Todo) and automatic quality gates delegation.
 
-**Top Orchestrator:**
-
-| Skill | Purpose | Version | Diagrams |
-|:------|:--------|:-------:|:--------:|
-| **[ln-400-story-pipeline](ln-400-story-pipeline/)** | **Top orchestrator** for complete Story processing workflow from task planning to Done. Delegates to ln-300-task-coordinator (Phase 2), ln-310-story-validator (Phase 3 Step 1), ln-410-story-executor (Phase 3 Step 2 with To Review → To Rework → Todo priorities) and explicitly drives ln-500-story-quality-gate Pass 1 + Pass 2. Looping workflow until Story status = Done. Full pipeline automation: Todo → In Progress → To Review → Done. | 3.0.0 | ✅ |
-
-**Story Executor (Orchestrator):**
+**Orchestrator:**
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-410-story-executor](ln-410-story-executor/)** | **Orchestrator** that orchestrates Story execution (Todo → In Progress → To Review → Done). **Priority 0: Backlog** (auto-verify new tasks before execution) → **Priority 1: To Review** → **Priority 2: To Rework** → **Priority 3: Todo**. Auto-invokes ln-500-story-quality-gate Pass 1 + Pass 2 (full automation). Phase 4 delegates Story quality to ln-500-story-quality-gate (Orchestrator-Worker Pattern). | 3.0.0 | ✅ |
+| **[ln-400-story-executor](ln-400-story-executor/)** | **Orchestrator** that orchestrates Story execution (Todo → In Progress → To Review → Done). **Priority 0: Backlog** (auto-verify new tasks before execution) → **Priority 1: To Review** → **Priority 2: To Rework** → **Priority 3: Todo**. Auto-invokes ln-500-story-quality-gate Pass 1 + Pass 2 (full automation). Phase 4 delegates Story quality to ln-500-story-quality-gate (Orchestrator-Worker Pattern). | 3.0.0 | ✅ |
 
 **Workers (Task Execution):**
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-411-task-executor](ln-411-task-executor/)** | Execute implementation tasks ONLY (Todo → In Progress → To Review). Uses KISS/YAGNI principles, reads guide links, runs type checking and linting. Story status management removed (now ln-410-story-executor's responsibility). NOT for test tasks. | 3.0.0 | ✅ |
-| **[ln-412-task-reviewer](ln-412-task-reviewer/)** | Review completed tasks for To Review → Done/Rework transition. Distinguishes test/implementation tasks. Checks architecture, docs, security, quality, and test coverage. | 3.0.0 | ✅ |
-| **[ln-413-task-rework](ln-413-task-rework/)** | Fix tasks marked To Rework. Analyzes feedback, applies fixes following KISS/YAGNI/DRY principles, runs quality gates (type checking, linting), and submits back To Review. | 3.0.0 | ✅ |
-| **[ln-414-test-executor](ln-414-test-executor/)** | Execute Story Finalizer test tasks (Todo → In Progress → To Review). E2E-first Risk-Based Testing (2-5 E2E, 3-8 Integration, 5-15 Unit). Includes test fixes, infrastructure, docs, and legacy cleanup. | 3.0.0 | ✅ |
+| **[ln-401-task-executor](ln-401-task-executor/)** | Execute implementation tasks ONLY (Todo → In Progress → To Review). Uses KISS/YAGNI principles, reads guide links, runs type checking and linting. Story status management removed (now ln-400-story-executor's responsibility). NOT for test tasks. | 3.0.0 | ✅ |
+| **[ln-402-task-reviewer](ln-402-task-reviewer/)** | Review completed tasks for To Review → Done/Rework transition. Distinguishes test/implementation tasks. Checks architecture, docs, security, quality, and test coverage. | 3.0.0 | ✅ |
+| **[ln-403-task-rework](ln-403-task-rework/)** | Fix tasks marked To Rework. Analyzes feedback, applies fixes following KISS/YAGNI/DRY principles, runs quality gates (type checking, linting), and submits back To Review. | 3.0.0 | ✅ |
+| **[ln-404-test-executor](ln-404-test-executor/)** | Execute Story Finalizer test tasks (Todo → In Progress → To Review). E2E-first Risk-Based Testing (2-5 E2E, 3-8 Integration, 5-15 Unit). Includes test fixes, infrastructure, docs, and legacy cleanup. | 3.0.0 | ✅ |
 
 ---
 
@@ -326,8 +320,8 @@ ln-330-story-executor
 1. ln-100-documents-pipeline → Create project documentation
 2. ln-210-epic-coordinator   → Decompose scope into Epics
 3. ln-220-story-coordinator  → Create Stories for an Epic (with library research)
-4. ln-400-story-pipeline     → Complete automation from task planning to Done
-   └─ Orchestrates: task decomposition → validation → execution → quality gates
+4. ln-400-story-executor     → Complete automation from task planning to Done
+   └─ Orchestrates: task execution → review → rework → quality gates
 ```
 
 **For manual step-by-step workflow and detailed usage, see [CLAUDE.md](CLAUDE.md).**

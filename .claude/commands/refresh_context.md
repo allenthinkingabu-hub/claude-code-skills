@@ -85,12 +85,11 @@ allowed-tools: Read, Edit
 - [ ] Read `ln-310-story-validator/SKILL.md` - auto-fix Stories/Tasks
 
 **When working with 4XX Execution:**
-- [ ] Read `ln-400-story-pipeline/SKILL.md` - L1 orchestrator
-- [ ] Read `ln-410-story-executor/SKILL.md` - L2 coordinator
-- [ ] Read `ln-411-task-executor/SKILL.md` - implementation tasks
-- [ ] Read `ln-412-task-reviewer/SKILL.md` - To Review -> Done/Rework
-- [ ] Read `ln-413-task-rework/SKILL.md` - fix tasks
-- [ ] Read `ln-414-test-executor/SKILL.md` - test tasks
+- [ ] Read `ln-400-story-executor/SKILL.md` - L1 orchestrator
+- [ ] Read `ln-401-task-executor/SKILL.md` - implementation tasks
+- [ ] Read `ln-402-task-reviewer/SKILL.md` - To Review -> Done/Rework
+- [ ] Read `ln-403-task-rework/SKILL.md` - fix tasks
+- [ ] Read `ln-404-test-executor/SKILL.md` - test tasks
 
 **When working with 5XX Quality:**
 - [ ] Read `ln-500-story-quality-gate/SKILL.md` - L2 coordinator
@@ -128,14 +127,14 @@ Context refreshed (Light mode - ~500 lines).
 
 **Project:** claude-code-skills - 52 skills for Claude Code, integrated with Linear.
 
-**Current Work:** Editing ln-410-story-executor skill (L2 coordinator).
+**Current Work:** Editing ln-400-story-executor skill (L1 orchestrator).
 
-**Next Steps:** Review ln-410-story-executor/SKILL.md, check orchestration logic.
+**Next Steps:** Review ln-400-story-executor/SKILL.md, check orchestration logic.
 
 **Load Recommendation:**
-- Load `ln-410-story-executor/SKILL.md` + `references/`
+- Load `ln-400-story-executor/SKILL.md` + `references/`
 - Load `docs/SKILL_ARCHITECTURE_GUIDE.md` (full) for Orchestrator-Worker Pattern
-- Load `ln-411-task-executor/SKILL.md` + `ln-414-test-executor/SKILL.md` (L3 workers)
+- Load `ln-401-task-executor/SKILL.md` + `ln-404-test-executor/SKILL.md` (L3 workers)
 ```
 
 ---
