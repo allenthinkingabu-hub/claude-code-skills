@@ -17,12 +17,13 @@ Manually verifies Story AC on running code and reports structured results for th
 ## Workflow
 
 ### Phase 1: Setup tests/manual structure
-1) Check if `tests/manual/` folder exists in project root
-2) If missing, create structure:
+1) **Read `docs/project/runbook.md`** — get Docker commands, API base URL, test prerequisites, environment setup
+2) Check if `tests/manual/` folder exists in project root
+3) If missing, create structure:
    - `tests/manual/config.sh` — shared configuration (BASE_URL, helpers, colors)
    - `tests/manual/README.md` — folder documentation (see README.md template below)
    - `tests/manual/test-all.sh` — master script to run all test suites (see test-all.sh template below)
-3) If exists, read existing `config.sh` to reuse settings (BASE_URL, tokens)
+4) If exists, read existing `config.sh` to reuse settings (BASE_URL, tokens)
 
 ### Phase 2: Create Story test script
 1) Fetch Story, parse AC into Given/When/Then list (3-5 expected)
@@ -262,5 +263,5 @@ echo "=========================================="
 - Risk-based context: `ln-510-test-planner/references/risk_based_testing_guide.md`
 
 ---
-**Version:** 3.0.0 (Reusable scripts in tests/manual/, prompsit-api format)
-**Last Updated:** 2025-12-23
+**Version:** 3.1.0 (Added mandatory runbook.md reading for Docker/API setup)
+**Last Updated:** 2026-01-09

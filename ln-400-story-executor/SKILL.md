@@ -104,8 +104,20 @@ Before starting any task execution, ensure working in correct branch:
 | Todo (impl) | ln-401-task-executor | `Use Skill tool: ln-401-task-executor` |
 | Quality Gate | ln-500-story-quality-gate | `Use Skill tool: ln-500-story-quality-gate` |
 
-**❌ NEVER:** Execute task implementation directly, do "Quick Review" manually, skip Skill tool.
-**✅ ALWAYS:** Use Skill tool to delegate, wait for worker completion, reload metadata after each worker.
+**❌ FORBIDDEN SHORTCUTS (Anti-Patterns):**
+- Running `mypy`/`ruff`/`pytest` directly instead of invoking ln-500/ln-501/ln-502
+- Doing "minimal quality check" and asking "Want me to run the full skill?"
+- Marking Quality Gate as "completed" in todo without actually invoking ln-500
+- Any "self-service" execution that bypasses Skill tool invocation
+- Partial workflow: "I ran linters, skipped manual testing" — NO, invoke full ln-500
+
+**✅ CORRECT BEHAVIOR:**
+- Use `Skill(skill: "ln-500-story-quality-gate")` — ALWAYS, NO EXCEPTIONS
+- Wait for skill completion before proceeding
+- Reload metadata after each skill invocation
+- If skill creates tasks → return to Phase 3 loop
+
+**ZERO TOLERANCE:** If you find yourself running commands (mypy, ruff, pytest) directly instead of invoking the appropriate skill, STOP immediately and use Skill tool instead.
 
 ## Definition of Done
 - Working in correct feature branch `feature/{story-id}-{story-slug}` (verified in Phase 1).
@@ -122,5 +134,5 @@ Before starting any task execution, ensure working in correct branch:
 - Auto-discovery: `CLAUDE.md`, `docs/tasks/kanban_board.md`
 
 ---
-**Version:** 3.1.0 (Added Git branch management - auto-create/switch to feature/{story-id}-{slug} branch)
-**Last Updated:** 2025-01-07
+**Version:** 3.2.0 (Added FORBIDDEN SHORTCUTS anti-patterns and ZERO TOLERANCE for self-service execution)
+**Last Updated:** 2026-01-09

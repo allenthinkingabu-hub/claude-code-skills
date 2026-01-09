@@ -47,6 +47,32 @@ Pass 2:
 ```
 Mark each as in_progress when starting, completed when done. On failure, mark remaining as skipped.
 
+## Worker Invocation (MANDATORY)
+
+> **CRITICAL:** All worker delegations MUST use Skill tool. DO NOT run linters/tests directly.
+
+| Step | Worker | How to Invoke |
+|------|--------|---------------|
+| Code Quality | ln-501-code-quality-checker | `Skill(skill: "ln-501-code-quality-checker")` |
+| Regression | ln-502-regression-checker | `Skill(skill: "ln-502-regression-checker")` |
+| Manual Testing | ln-503-manual-tester | `Skill(skill: "ln-503-manual-tester")` |
+| Test Planning | ln-510-test-planner | `Skill(skill: "ln-510-test-planner")` |
+
+**❌ FORBIDDEN SHORTCUTS (Anti-Patterns):**
+- Running `mypy`, `ruff`, `pytest` directly instead of invoking ln-501/ln-502
+- Doing "minimal quality check" (just linters) and skipping ln-503 manual testing
+- Asking user "Want me to run the full skill?" after doing partial checks
+- Marking steps as "completed" in todo without invoking the actual skill
+- Any command execution that should be delegated to a worker skill
+
+**✅ CORRECT BEHAVIOR:**
+- Use `Skill(skill: "ln-50X-...")` for EVERY step — NO EXCEPTIONS
+- Wait for each skill to complete before proceeding
+- If skill fails → create fix task → STOP (fail fast)
+- Never bypass skills with "I'll just run the command myself"
+
+**ZERO TOLERANCE:** If you find yourself running quality commands directly (mypy, ruff, pytest, curl) instead of invoking the appropriate skill, STOP and use Skill tool instead.
+
 ## Critical Rules
 - Early-exit: any failure creates a specific task and stops Pass 1/2.
 - Single source of truth: rely on Linear metadata for tasks; kanban is updated by workers/ln-400.
@@ -65,5 +91,5 @@ Mark each as in_progress when starting, completed when done. On failure, mark re
 - Tech stack/linters: `docs/project/tech_stack.md`
 
 ---
-**Version:** 3.0.0 (Condensed passes and fail-fast actions)
-**Last Updated:** 2025-12-23
+**Version:** 3.1.0 (Added Worker Invocation MANDATORY section with FORBIDDEN SHORTCUTS)
+**Last Updated:** 2026-01-09

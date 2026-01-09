@@ -15,10 +15,11 @@ Runs a single Story final test task (label "tests") through implementation/execu
 
 ## Workflow (concise)
 1) **Receive task:** Get task ID from orchestrator (ln-400); fetch full test task description; read linked guides/manuals/ADRs; review parent Story and manual test results if provided.
-2) **Validate plan:** Check Priority ≤15 and test count limits; ensure focus on business flows (no infra-only tests).
-3) **Start work:** Set task In Progress in Linear; move in kanban.
-4) **Implement & run:** Author/update tests per plan; reuse existing fixtures/helpers; run tests; fix failing existing tests; update infra/doc sections as required.
-5) **Complete:** Ensure counts/priority still within limits; set task To Review; move in kanban; add comment summarizing coverage, commands run, and any deviations.
+2) **Read runbook:** **Read `docs/project/runbook.md`** — understand test environment setup, Docker commands, test execution prerequisites. Use exact commands from runbook.
+3) **Validate plan:** Check Priority ≤15 and test count limits; ensure focus on business flows (no infra-only tests).
+4) **Start work:** Set task In Progress in Linear; move in kanban.
+5) **Implement & run:** Author/update tests per plan; reuse existing fixtures/helpers; run tests; fix failing existing tests; update infra/doc sections as required.
+6) **Complete:** Ensure counts/priority still within limits; set task To Review; move in kanban; add comment summarizing coverage, commands run, and any deviations.
 
 ## Critical Rules
 - Single-task only; no bulk updates.
@@ -67,5 +68,5 @@ Runs a single Story final test task (label "tests") through implementation/execu
 - Kanban format: `docs/tasks/kanban_board.md`
 
 ---
-**Version:** 3.0.0 (Condensed test executor with limits enforcement)
-**Last Updated:** 2025-12-23
+**Version:** 3.1.0 (Added mandatory runbook.md reading for test environment setup)
+**Last Updated:** 2026-01-09
