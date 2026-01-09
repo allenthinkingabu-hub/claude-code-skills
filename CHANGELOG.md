@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2025-12-23
 
-**BREAKING: Major skill renumbering** - Reorganized 52 skills into 6 balanced categories: 0XX Shared (ln-001, ln-002), 1XX Docs, 2XX Planning, 3XX Tasks, 4XX Execution, 5XX Quality, 6XX Audit. All renamed skills → v3.0.0. New: ln-230-story-prioritizer (RICE prioritization with market research). Key workflow: ln-400 → ln-300 → ln-310 → ln-410 → ln-500.
+**BREAKING: Major skill renumbering** - Reorganized 51 skills into 6 balanced categories: 0XX Shared (ln-001, ln-002), 1XX Docs, 2XX Planning, 3XX Tasks, 4XX Execution, 5XX Quality, 6XX Audit. All renamed skills → v3.0.0. New: ln-230-story-prioritizer (RICE prioritization with market research). Key workflow: ln-400 → ln-300 → ln-310 → ln-410 → ln-500.
 
 ---
 

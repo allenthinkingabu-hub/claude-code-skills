@@ -30,7 +30,7 @@ allowed-tools: Read, Edit
 **Essential context for orientation (~500 lines, ~15% context):**
 
 - [ ] Read `<ENTRY_FILE>` - repository rules, key concepts, versioning workflow
-- [ ] Read `README.md` (sections: Features tables, Key Concepts) - overview of 52 skills in 6 categories
+- [ ] Read `README.md` (sections: Features tables, Key Concepts) - overview of 51 skills in 6 categories
 - [ ] Read `docs/SKILL_ARCHITECTURE_GUIDE.md` (sections: TOC, Core Principles, Orchestrator-Worker Pattern)
 - [ ] Read `docs/DOCUMENTATION_STANDARDS.md` - industry best practices 2024-2025
 
@@ -56,7 +56,6 @@ allowed-tools: Read, Edit
 - [ ] Read `docs/DOCUMENTATION_STANDARDS.md` (159 lines)
 
 **When working with plugin/marketplace:**
-- [ ] Read `docs/PLUGIN_MARKETPLACE_GUIDE.md` (427 lines)
 - [ ] Read `.claude-plugin/marketplace.json` - skills list
 - [ ] Read `README.md` (section: Installation)
 
@@ -116,7 +115,7 @@ allowed-tools: Read, Edit
 After completing the refresh, respond with:
 
 1. **Status:** "Context refreshed (Light mode - ~500 lines)."
-2. **Project Summary:** "claude-code-skills - Collection of 52 skills for Claude Code in 6 categories (0XX Shared, 1XX Documentation, 2XX Planning, 3XX Task Management, 4XX Execution, 5XX Quality, 6XX Audit)."
+2. **Project Summary:** "claude-code-skills - Collection of 51 skills for Claude Code in 6 categories (0XX Shared, 1XX Documentation, 2XX Planning, 3XX Task Management, 4XX Execution, 5XX Quality, 6XX Audit)."
 3. **Current Work Type:** Identify current work type
 4. **Next Steps:** what to work on next
 5. **Load Recommendation:** which additional documents to load from "Deep Dive"
@@ -125,7 +124,7 @@ After completing the refresh, respond with:
 ```
 Context refreshed (Light mode - ~500 lines).
 
-**Project:** claude-code-skills - 52 skills for Claude Code, integrated with Linear.
+**Project:** claude-code-skills - 51 skills for Claude Code, integrated with Linear.
 
 **Current Work:** Editing ln-400-story-executor skill (L1 orchestrator).
 

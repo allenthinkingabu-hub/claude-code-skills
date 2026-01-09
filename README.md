@@ -225,16 +225,11 @@ Comprehensive audit system for documentation, code comments, codebase quality, a
 
 ## 📥 Installation
 
-### Choose Your Plugin
-
-Select the plugin that matches your team's needs:
+### Available Plugin
 
 | Plugin | Skills | Use Case | Dependencies |
 |--------|--------|----------|--------------|
-| **complete** ⭐ | 33 | Full workflow automation (docs + planning + execution) | Linear + Context7 + Ref |
-| **docs** | 10 | Documentation automation only | None (standalone) |
-| **planning** | 4 | Epic/Story decomposition | Linear + Context7 + Ref |
-| **execution** | 19 | Story execution pipeline | Linear + Context7 + Ref |
+| **full-development-workflow-skills** ⭐ | 51 | Complete Agile workflow (docs + planning + execution + quality + audit) | Linear + Context7 + Ref |
 
 ---
 
@@ -248,13 +243,8 @@ Choose your installation method:
 ```bash
 /plugin marketplace add levnikolaevich/claude-code-skills
 
-# Install complete plugin (recommended for most teams)
-/plugin install agile-linear-workflow-complete@agile-linear-workflow-marketplace
-
-# Or install specific plugin
-/plugin install agile-linear-workflow-docs@agile-linear-workflow-marketplace
-/plugin install agile-linear-workflow-planning@agile-linear-workflow-marketplace
-/plugin install agile-linear-workflow-execution@agile-linear-workflow-marketplace
+# Install the plugin (51 skills)
+/plugin install full-development-workflow-skills@levnikolaevich-skills-marketplace
 
 # Verify installation
 /skills
@@ -344,7 +334,7 @@ Before installation, ensure you have:
 
 **For Plugin installations (Method 1 or 2):**
 ```bash
-/plugin update agile-linear-workflow
+/plugin update full-development-workflow-skills
 ```
 
 **For Git Clone installation (Method 3):**

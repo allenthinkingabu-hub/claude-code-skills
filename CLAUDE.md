@@ -65,7 +65,7 @@ Four levels: Scope → Epics (ln-210) → Stories (ln-220) → RICE Prioritizati
 
 ## Skill Workflows
 
-All 52 skills documented in [README.md](README.md#-features) feature tables with workflows in each skill's SKILL.md file. Follow Orchestrator-Worker Pattern per [SKILL_ARCHITECTURE_GUIDE.md](docs/SKILL_ARCHITECTURE_GUIDE.md).
+All 51 skills documented in [README.md](README.md#-features) feature tables with workflows in each skill's SKILL.md file. Follow Orchestrator-Worker Pattern per [SKILL_ARCHITECTURE_GUIDE.md](docs/SKILL_ARCHITECTURE_GUIDE.md).
 
 ## Important Details
 
