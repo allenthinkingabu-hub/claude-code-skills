@@ -7,6 +7,12 @@
 <!-- SCOPE: UI/UX design system (typography, colors, spacing, grid), component library (buttons, forms, cards, navigation, modals), layout patterns (page templates), accessibility guidelines (WCAG AA, keyboard, ARIA), responsive behavior (breakpoints, adaptations), branding (logo, imagery, icons) ONLY. -->
 <!-- DO NOT add here: Technical implementation → tech_stack.md, React/Vue code examples → Task descriptions, API contracts → api_spec.md, State management → architecture.md, Performance optimization → runbook.md -->
 
+<!-- NO_CODE_EXAMPLES: Design guidelines document VISUAL CONTRACTS, not code implementations.
+     FORBIDDEN: JSX/HTML component code, CSS-in-JS implementations, React/Vue components, styled-components
+     ALLOWED: CSS class names as specifications (text-xl, bg-primary), spacing values (px-4, py-3), color hex codes, Tailwind utility references
+     Design tokens (colors, typography, spacing) ARE the contract - they specify WHAT, implementations live in code.
+     For component implementations → Task descriptions or component library code -->
+
 ---
 
 ## 1. Design Approach
@@ -347,5 +353,5 @@ Size variants: Small (px-4 py-2 text-sm), Medium (px-6 py-3 text-base), Large (p
 
 ---
 
-**Version:** 1.0.0
-**Template Last Updated:** 2025-11-16
+**Version:** 1.1.0 (Added NO_CODE_EXAMPLES rule. Design tokens ARE the contract, not code.)
+**Template Last Updated:** 2026-01-09

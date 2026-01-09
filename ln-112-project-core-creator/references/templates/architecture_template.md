@@ -9,6 +9,12 @@
 <!-- SCOPE: System architecture (arc42 structure), C4 diagrams (Context, Container, Component), runtime scenarios (sequence diagrams), crosscutting concepts (security, error handling, configuration), ADR references ONLY. -->
 <!-- DO NOT add here: Deployment procedures → runbook.md, Testing strategy → tests/README.md, Monitoring/Logging operations → runbook.md, Tech stack versions → tech_stack.md, API specs → api_spec.md, Database schema → database_schema.md, Design system → design_guidelines.md, Requirements → requirements.md -->
 
+<!-- NO_CODE_EXAMPLES: Architecture documentation describes DECISIONS and CONTRACTS, not implementations.
+     FORBIDDEN: Import statements, DI configuration, function bodies, code blocks > 5 lines
+     ALLOWED: Component responsibility tables, Mermaid diagrams, method signatures (1 line), ADR links
+     For implementation patterns → docs/reference/guides/
+     READ: shared/templates/DOCUMENTATION_RULES.md -->
+
 ---
 
 ## 1. Introduction and Goals
@@ -267,5 +273,5 @@ Localization/ | Resource files, culture management | Microsoft.Extensions.Locali
 
 ---
 
-**Version:** 4.0.0 (Added Infrastructure Layer guidance: Section 5.3 Infrastructure Components + Section 7.4 Data Access Pattern)
-**Template Last Updated:** 2025-11-18
+**Version:** 5.0.0 (Added NO_CODE_EXAMPLES rule. Architecture describes contracts, not implementations.)
+**Template Last Updated:** 2025-01-09

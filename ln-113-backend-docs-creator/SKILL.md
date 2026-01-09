@@ -80,6 +80,12 @@ For each applicable document:
 - **ER diagrams:** Generated in Mermaid erDiagram format
 - **Idempotent:** Never overwrite existing files
 
+### NO_CODE_EXAMPLES Rule (MANDATORY)
+API spec documents **contracts**, NOT implementations:
+- **ALLOWED in api_spec.md:** JSON request/response schemas (this IS the API contract), endpoint tables
+- **FORBIDDEN:** Controller implementations, validation classes, service code, middleware examples
+- **TEMPLATE RULE:** api_spec_template.md includes `<!-- NO_CODE_EXAMPLES: ... -->` tag - FOLLOW IT
+
 ## Definition of Done
 - Conditions checked (hasBackend, hasDatabase)
 - Applicable documents created
@@ -92,5 +98,5 @@ For each applicable document:
 - Questions: `references/questions_backend.md` (Q39-Q42)
 
 ---
-**Version:** 1.0.0
-**Last Updated:** 2025-12-19
+**Version:** 1.1.0 (Added NO_CODE_EXAMPLES rule. API spec documents contracts, not implementations.)
+**Last Updated:** 2025-01-09

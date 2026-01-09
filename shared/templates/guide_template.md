@@ -1,7 +1,19 @@
 # [Pattern Name]
 
-<!-- SCOPE: Pattern documentation ONLY. Contains principle (industry standard), implementation (project-specific), code structure patterns (DO/DON'T), sources. -->
-<!-- DO NOT add here: Architectural decisions -> ADR, Implementation code -> Task descriptions, Multiple patterns -> Separate guides, Requirements -> Requirements.md, API specs -> api_spec.md -->
+<!-- SCOPE: Pattern documentation using TABLES and brief descriptions ONLY.
+     Contains: principle (industry standard), implementation (project-specific), Do/Don't/When patterns, sources. -->
+<!-- DO NOT add here: Architectural decisions -> ADR, Multiple patterns -> Separate guides, Requirements -> Requirements.md, API specs -> api_spec.md -->
+
+<!-- NO_CODE_EXAMPLES: Guides document PATTERNS, not implementations.
+     FORBIDDEN: Full function implementations, class definitions, code blocks > 5 lines
+     ALLOWED: Do/Don't/When tables, method signatures (1 line), pseudocode (1-3 lines max)
+     INSTEAD OF CODE: Reference real code location, e.g., "See src/hooks/usePlan.ts:15-30"
+
+     CORRECT table content example:
+     | Call `invalidateQueries()` | Manually update cache | After POST/PUT/DELETE |
+
+     WRONG (too much code):
+     | useQuery({ queryKey: [...], queryFn: () => fetch(...) }) | fetch() in useEffect | ... | -->
 
 ## Principle
 
@@ -39,5 +51,5 @@
 
 ---
 
-**Guide Template Version:** 4.0.0 (Minimal Format)
-**Template Last Updated:** 2025-01-31
+**Guide Template Version:** 5.0.0 (Added NO_CODE_EXAMPLES rule with correct/wrong examples)
+**Template Last Updated:** 2025-01-09

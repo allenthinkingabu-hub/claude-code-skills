@@ -4,6 +4,11 @@
 
 <!-- SCOPE: Universal development principles for THIS project ONLY. Contains 9 core principles with rationale, Decision Framework, and Verification Checklist. NO implementation details (→ Architecture.md), NO project-specific requirements (→ Requirements.md), NO testing philosophy (→ docs/reference/guides/testing-strategy.md), NO code examples (keep language-agnostic). -->
 
+<!-- NO_CODE_EXAMPLES: Principles must be LANGUAGE-AGNOSTIC.
+     FORBIDDEN: Code snippets in any language, framework-specific examples
+     ALLOWED: Conceptual examples (✅/❌ format), decision tables, checklists
+     Principles apply to ANY tech stack (Python, TypeScript, C#, etc.) -->
+
 ---
 
 ## Core Principles
@@ -108,5 +113,5 @@ Before submitting code, verify compliance with principles:
 
 ---
 
-**Template Version:** 3.1.0 (Added principle #9: Auto-Generated Migrations Only)
-**Template Last Updated:** {{DATE}}
+**Template Version:** 3.2.0 (Added explicit NO_CODE_EXAMPLES tag for language-agnostic enforcement)
+**Template Last Updated:** 2025-01-09

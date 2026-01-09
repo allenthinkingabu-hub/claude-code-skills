@@ -8,6 +8,11 @@
 <!-- SCOPE: API endpoints (methods, paths, parameters, responses), authentication mechanisms (JWT, OAuth2, API keys), error codes (HTTP status + custom codes), rate limiting, API versioning ONLY. -->
 <!-- DO NOT add here: Database schema → database_schema.md, Tech stack versions → tech_stack.md, Architecture patterns → architecture.md, Requirements → requirements.md, Deployment → runbook.md, Design system → design_guidelines.md -->
 
+<!-- NO_CODE_EXAMPLES: API spec documents CONTRACTS (endpoints, schemas), not implementations.
+     ALLOWED: JSON request/response schemas (this IS the API contract), endpoint tables, error code tables
+     FORBIDDEN: Controller implementations, validation classes, service code, middleware examples
+     For implementation patterns → docs/reference/guides/ -->
+
 ---
 
 ## 1. API Overview
@@ -369,5 +374,5 @@ paths:
 
 ---
 
-**Version:** 1.0.0
-**Template Last Updated:** 2025-11-16
+**Version:** 2.0.0 (Added NO_CODE_EXAMPLES rule. API spec documents contracts, not implementations.)
+**Template Last Updated:** 2025-01-09

@@ -110,6 +110,13 @@ Return to coordinator:
 - **arc42 compliance:** ISO/IEC/IEEE 42010:2022 structure
 - **TBD markers:** Use `[TBD: X]` for missing data
 
+### NO_CODE_EXAMPLES Rule (MANDATORY)
+Documents describe **contracts and decisions**, NOT implementations:
+- **FORBIDDEN:** Code blocks > 5 lines, function implementations, imports, DI configuration
+- **ALLOWED:** Mermaid diagrams, component tables, method signatures (1 line), ADR links
+- **INSTEAD OF CODE:** Reference source: "See src/Services/UserService.cs:45"
+- **TEMPLATE RULE:** All templates include `<!-- NO_CODE_EXAMPLES: ... -->` tag - FOLLOW IT
+
 ## Definition of Done
 - Context Store received and validated
 - 3 core documents created (or skipped if exist)
@@ -123,5 +130,5 @@ Return to coordinator:
 - Questions: `references/questions_core.md` (Q23-Q38)
 
 ---
-**Version:** 2.0.0 (MAJOR: Added LEGACY_CONTENT handling for architecture.md, requirements.md, tech_stack.md. Uses legacy content from migration as base. Priority: Legacy > Auto-discovery > Template defaults.)
-**Last Updated:** 2025-12-19
+**Version:** 2.1.0 (Added NO_CODE_EXAMPLES rule. Documents describe contracts, not implementations.)
+**Last Updated:** 2025-01-09

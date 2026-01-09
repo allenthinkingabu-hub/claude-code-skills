@@ -406,6 +406,13 @@ docs/
 - **Idempotent**: ✅ Can run multiple times safely (checks existence before creation)
 - **Separation of concerns**: CREATE → SMART DOCS → VALIDATE STRUCTURE → VALIDATE CONTENT
 
+### NO_CODE_EXAMPLES Rule (MANDATORY for Guides)
+Guides document **patterns**, NOT implementations:
+- **FORBIDDEN:** Full function implementations, code blocks > 5 lines
+- **ALLOWED:** Do/Don't/When tables, method signatures (1 line), pseudocode (1-3 lines)
+- **INSTEAD OF CODE:** Reference source location: "See src/hooks/usePlan.ts:15-30"
+- **TEMPLATE RULE:** guide_template.md includes `<!-- NO_CODE_EXAMPLES: ... -->` tag - FOLLOW IT
+
 ---
 
 ## Prerequisites
@@ -468,5 +475,5 @@ Before completing work, verify ALL checkpoints:
 
 ---
 
-**Version:** 8.0.0 (MAJOR: Added Phase 2 Smart Document Creation. Creates ADRs/Guides/Manuals based on TECH_STACK from Context Store. Only justified documents - nontrivial choices with alternatives. Receives context_store from ln-100 via ln-110.)
-**Last Updated:** 2025-12-19
+**Version:** 8.1.0 (Added NO_CODE_EXAMPLES rule for guides. Documents describe patterns using tables, not code.)
+**Last Updated:** 2025-01-09
