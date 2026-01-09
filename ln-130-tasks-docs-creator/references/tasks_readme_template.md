@@ -200,8 +200,8 @@ Single hierarchical view: **Status → Epic → User Story → Tasks**
 **Status-Specific Limits:**
 - **Backlog:** All stories (tasks optional, use `_(tasks not created yet)_` if none)
 - **Todo/In Progress/To Review/To Rework:** All stories with all tasks
-- **Done:** Maximum 5 tasks total across all stories (show most recent)
-- **Postponed:** All stories with all tasks
+- **Done:** Last 5 stories ONLY (no tasks - removed from tracking after completion)
+- **Postponed:** Stories ONLY (no tasks - tasks created when work resumes)
 
 **Rationale:**
 - Single view eliminates need to "jump" between sections

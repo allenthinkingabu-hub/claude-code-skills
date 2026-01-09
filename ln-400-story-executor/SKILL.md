@@ -17,6 +17,45 @@ Executes a Story end-to-end by looping through its tasks in priority order and d
 - Story is Todo or In Progress and has implementation/refactor/test tasks to finish.
 - Need automated orchestration through To Review and quality gates.
 
+## Plan Mode Support
+
+When invoked in **Plan Mode** (agent cannot execute actions), this skill operates differently:
+
+**Phase 1-2:** Same as normal mode (Discovery + Load metadata)
+
+**Phase 3 (Plan Mode only):** Instead of executing, generate execution plan:
+
+1) Build task execution sequence by priority (To Review → To Rework → Todo)
+2) For each task, show:
+   - Task ID, Title, current Status
+   - Worker to be invoked (ln-401/ln-402/ln-403/ln-404)
+   - Expected status after worker
+3) Include Quality Gate phases (ln-500 Pass 1/Pass 2)
+4) Write plan to plan file (if available)
+5) Call ExitPlanMode for user approval
+
+**Plan Output Format:**
+
+```
+## Execution Plan for Story {STORY-ID}: {Title}
+
+### Tasks ({N} total)
+
+| # | Task ID | Title | Status | Executor | Reviewer |
+|---|---------|-------|--------|----------|----------|
+| 1 | {ID} | {Title} | {Status} | ln-40X | ln-402 |
+
+### Sequence
+
+1. [Execute] {Task-1} via ln-401-task-executor
+2. [Review] {Task-1} via ln-402-task-reviewer
+...
+N. [Quality Gate Pass 1] via ln-500-story-quality-gate
+N+1. [Quality Gate Pass 2] → Story Done
+```
+
+**After approval:** User exits Plan Mode, invokes skill again → normal execution.
+
 ## Workflow (concise)
 - **Phase 1 Discovery:** Auto-discover Team ID/config from kanban_board.md + CLAUDE.md. Check current git branch: if not `feature/{story-id}-{story-slug}`, create/switch to it.
 - **Phase 2 Load:** Fetch Story metadata and all child task metadata via `list_issues(parentId=Story.id)` (ID/title/status/labels only). Summarize counts (e.g., "2 To Review, 1 To Rework, 3 Todo"). **NO analysis** — proceed immediately to Phase 3.

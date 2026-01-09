@@ -28,7 +28,7 @@ Reviews a single task in To Review and decides Done vs To Rework with immediate 
 4) **Decision:**  
    - If only nits: apply minor fixes and set Done.  
    - If issues remain: set To Rework with comment explaining why (best-practice ref) and how to fix.
-5) **Update:** Set task status (Done or To Rework) in Linear; move task in kanban accordingly; add review comment with findings/actions.
+5) **Update:** Set task status in Linear; update kanban: if Done → **remove task from kanban** (Done section tracks Stories only, not individual Tasks); if To Rework → move task to To Rework section; add review comment with findings/actions.
 
 ## Critical Rules
 - One task at a time; do not touch others.
@@ -36,12 +36,13 @@ Reviews a single task in To Review and decides Done vs To Rework with immediate 
 - Keep language of the task (EN/RU) in comments/edits.
 - If test-task limits/priority violated -> To Rework with guidance.
 - Never leave task Done if any unresolved issue exists.
+- **Kanban Done section:** Contains Stories only, NOT Tasks. When Task → Done, remove it from kanban entirely.
 
 ## Definition of Done
 - Task and parent Story fully read; type identified.
 - Review checklist completed; docs/tests/config verified.
 - Decision applied: Done (minor fixes applied) or To Rework (issues + fix guidance).
-- Linear status and kanban updated for this task; review comment posted with reasons and suggested fixes.
+- Linear status updated; kanban updated (if Done → task removed from kanban; if To Rework → task moved to To Rework section); review comment posted.
 
 ## Reference Files
 - Kanban format: `docs/tasks/kanban_board.md`

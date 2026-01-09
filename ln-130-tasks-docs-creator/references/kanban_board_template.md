@@ -67,6 +67,8 @@
 
 **Important:** Stories without tasks are ONLY allowed in Backlog/Postponed statuses with note: `_(tasks not created yet)_`
 
+**Critical:** Done and Postponed sections contain ONLY Stories (no Tasks). Tasks are removed from kanban when their Story moves to Done/Postponed.
+
 ### Backlog
 
 **Epic 0: Common Tasks**
@@ -108,30 +110,27 @@
   📖 [[TEAM_KEY]-XX: US002 Approved Story Title](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX) ✅ APPROVED
     - [[TEAM_KEY]-XX: EP1_02 Task Needing Fixes](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX)
 
-### Done (Last 5 tasks)
+### Done (Last 5 stories)
 
 **Epic 0: Common Tasks**
 
-  📖 [[TEAM_KEY]-XX: US001 Completed Story](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX) ✅ DONE
-    - [[TEAM_KEY]-XX: EP0_01 Completed Task 1](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX)
-    - [[TEAM_KEY]-XX: EP0_02 Completed Task 2](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX)
+  📖 [[TEAM_KEY]-XX: US001 Completed Story](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX) ✅ DONE (YYYY-MM-DD)
 
 **Epic 1: Example Feature Area**
 
-  📖 [[TEAM_KEY]-XX: US002 Another Completed Story](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX) ✅ DONE
-    - [[TEAM_KEY]-XX: EP1_01 Completed Task](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX)
+  📖 [[TEAM_KEY]-XX: US002 Another Completed Story](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX) ✅ DONE (YYYY-MM-DD)
 
 ### Postponed
 
 **Epic 0: Common Tasks**
 
   📖 [[TEAM_KEY]-XX: US003 Deferred Story](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX)
-    _(tasks not created yet)_
+    _(future iteration)_
 
 **Epic 2: Future Feature**
 
   📖 [[TEAM_KEY]-XX: US001 Postponed Work](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX)
-    - [[TEAM_KEY]-XX: EP2_01 Postponed Task](https://linear.app/[workspace]/issue/[TEAM_KEY]-XX)
+    _(lower priority)_
 
 ---
 
@@ -166,5 +165,5 @@ _No completed epics yet_
 
 ---
 
-**Template Version:** 3.0.0 (Epic grouping in ALL Work in Progress sections with examples)
-**Last Updated:** 2025-11-15
+**Template Version:** 4.0.0 (Done/Postponed sections contain ONLY Stories, no Tasks)
+**Last Updated:** 2026-01-09
