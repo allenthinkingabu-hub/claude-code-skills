@@ -19,7 +19,7 @@ Coordinates project restructuring from prototype layout to Clean Architecture.
 |--------|-------------|
 | **Input** | Current project structure, target architecture |
 | **Output** | Restructured project with Clean Architecture |
-| **Workers** | ln-721 (frontend), ln-722 (backend), ln-723 (mockdata) |
+| **Workers** | ln-721 (frontend), ln-722 (backend), ln-723 (mockdata), ln-724 (replit-cleaner) |
 
 **Scope boundaries:**
 - Analyzes current project structure
@@ -35,7 +35,7 @@ Coordinates project restructuring from prototype layout to Clean Architecture.
 |-------|------|---------|--------|
 | 1 | Analyze | Scan current structure, detect framework, map files | File inventory |
 | 2 | Plan | Calculate moves, identify conflicts | Migration plan |
-| 3 | Execute | Delegate to workers (ln-721, ln-722, ln-723) | Restructured project |
+| 3 | Execute | Delegate to workers (ln-724, ln-721, ln-722, ln-723) | Restructured project |
 | 4 | Verify | Run builds, check imports, validate structure | Success report |
 
 ---
@@ -91,6 +91,21 @@ src/
 
 ## Delegation Protocol
 
+### To ln-724 (Replit Cleanup)
+
+```yaml
+Context:
+  projectPath: /project
+  skipPreview: false  # Set true for automated pipelines
+Options:
+  cleanConfigFiles: true      # .replit, replit.nix
+  cleanDirectories: true      # .local/, .cache/, .upm/
+  cleanPackages: true         # @replit/* from package.json
+  cleanViteConfig: true       # Replit imports/plugins
+  cleanCodeComments: true     # // @replit annotations
+  cleanGitignore: true        # .replit entry
+```
+
 ### To ln-721 (Frontend)
 
 ```yaml
@@ -143,7 +158,7 @@ Context:
 ## Critical Rules
 
 - **Orchestrator Pattern:** Analyze and delegate, do not execute transformations directly
-- **Sequential Workers:** Execute workers in order (frontend → backend → mockdata)
+- **Sequential Workers:** Execute workers in order (replit-cleanup → frontend → backend → mockdata)
 - **Pre-flight Checks:** Verify git status clean, target paths available
 - **No Data Loss:** Copy before delete, verify before removing source
 - **Build Verification:** Both `npm run build` and `dotnet build` must pass
@@ -155,6 +170,7 @@ Context:
 
 - [ ] Current structure analyzed and documented
 - [ ] Migration plan generated
+- [ ] ln-724 completed: Replit artifacts removed
 - [ ] ln-721 completed: Frontend restructured
 - [ ] ln-722 completed: Backend generated
 - [ ] ln-723 completed: MockData migrated

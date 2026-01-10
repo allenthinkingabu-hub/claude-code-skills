@@ -30,7 +30,7 @@ allowed-tools: Read, Edit
 **Essential context for orientation (~500 lines, ~15% context):**
 
 - [ ] Read `<ENTRY_FILE>` - repository rules, key concepts, versioning workflow
-- [ ] Read `README.md` (sections: Features tables, Key Concepts) - overview of 51 skills in 6 categories
+- [ ] Read `README.md` (sections: Features tables, Key Concepts) - overview of 84 skills in 7 categories
 - [ ] Read `docs/SKILL_ARCHITECTURE_GUIDE.md` (sections: TOC, Core Principles, Orchestrator-Worker Pattern)
 - [ ] Read `docs/DOCUMENTATION_STANDARDS.md` - industry best practices 2024-2025
 
@@ -105,6 +105,13 @@ allowed-tools: Read, Edit
 - [ ] Read `ln-630-test-auditor/SKILL.md` - L2 coordinator (5 workers)
 - [ ] Read `ln-631-635-*.auditor/SKILL.md` - L3 test audit workers
 
+**When working with 7XX Bootstrap:**
+- [ ] Read `ln-700-project-bootstrap/SKILL.md` - L1 top orchestrator
+- [ ] Read `ln-710-dependency-upgrader/SKILL.md` - L2 coordinator (npm, nuget, pip)
+- [ ] Read `ln-711-713-*-upgrader/SKILL.md` - L3 upgrader workers
+- [ ] Read `ln-720-structure-migrator/SKILL.md` - L2 coordinator (structure migration)
+- [ ] Read `ln-721-724-*/SKILL.md` - L3 structure workers (frontend, backend, mockdata, replit-cleaner)
+
 **When working with versioning/release:**
 - [ ] Read `CHANGELOG.md` - release history
 - [ ] Read `CLAUDE.md` (section: Versioning + Maintenance After Changes)
@@ -115,7 +122,7 @@ allowed-tools: Read, Edit
 After completing the refresh, respond with:
 
 1. **Status:** "Context refreshed (Light mode - ~500 lines)."
-2. **Project Summary:** "claude-code-skills - Collection of 51 skills for Claude Code in 6 categories (0XX Shared, 1XX Documentation, 2XX Planning, 3XX Task Management, 4XX Execution, 5XX Quality, 6XX Audit)."
+2. **Project Summary:** "claude-code-skills - Collection of 84 skills for Claude Code in 7 categories (0XX Shared, 1XX Documentation, 2XX Planning, 3XX Task Management, 4XX Execution, 5XX Quality, 6XX Audit, 7XX Bootstrap)."
 3. **Current Work Type:** Identify current work type
 4. **Next Steps:** what to work on next
 5. **Load Recommendation:** which additional documents to load from "Deep Dive"
@@ -124,7 +131,7 @@ After completing the refresh, respond with:
 ```
 Context refreshed (Light mode - ~500 lines).
 
-**Project:** claude-code-skills - 51 skills for Claude Code, integrated with Linear.
+**Project:** claude-code-skills - 84 skills for Claude Code, integrated with Linear.
 
 **Current Work:** Editing ln-400-story-executor skill (L1 orchestrator).
 
@@ -156,6 +163,6 @@ Context refreshed (Light mode - ~500 lines).
 **Architecture Reminders:**
 - **Orchestrator-Worker Pattern:** L1 (Top Orchestrators) -> L2 (Domain Coordinators) -> L3 (Workers)
 - **Token Efficiency:** Metadata-Only Loading for orchestrators, Full descriptions only for workers
-- **6 Categories:** 0XX Shared, 1XX Docs, 2XX Planning, 3XX Tasks, 4XX Execution, 5XX Quality, 6XX Audit
+- **7 Categories:** 0XX Shared, 1XX Docs, 2XX Planning, 3XX Tasks, 4XX Execution, 5XX Quality, 6XX Audit, 7XX Bootstrap
 
-**Last Updated:** 2025-12-23
+**Last Updated:** 2026-01-10

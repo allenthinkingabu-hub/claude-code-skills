@@ -78,6 +78,7 @@
         "./ln-721-frontend-restructure",
         "./ln-722-backend-generator",
         "./ln-723-mockdata-migrator",
+        "./ln-724-replit-cleaner",
         "./ln-730-devops-setup",
         "./ln-731-docker-generator",
         "./ln-732-cicd-generator",

@@ -2,13 +2,13 @@
 
 > A comprehensive collection of skills for Claude Code, providing end-to-end Agile workflow automation integrated with Linear for modern software development teams.
 
-![Version](https://img.shields.io/badge/version-3.0.0-blue) ![Skills](https://img.shields.io/badge/skills-83-green) ![Updated](https://img.shields.io/badge/updated-Jan%202026-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
+![Version](https://img.shields.io/badge/version-3.0.0-blue) ![Skills](https://img.shields.io/badge/skills-84-green) ![Updated](https://img.shields.io/badge/updated-Jan%202026-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
 
 ---
 
 ## 📖 About
 
-This repository contains **83 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From project bootstrapping to documentation, story execution, and quality assurance, these skills work together to create a complete Agile development workflow.
+This repository contains **84 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From project bootstrapping to documentation, story execution, and quality assurance, these skills work together to create a complete Agile development workflow.
 
 **What You Get:**
 - 🎯 **Complete Agile Workflow** - From Epic decomposition to task execution and review
@@ -261,6 +261,7 @@ Technology-agnostic project bootstrap system that automates migration from proto
 | **[ln-721-frontend-restructure](ln-721-frontend-restructure/)** | Restructure frontend to component-based architecture | 1.0.0 |
 | **[ln-722-backend-generator](ln-722-backend-generator/)** | Generate .NET Clean Architecture backend | 1.0.0 |
 | **[ln-723-mockdata-migrator](ln-723-mockdata-migrator/)** | Migrate Drizzle/Prisma schema to C# MockData | 1.0.0 |
+| **[ln-724-replit-cleaner](ln-724-replit-cleaner/)** | Remove all Replit artifacts (configs, packages, code comments, directories) | 1.0.0 |
 
 **L3 Workers (DevOps Setup - ln-730):**
 
@@ -317,7 +318,7 @@ Technology-agnostic project bootstrap system that automates migration from proto
 
 | Plugin | Skills | Use Case | Dependencies |
 |--------|--------|----------|--------------|
-| **full-development-workflow-skills** ⭐ | 83 | Complete Agile workflow (bootstrap + docs + planning + execution + quality + audit) | Linear + Context7 + Ref |
+| **full-development-workflow-skills** ⭐ | 84 | Complete Agile workflow (bootstrap + docs + planning + execution + quality + audit) | Linear + Context7 + Ref |
 
 ---
 
@@ -331,7 +332,7 @@ Choose your installation method:
 ```bash
 /plugin marketplace add levnikolaevich/claude-code-skills
 
-# Install the plugin (51 skills)
+# Install the plugin (84 skills)
 /plugin install full-development-workflow-skills@levnikolaevich-skills-marketplace
 
 # Verify installation
