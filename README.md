@@ -2,13 +2,13 @@
 
 > A comprehensive collection of skills for Claude Code, providing end-to-end Agile workflow automation integrated with Linear for modern software development teams.
 
-![Version](https://img.shields.io/badge/version-3.0.0-blue) ![Skills](https://img.shields.io/badge/skills-51-green) ![Updated](https://img.shields.io/badge/updated-Dec%202025-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
+![Version](https://img.shields.io/badge/version-3.0.0-blue) ![Skills](https://img.shields.io/badge/skills-83-green) ![Updated](https://img.shields.io/badge/updated-Jan%202026-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
 
 ---
 
 ## 📖 About
 
-This repository contains **51 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From initial documentation to story execution and quality assurance, these skills work together to create a complete Agile development workflow.
+This repository contains **83 production-ready skills** for [Claude Code](https://claude.ai/code) that automate and streamline your entire software development lifecycle. From project bootstrapping to documentation, story execution, and quality assurance, these skills work together to create a complete Agile development workflow.
 
 **What You Get:**
 - 🎯 **Complete Agile Workflow** - From Epic decomposition to task execution and review
@@ -223,13 +223,101 @@ Comprehensive audit system for documentation, code comments, codebase quality, a
 
 ---
 
+### 7. Project Bootstrap (7XX)
+
+Technology-agnostic project bootstrap system that automates migration from prototypes to production-ready repositories. Supports React/Vue/Angular frontends, .NET/Node/Python backends.
+
+**L1 Top Orchestrator:**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-700-project-bootstrap](ln-700-project-bootstrap/)** | **L1 Top Orchestrator** for full project bootstrap. Detects tech stack, generates transformation plan, delegates to 8 L2 coordinators in sequence. Handles: dependencies → structure → devops → quality → commands → security → crosscutting → verification. | 1.0.0 | ✅ |
+
+**L2 Coordinators (Domain-Specific):**
+
+| Skill | Purpose | Version | Diagrams |
+|:------|:--------|:-------:|:--------:|
+| **[ln-710-dependency-upgrader](ln-710-dependency-upgrader/)** | Upgrade all dependencies to latest versions. Detects npm/nuget/pip, delegates to L3 workers, handles breaking changes. | 1.0.0 | ✅ |
+| **[ln-720-structure-migrator](ln-720-structure-migrator/)** | Restructure project to Clean Architecture. Moves frontend to src/frontend/, generates .NET backend structure. | 1.0.0 | ✅ |
+| **[ln-730-devops-setup](ln-730-devops-setup/)** | Setup Docker, CI/CD, and environment configuration. Multi-stage builds, GitHub Actions workflows. | 1.0.0 | ✅ |
+| **[ln-740-quality-setup](ln-740-quality-setup/)** | Configure linters, pre-commit hooks, and test infrastructure. ESLint flat config, Husky, Vitest/xUnit. | 1.0.0 | ✅ |
+| **[ln-750-commands-generator](ln-750-commands-generator/)** | Generate project-specific .claude/commands. refresh_context, refresh_infrastructure, build-and-test. | 1.0.0 | ✅ |
+| **[ln-760-security-setup](ln-760-security-setup/)** | Setup security scanning and secret detection. Dependency audit, SECURITY.md generation. | 1.0.0 | ✅ |
+| **[ln-770-crosscutting-setup](ln-770-crosscutting-setup/)** | Configure logging, error handling, CORS, health checks, and Swagger. Serilog/Pino, GlobalExceptionMiddleware. | 1.0.0 | ✅ |
+| **[ln-780-bootstrap-verifier](ln-780-bootstrap-verifier/)** | Final verification: build, test, and run in Docker. Health checks, container launch, full report. | 1.0.0 | ✅ |
+
+**L3 Workers (Dependency Upgrader - ln-710):**
+
+| Skill | Purpose | Version |
+|:------|:--------|:-------:|
+| **[ln-711-npm-upgrader](ln-711-npm-upgrader/)** | Upgrade npm/yarn/pnpm packages with breaking change handling | 1.0.0 |
+| **[ln-712-nuget-upgrader](ln-712-nuget-upgrader/)** | Upgrade .NET NuGet packages | 1.0.0 |
+| **[ln-713-pip-upgrader](ln-713-pip-upgrader/)** | Upgrade Python pip/poetry packages | 1.0.0 |
+
+**L3 Workers (Structure Migrator - ln-720):**
+
+| Skill | Purpose | Version |
+|:------|:--------|:-------:|
+| **[ln-721-frontend-restructure](ln-721-frontend-restructure/)** | Restructure frontend to component-based architecture | 1.0.0 |
+| **[ln-722-backend-generator](ln-722-backend-generator/)** | Generate .NET Clean Architecture backend | 1.0.0 |
+| **[ln-723-mockdata-migrator](ln-723-mockdata-migrator/)** | Migrate Drizzle/Prisma schema to C# MockData | 1.0.0 |
+
+**L3 Workers (DevOps Setup - ln-730):**
+
+| Skill | Purpose | Version |
+|:------|:--------|:-------:|
+| **[ln-731-docker-generator](ln-731-docker-generator/)** | Generate Dockerfiles and docker-compose.yml | 1.0.0 |
+| **[ln-732-cicd-generator](ln-732-cicd-generator/)** | Generate GitHub Actions / Azure Pipelines | 1.0.0 |
+| **[ln-733-env-configurator](ln-733-env-configurator/)** | Configure .env.example and environment variables | 1.0.0 |
+
+**L3 Workers (Quality Setup - ln-740):**
+
+| Skill | Purpose | Version |
+|:------|:--------|:-------:|
+| **[ln-741-linter-configurator](ln-741-linter-configurator/)** | Configure ESLint, Prettier, .editorconfig | 1.0.0 |
+| **[ln-742-precommit-setup](ln-742-precommit-setup/)** | Setup Husky, lint-staged, commitlint | 1.0.0 |
+| **[ln-743-test-infrastructure](ln-743-test-infrastructure/)** | Setup Vitest/Jest, xUnit test infrastructure | 1.0.0 |
+
+**L3 Workers (Commands Generator - ln-750):**
+
+| Skill | Purpose | Version |
+|:------|:--------|:-------:|
+| **[ln-751-command-templates](ln-751-command-templates/)** | Generate command files from templates | 1.0.0 |
+
+**L3 Workers (Security Setup - ln-760):**
+
+| Skill | Purpose | Version |
+|:------|:--------|:-------:|
+| **[ln-761-secret-scanner](ln-761-secret-scanner/)** | Detect hardcoded secrets and API keys | 1.0.0 |
+| **[ln-762-dependency-audit](ln-762-dependency-audit/)** | Run npm audit / dotnet vulnerable / pip-audit | 1.0.0 |
+
+**L3 Workers (Crosscutting Setup - ln-770):**
+
+| Skill | Purpose | Version |
+|:------|:--------|:-------:|
+| **[ln-771-logging-configurator](ln-771-logging-configurator/)** | Configure Serilog (.NET) / Pino (Node) / structlog (Python) | 1.0.0 |
+| **[ln-772-error-handler-setup](ln-772-error-handler-setup/)** | Setup GlobalExceptionMiddleware, ErrorBoundary | 1.0.0 |
+| **[ln-773-cors-configurator](ln-773-cors-configurator/)** | Configure CORS policy for dev/prod | 1.0.0 |
+| **[ln-774-healthcheck-setup](ln-774-healthcheck-setup/)** | Setup /health, /health/ready, /health/live endpoints | 1.0.0 |
+| **[ln-775-api-docs-generator](ln-775-api-docs-generator/)** | Configure Swagger/OpenAPI documentation | 1.0.0 |
+
+**L3 Workers (Bootstrap Verifier - ln-780):**
+
+| Skill | Purpose | Version |
+|:------|:--------|:-------:|
+| **[ln-781-build-verifier](ln-781-build-verifier/)** | Verify builds for all project components | 1.0.0 |
+| **[ln-782-test-runner](ln-782-test-runner/)** | Run all test suites and report results | 1.0.0 |
+| **[ln-783-container-launcher](ln-783-container-launcher/)** | Launch Docker containers with health checks | 1.0.0 |
+
+---
+
 ## 📥 Installation
 
 ### Available Plugin
 
 | Plugin | Skills | Use Case | Dependencies |
 |--------|--------|----------|--------------|
-| **full-development-workflow-skills** ⭐ | 51 | Complete Agile workflow (docs + planning + execution + quality + audit) | Linear + Context7 + Ref |
+| **full-development-workflow-skills** ⭐ | 83 | Complete Agile workflow (bootstrap + docs + planning + execution + quality + audit) | Linear + Context7 + Ref |
 
 ---
 
@@ -307,6 +395,7 @@ ln-330-story-executor
 
 **Automated Workflow:**
 ```
+0. ln-700-project-bootstrap  → Bootstrap project (deps → structure → devops → quality → Docker)
 1. ln-100-documents-pipeline → Create project documentation
 2. ln-210-epic-coordinator   → Decompose scope into Epics
 3. ln-220-story-coordinator  → Create Stories for an Epic (with library research)

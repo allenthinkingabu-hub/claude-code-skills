@@ -8,13 +8,13 @@
   },
 
   "metadata": {
-    "description": "Official marketplace for Agile Linear Workflow plugin - complete end-to-end automation for software development teams using Linear",
-    "version": "2.0.0"
+    "description": "Official marketplace for Agile Linear Workflow plugin - complete end-to-end automation for software development teams using Linear. Includes 7XX Project Bootstrap series for technology-agnostic project migration.",
+    "version": "3.0.0"
   },
   "plugins": [
     {
       "name": "full-development-workflow-skills",
-      "description": "Full development workflow skills: Documentation, Planning, Execution. Requires Linear + Context7 + Ref MCP servers.",
+      "description": "Full development workflow skills: Bootstrap, Documentation, Planning, Execution, Quality, Audit. Requires Linear + Context7 + Ref MCP servers.",
       "source": "./",
       "strict": false,
       "skills": [
@@ -68,7 +68,39 @@
         "./ln-632-test-e2e-priority-auditor",
         "./ln-633-test-value-auditor",
         "./ln-634-test-coverage-auditor",
-        "./ln-635-test-isolation-auditor"
+        "./ln-635-test-isolation-auditor",
+        "./ln-700-project-bootstrap",
+        "./ln-710-dependency-upgrader",
+        "./ln-711-npm-upgrader",
+        "./ln-712-nuget-upgrader",
+        "./ln-713-pip-upgrader",
+        "./ln-720-structure-migrator",
+        "./ln-721-frontend-restructure",
+        "./ln-722-backend-generator",
+        "./ln-723-mockdata-migrator",
+        "./ln-730-devops-setup",
+        "./ln-731-docker-generator",
+        "./ln-732-cicd-generator",
+        "./ln-733-env-configurator",
+        "./ln-740-quality-setup",
+        "./ln-741-linter-configurator",
+        "./ln-742-precommit-setup",
+        "./ln-743-test-infrastructure",
+        "./ln-750-commands-generator",
+        "./ln-751-command-templates",
+        "./ln-760-security-setup",
+        "./ln-761-secret-scanner",
+        "./ln-762-dependency-audit",
+        "./ln-770-crosscutting-setup",
+        "./ln-771-logging-configurator",
+        "./ln-772-error-handler-setup",
+        "./ln-773-cors-configurator",
+        "./ln-774-healthcheck-setup",
+        "./ln-775-api-docs-generator",
+        "./ln-780-bootstrap-verifier",
+        "./ln-781-build-verifier",
+        "./ln-782-test-runner",
+        "./ln-783-container-launcher"
       ]
     }
   ]
