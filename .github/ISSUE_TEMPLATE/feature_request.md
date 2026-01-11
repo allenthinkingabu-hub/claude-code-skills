@@ -1,20 +1,30 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
+name: Feature Request
+about: Suggest an improvement or new feature
+title: '[FEATURE] '
+labels: enhancement
 assignees: ''
-
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**Category**
+- [ ] 0XX - Shared/Research
+- [ ] 1XX - Documentation
+- [ ] 2XX - Planning
+- [ ] 3XX - Task Management
+- [ ] 4XX - Execution
+- [ ] 5XX - Quality
+- [ ] 6XX - Audit
+- [ ] 7XX - Bootstrap
+- [ ] New category
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**Related Skills**
+List existing skills this relates to (if any).
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**Problem / Use Case**
+Describe the problem or use case this feature would address.
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**Proposed Solution**
+Describe what you'd like to happen.
+
+**Alternatives Considered**
+Any alternative solutions you've considered.
