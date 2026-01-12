@@ -117,6 +117,13 @@ Documents describe **contracts and decisions**, NOT implementations:
 - **INSTEAD OF CODE:** Reference source: "See src/Services/UserService.cs:45"
 - **TEMPLATE RULE:** All templates include `<!-- NO_CODE_EXAMPLES: ... -->` tag - FOLLOW IT
 
+### Stack Adaptation Rule (MANDATORY)
+- Links must reference stack-appropriate docs (Microsoft for .NET, MDN for JS)
+- Never mix stack references (no Python examples in .NET project)
+
+### Format Priority (MANDATORY)
+Tables > Mermaid/ASCII diagrams > Lists > Text
+
 ## Definition of Done
 - Context Store received and validated
 - 3 core documents created (or skipped if exist)
@@ -130,5 +137,5 @@ Documents describe **contracts and decisions**, NOT implementations:
 - Questions: `references/questions_core.md` (Q23-Q38)
 
 ---
-**Version:** 2.1.0 (Added NO_CODE_EXAMPLES rule. Documents describe contracts, not implementations.)
-**Last Updated:** 2025-01-09
+**Version:** 2.2.0 (Added Stack Adaptation and Format Priority rules)
+**Last Updated:** 2025-01-12

@@ -198,6 +198,11 @@ For each worker:
 - **Idempotent** — workers skip existing files
 - **Parallel where possible** — ln-111 and ln-112 can run in parallel
 
+### Documentation Standards (passed to workers)
+- **NO_CODE Rule:** Documents describe contracts, not implementations
+- **Stack Adaptation:** Links must match TECH_STACK (Context Store)
+- **Format Priority:** Tables/ASCII > Lists > Text
+
 ## Definition of Done
 - Context Store built with all discovered data
 - Project type flags determined
@@ -209,5 +214,5 @@ For each worker:
 - Guides: `references/guides/automatic_analysis_guide.md`, `critical_questions.md`, `troubleshooting.md`
 
 ---
-**Version:** 2.0.0 (MAJOR: Added LEGACY_CONTENT handling. Receives legacy content from ln-100 Phase 0, merges into Context Store, passes to workers. Priority: Legacy > Auto-discovery > Template defaults.)
-**Last Updated:** 2025-12-19
+**Version:** 2.1.0 (Added Documentation Standards passed to workers)
+**Last Updated:** 2025-01-12

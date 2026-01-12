@@ -86,6 +86,13 @@ API spec documents **contracts**, NOT implementations:
 - **FORBIDDEN:** Controller implementations, validation classes, service code, middleware examples
 - **TEMPLATE RULE:** api_spec_template.md includes `<!-- NO_CODE_EXAMPLES: ... -->` tag - FOLLOW IT
 
+### Stack Adaptation Rule (MANDATORY)
+- Links must reference stack-appropriate docs (Microsoft for .NET, MDN for JS)
+- API examples must match project stack (Express for Node.js, FastAPI for Python)
+
+### Format Priority (MANDATORY)
+Tables (endpoints, schemas) > Mermaid (ER diagrams) > Lists > Text
+
 ## Definition of Done
 - Conditions checked (hasBackend, hasDatabase)
 - Applicable documents created
@@ -98,5 +105,5 @@ API spec documents **contracts**, NOT implementations:
 - Questions: `references/questions_backend.md` (Q39-Q42)
 
 ---
-**Version:** 1.1.0 (Added NO_CODE_EXAMPLES rule. API spec documents contracts, not implementations.)
-**Last Updated:** 2025-01-09
+**Version:** 1.2.0 (Added Stack Adaptation and Format Priority rules)
+**Last Updated:** 2025-01-12

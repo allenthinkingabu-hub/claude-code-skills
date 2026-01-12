@@ -589,6 +589,20 @@ project_root/
 
 ---
 
+## Documentation Standards
+
+All documents created by this pipeline MUST follow these rules:
+
+| Rule | Description | Enforcement |
+|------|-------------|-------------|
+| **NO_CODE Rule** | Documents describe contracts, not implementations | No code blocks >5 lines; use tables/ASCII/links |
+| **Stack Adaptation** | Links must match project TECH_STACK | .NET → Microsoft docs, JS → MDN |
+| **Format Priority** | Tables/ASCII > Lists (enumerations only) > Text | Tables for params, config, alternatives |
+
+These standards are enforced by L3 workers (ln-111-115) and audited by ln-600-docs-auditor.
+
+---
+
 ## Error Handling
 
 If any invoked skill fails:
@@ -685,5 +699,5 @@ Before completing work, verify ALL checkpoints:
 
 ---
 
-**Version:** 8.0.0 (MAJOR: Added Phase 0 Legacy Migration. Detects existing documentation in non-standard formats, extracts content, archives legacy files, injects LEGACY_CONTENT into Context Store for workers. Full Migration workflow: detect → extract → backup → inject → cleanup.)
-**Last Updated:** 2025-12-19
+**Version:** 8.1.0 (Added Documentation Standards section with NO_CODE, Stack Adaptation, Format Priority rules)
+**Last Updated:** 2025-01-12

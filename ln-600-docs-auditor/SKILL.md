@@ -36,9 +36,10 @@ Audit project documentation quality. Universal for any tech stack.
 | 1 | **Hierarchy & Links** | CLAUDE.md is root; all docs reachable via links; no orphaned files; no broken links |
 | 2 | **Single Source of Truth** | No content duplication; duplicates replaced with links to source; clear ownership |
 | 3 | **Proactive Compression** | Eliminate verbose/redundant content; prose→tables; remove meaningless info; compress even under-limit files; see [size_limits.md](references/size_limits.md) |
-| 4 | **Requirements Compliance** | Correct sections per doc type; within size limits; proper formatting; **no code blocks** (text descriptions only) |
+| 4 | **Requirements Compliance** | Correct sections; within size limits; **no code blocks** (tables/ASCII-схемы/text only); stack-appropriate doc links |
 | 5 | **Actuality (CRITICAL)** | **Verify facts against code:** paths exist, functions match, APIs work, configs valid; outdated docs are worse than none |
 | 6 | **Legacy Cleanup** | No history sections; no "was changed" notes; no deprecated info; current state only |
+| 7 | **Stack Adaptation** | Links/refs match project stack; no Python examples in .NET project; official docs for correct platform |
 
 ## Output Format
 
@@ -55,6 +56,7 @@ Audit project documentation quality. Universal for any tech stack.
 | Requirements Compliance | X/10 | N violations |
 | Actuality | X/10 | N mismatches with code |
 | Legacy Cleanup | X/10 | N legacy items |
+| Stack Adaptation | X/10 | N stack mismatches |
 | **Overall** | **X/10** | |
 
 ### Critical Findings
@@ -90,7 +92,12 @@ Audit project documentation quality. Universal for any tech stack.
 - **Verify facts against code:** Actively check every path, function name, API, config mentioned in docs. Run commands. Outdated docs mislead - they're worse than no docs.
 - **Compress always:** Size limits are upper bounds, not targets. A 100-line file instead of 300 is a win. Always look for compression opportunities.
 - **Meaningless content:** Remove filler words, obvious statements, over-explanations. If it doesn't add value, delete it.
-- **No code in docs:** Documents describe algorithms and concepts in text, not code. Code belongs in codebase, docs explain WHY and HOW in words.
+- **No code in docs:** Documents describe algorithms in tables or ASCII-схемы. Code belongs in codebase.
+  - **Forbidden:** Code blocks, implementation snippets
+  - **Allowed:** Tables, ASCII diagrams, Mermaid, method signatures (1 line)
+  - **Instead of code:** "See [Official docs](url)" or "See [src/file.cs:42](path#L42)"
+- **Format Priority:** Tables/ASCII > Lists (enumerations only) > Text (last resort)
+- **Stack adaptation:** Verify all documentation references match project stack. .NET project must not have Python examples. Check official doc links point to correct platform (Microsoft docs for C#, MDN for JS, etc.)
 - **Code is truth:** When docs contradict code, always update docs. Never "fix" code to match documentation.
 - **Delete, don't archive:** Legacy content should be removed, not moved to "archive"
 - **No history:** Documents describe current state only; git tracks history

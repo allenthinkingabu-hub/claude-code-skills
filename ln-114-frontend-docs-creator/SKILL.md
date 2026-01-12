@@ -70,10 +70,26 @@ From coordinator:
 ```
 
 ## Critical Notes
+
+### Core Rules
 - **Conditional:** Skip entirely if no frontend detected
 - **WCAG compliance:** Document must reference accessibility standards
 - **Design tokens:** Extract from CSS variables, tailwind config, or theme files
 - **Idempotent:** Never overwrite existing files
+
+### NO_CODE_EXAMPLES Rule (MANDATORY)
+Design guidelines document **visual standards**, NOT code:
+- **FORBIDDEN:** CSS code blocks, component implementations
+- **ALLOWED:** Tables (colors, typography), design tokens, Figma links
+- **INSTEAD OF CODE:** "See [Component Library](link)" or "See src/components/Button.tsx"
+
+### Stack Adaptation Rule (MANDATORY)
+- Link to correct component library docs (MUI for React, Vuetify for Vue)
+- Reference framework-specific patterns (React hooks, Vue composition API)
+- Never mix stack references (no React examples in Vue project)
+
+### Format Priority (MANDATORY)
+Tables (colors, typography, spacing) > Lists (component inventory) > Text
 
 ## Definition of Done
 - Condition checked (hasFrontend)
@@ -87,5 +103,5 @@ From coordinator:
 - Questions: `references/questions_frontend.md` (Q43-Q45)
 
 ---
-**Version:** 1.0.0
-**Last Updated:** 2025-12-19
+**Version:** 1.1.0 (Added NO_CODE, Stack Adaptation, Format Priority rules)
+**Last Updated:** 2025-01-12

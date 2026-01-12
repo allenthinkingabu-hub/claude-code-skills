@@ -85,11 +85,27 @@ Return to coordinator:
 ```
 
 ## Critical Notes
+
+### Core Rules
 - **Idempotent:** Never overwrite existing files; skip and log
 - **No context gathering:** All data comes from coordinator's Context Store
 - **TBD markers:** Use `[TBD: placeholder_name]` for missing data, never `{{PLACEHOLDER}}`
 - **Language:** All root docs in English (universal standards)
 - **SCOPE tags:** Required in first 10 lines of each file
+
+### NO_CODE_EXAMPLES Rule (MANDATORY)
+Root documents define **navigation and standards**, NOT implementations:
+- **FORBIDDEN:** Code blocks, implementation snippets
+- **ALLOWED:** Tables, links, command examples (1 line)
+- **TEMPLATE RULE:** All templates include `<!-- NO_CODE_EXAMPLES: ... -->` tag - FOLLOW IT
+
+### Stack Adaptation Rule (MANDATORY)
+- All external links must match project stack (detected in Context Store)
+- .NET project → Microsoft docs; Node.js → MDN, npm docs; Python → Python docs
+- Never mix stack references (no Python examples in .NET project)
+
+### Format Priority (MANDATORY)
+Tables/ASCII > Lists (enumerations only) > Text (last resort)
 
 ## Definition of Done
 - Context Store received and validated
@@ -103,5 +119,5 @@ Return to coordinator:
 - Questions: `references/questions_root.md` (Q1-Q22)
 
 ---
-**Version:** 2.0.0 (MAJOR: Added LEGACY_CONTENT handling for principles.md. Uses legacy_principles from migration as base content. Priority: Legacy > Template defaults.)
-**Last Updated:** 2025-12-19
+**Version:** 2.1.0 (Added NO_CODE, Stack Adaptation, Format Priority rules to Critical Notes)
+**Last Updated:** 2025-01-12

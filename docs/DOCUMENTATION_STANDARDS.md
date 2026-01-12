@@ -4,11 +4,11 @@
 
 **Last Updated:** {{DATE}}
 
-<!-- SCOPE: 82 universal documentation requirements for Claude Code skills. Based on industry standards (ISO/IEC/IEEE, DIATAXIS, RFC), Claude Code best practices, and AI-friendly documentation research. NO project-specific details (→ project/requirements.md), NO skill-specific workflows (→ SKILL.md). -->
+<!-- SCOPE: 90 universal documentation requirements for Claude Code skills. Based on industry standards (ISO/IEC/IEEE, DIATAXIS, RFC, llms.txt), Claude Code best practices, and AI-friendly documentation research. NO project-specific details (→ project/requirements.md), NO skill-specific workflows (→ SKILL.md). -->
 
 ---
 
-## Quick Reference (82 Requirements)
+## Quick Reference (90 Requirements)
 
 **Legend:** 🔴 Critical | 🟡 Important | 🟢 Desired | ⚠️ Conditional | ✅ Already implemented
 
@@ -27,8 +27,9 @@
 | **Conventional Commits** | 4 | 0 | 1 | 1 | 0 | 2 | commitlint |
 | **Security & Compliance** | 4 | 1 | 3 | 0 | 0 | 0 | Manual |
 | **Performance** | 3 | 0 | 1 | 2 | 0 | 0 | Manual |
+| **AI-First Documentation** | 8 | 2 | 4 | 2 | 0 | 0 | ln-600 |
 
-**Total:** 82 requirements | 🔴 12 Critical | 🟡 38 Important | 🟢 24 Desired | ⚠️ 1 Conditional | ✅ 5 Implemented
+**Total:** 90 requirements | 🔴 14 Critical | 🟡 42 Important | 🟢 26 Desired | ⚠️ 1 Conditional | ✅ 5 Implemented
 
 ---
 
@@ -42,6 +43,8 @@
 | All code examples runnable | Prevent documentation drift | Manual + CI |
 | LICENSE file exists | Legal compliance | Manual |
 | Never commit secrets | Security breach prevention | Manual |
+| Stack Adaptation | Documents match project stack (.NET→C# links) | ln-600 Category 7 |
+| NO_CODE in docs | No code blocks; tables/ASCII/links instead | ln-600 Category 4 |
 
 ### Important (Should Have)
 
@@ -85,6 +88,19 @@
 **Performance:**
 - Optimize CLAUDE.md size (-30 to -40% tokens via @-sourcing)
 
+**AI-First Documentation:**
+
+| Requirement | Priority | Rationale | Source |
+|-------------|----------|-----------|--------|
+| **Stack Adaptation** | 🔴 Critical | Docs must match project stack; no Python examples in .NET project | Project decision |
+| **NO_CODE Rule** | 🔴 Critical | No code blocks in docs; AI fetches code dynamically | Project decision |
+| **Format Priority** | 🟡 Important | Tables/ASCII > Lists > Text; optimized for LLM parsing | [Redocly](https://redocly.com/blog/optimizations-to-make-to-your-docs-for-llms) |
+| **Self-contained pages** | 🟡 Important | Each page standalone; LLM reads without nav context | [kapa.ai](https://docs.kapa.ai/improving/writing-best-practices) |
+| **Consistent terminology** | 🟡 Important | One concept = one term; no synonyms | [kapa.ai](https://docs.kapa.ai/improving/writing-best-practices) |
+| **Semantic chunking** | 🟡 Important | 500-800 chars for tech docs; semantic boundaries | [Pinecone](https://www.pinecone.io/learn/chunking-strategies/) |
+| **llms.txt file** | 🟢 Desired | Index file for AI agents (Markdown format) | [llmstxt.org](https://llmstxt.org/) |
+| **llms-full.txt** | 🟢 Desired | Full content in single file for AI retrieval | [llmstxt.org](https://llmstxt.org/) |
+
 ### Desired (Nice to Have)
 
 **Documentation Structure:** DIATAXIS framework (Tutorial/How-to/Reference/Explanation sections), How-to guides ✅, Reference docs ✅
@@ -115,8 +131,9 @@
 | **Conventional Commits** | conventionalcommits.org |
 | **Keep a Changelog** | Changelog format |
 | **Semantic Versioning** | Major.Minor.Patch |
+| **llms.txt Standard** | llmstxt.org - AI-friendly documentation index |
 
-**Sources:** Claude Code docs, Clever Cloud guide, DIATAXIS framework, Matter style guide
+**Sources:** Claude Code docs, Clever Cloud guide, DIATAXIS framework, Matter style guide, llmstxt.org, Redocly, kapa.ai, Pinecone
 
 ---
 
@@ -132,6 +149,10 @@ Before submitting documentation:
 - [ ] **Active voice, second person, short sentences** - AI-friendly writing
 - [ ] **SCOPE tag in docs/**, Maintenance section** - Core requirements
 - [ ] **Descriptive links, callouts for important info** - Best practices
+- [ ] **Stack Adaptation** - All links/refs match project stack
+- [ ] **NO_CODE** - No code blocks; tables/ASCII/doc links instead
+- [ ] **Format Priority** - Tables > Lists > Text
+- [ ] **Self-contained pages** - Each doc standalone
 
 ---
 
@@ -145,7 +166,7 @@ Before submitting documentation:
 - Annual review (Q1 each year)
 
 **Verification:**
-- [ ] All 82 requirements documented with rationale
+- [ ] All 90 requirements documented with rationale
 - [ ] Priority levels assigned (Critical/Important/Desired)
 - [ ] Validators identified for automated checks
 - [ ] Standards compliance table complete

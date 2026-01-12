@@ -11,9 +11,28 @@ Research industry standards and create project documentation in one workflow.
 - Research via MCP Ref + Context7 for standards, patterns, versions
 - Create 3 types of documents from research results:
   - Guide: Pattern documentation (Do/Don't/When table)
-  - Manual: API reference (methods/params/examples)
+  - Manual: API reference (methods/params/doc links)
   - ADR: Architecture Decision Record (Q&A dialog)
 - Return document path for linking in Stories/Tasks
+
+## Phase 0: Stack Detection
+
+**Objective**: Identify project stack to filter research queries and adapt output.
+
+**Detection:**
+
+| Indicator | Stack | Query Prefix | Official Docs |
+|-----------|-------|--------------|---------------|
+| `*.csproj`, `*.sln` | .NET | "C# ASP.NET Core" | Microsoft docs |
+| `package.json` + `tsconfig.json` | Node.js | "TypeScript Node.js" | MDN, npm docs |
+| `requirements.txt`, `pyproject.toml` | Python | "Python" | Python docs, PyPI |
+| `go.mod` | Go | "Go Golang" | Go docs |
+| `Cargo.toml` | Rust | "Rust" | Rust docs |
+| `build.gradle`, `pom.xml` | Java | "Java" | Oracle docs, Maven |
+
+**Usage:**
+- Add `query_prefix` to all MCP search queries
+- Link to stack-appropriate official docs
 
 ## When to Use
 - ln-310-story-validator detects missing documentation
@@ -62,11 +81,11 @@ Research industry standards and create project documentation in one workflow.
 **Purpose:** Document a package/library API reference.
 
 **Workflow:**
-1) **Research:** Call `mcp__context7__get-library-docs(topic="[topic]")`; extract methods, params (type/required/default), returns, exceptions, examples
-2) **Generate:** Fill OpenAPI-inspired sections from manual_template.md:
-   - Package info, Overview, Methods (signature/params/returns/example), Config, Limitations, Version notes, Related + Last Updated
-   - 300-500 words; neutral factual tone; at least one example per method
-3) **Validate:** Ensure SCOPE tags, version in filename, sources dated, POSIX ending
+1) **Research:** Call `mcp__context7__get-library-docs(topic="[detected_stack.query_prefix] [topic]")`; extract methods, params (type/required/default), returns, exceptions
+2) **Generate:** Fill sections from manual_template.md:
+   - Package info, Overview, Methods (signature/params table/returns), Config table, Limitations, Version notes, Related + Last Updated
+   - 300-500 words; neutral factual tone; NO CODE - use doc links instead
+3) **Validate:** Ensure SCOPE tags, version in filename, stack-appropriate doc links, POSIX ending
 4) **Save:** Write `docs/reference/manuals/[package]-[version].md`; return path
 
 **Output:** Manual file path for linking in Technical Notes
@@ -92,11 +111,44 @@ Research industry standards and create project documentation in one workflow.
 **Output:** ADR file path; remind user to reference in architecture.md if needed
 
 ## Critical Rules
-- Research ONCE per invocation; reuse results for document generation
-- Cite sources with versions/dates (>=2025 or version-specific)
-- No code snippets in guides; neutral tone in manuals
+
+**NO_CODE_EXAMPLES (ALL document types):**
+
+| Forbidden | Allowed |
+|-----------|---------|
+| Code snippets | Tables (params, config, alternatives) |
+| Implementation examples | ASCII-схемы, Mermaid diagrams |
+| Code blocks >1 line | Method signatures (1 line inline) |
+| | Links to official docs |
+
+**Format Priority (STRICT):**
+```
+┌───────────────────────────────────────────────┐
+│ 1. TABLES + ASCII-схемы  ←── ПРИОРИТЕТ        │
+│    Params, Config, Alternatives, Flows        │
+├───────────────────────────────────────────────┤
+│ 2. СПИСКИ (только перечисления)               │
+│    Enumeration items, file lists, tools       │
+├───────────────────────────────────────────────┤
+│ 3. ТЕКСТ (крайний случай)                     │
+│    Только если нельзя выразить таблицей       │
+└───────────────────────────────────────────────┘
+```
+
+| Content Type | Format |
+|--------------|--------|
+| Parameters | Table: Name \| Type \| Required \| Default |
+| Configuration | Table: Option \| Type \| Default \| Description |
+| Alternatives | Table: Alt \| Pros \| Cons \| Why Rejected |
+| Patterns | Table: Do \| Don't \| When |
+| Workflow | ASCII-схема: `A → B → C` |
+
+**Other Rules:**
+- Research ONCE per invocation; reuse results
+- Cite sources with versions/dates (>=2025)
 - One pattern per guide; one decision per ADR; one package per manual
 - Preserve language (EN/RU) from story_context
+- Link to stack-appropriate docs (Microsoft for .NET, MDN for JS, etc.)
 - Do not create if target directory missing (warn instead)
 
 ## Definition of Done

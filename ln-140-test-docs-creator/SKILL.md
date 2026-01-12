@@ -370,6 +370,11 @@ tests/
 - **Value-Based Testing**: 2-5 E2E, 3-8 Integration, 5-15 Unit per Story (10-28 total max), Priority ≥15 MUST be tested
 - **No test code**: This skill creates DOCUMENTATION only, NOT actual tests
 
+### Documentation Standards
+- **NO_CODE Rule:** Test docs describe strategy, not test implementations
+- **Stack Adaptation:** Framework commands must match project stack
+- **Format Priority:** Tables (test levels, counts) > Lists > Text
+
 ---
 
 ## Prerequisites
@@ -436,5 +441,5 @@ Before completing work, verify ALL checkpoints:
 
 ---
 
-**Version:** 7.0.0 (MAJOR: Merged validation into worker. Added Phase 2 structure validation + Phase 3 semantic content validation with test framework auto-discovery. Idempotent - can be invoked multiple times.)
-**Last Updated:** 2025-11-18
+**Version:** 7.1.0 (Added Documentation Standards section)
+**Last Updated:** 2025-01-12

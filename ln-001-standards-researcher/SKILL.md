@@ -23,9 +23,37 @@ This skill should be used when:
 
 ## How It Works
 
-The skill follows a 5-phase workflow focused on standards and architectural patterns.
+The skill follows a 6-phase workflow focused on standards and architectural patterns.
 
-Phases: Identify → Ref Research → Existing Guides → Standards Research
+```
+Stack Detection → Identify → Ref Research → Existing Guides → Standards Research
+```
+
+### Phase 0: Stack Detection
+
+**Objective**: Determine project stack BEFORE research to filter queries.
+
+**Detection:**
+
+| Indicator | Stack | Query Prefix |
+|-----------|-------|--------------|
+| `*.csproj`, `*.sln` | .NET | "C# ASP.NET Core" |
+| `package.json` + `tsconfig.json` | Node.js | "TypeScript Node.js" |
+| `requirements.txt`, `pyproject.toml` | Python | "Python" |
+| `go.mod` | Go | "Go Golang" |
+| `Cargo.toml` | Rust | "Rust" |
+| `build.gradle`, `pom.xml` | Java | "Java" |
+
+**Process:**
+1. Check `context_store.TECH_STACK` if provided → use directly
+2. Else: Glob for indicator files in project root
+3. Store `detected_stack.query_prefix` for Phases 2-3
+
+**Output**: `detected_stack = {language, framework, query_prefix}`
+
+**Skip conditions**: If no stack detected → proceed without prefix (generic queries)
+
+---
 
 ### Phase 1: Identify Libraries
 
@@ -61,11 +89,13 @@ Phases: Identify → Ref Research → Existing Guides → Standards Research
 
 **Process:**
 1. **Focus on standards/RFCs:**
-   - Call `mcp__Ref__ref_search_documentation(query="[story_domain] RFC standard specification")`
+   - Call `mcp__Ref__ref_search_documentation(query="[detected_stack.query_prefix] [story_domain] RFC standard specification")`
+   - Example: `"C# ASP.NET Core rate limiting RFC standard specification"`
    - Extract: RFC/spec references (OAuth 2.0 RFC 6749, OpenAPI 3.0, WebSocket RFC 6455)
 
 2. **Focus on architectural patterns:**
-   - Call `mcp__Ref__ref_search_documentation(query="[story_domain] architectural patterns best practices")`
+   - Call `mcp__Ref__ref_search_documentation(query="[detected_stack.query_prefix] [story_domain] architectural patterns best practices")`
+   - Example: `"TypeScript Node.js authentication architectural patterns best practices"`
    - Extract: Middleware, Dependency Injection, Decorator pattern
 
 **Output:** Standards compliance table + Architectural patterns list
@@ -78,15 +108,16 @@ Phases: Identify → Ref Research → Existing Guides → Standards Research
 
 **Process**:
 1. **FOR EACH library + Story domain** combination:
-   - Call `mcp__Ref__ref_search_documentation(query="[library] [domain] best practices 2025")`
-   - Call `mcp__Ref__ref_search_documentation(query="[domain] industry standards RFC")`
+   - Call `mcp__Ref__ref_search_documentation(query="[detected_stack.query_prefix] [library] [domain] best practices 2025")`
+   - Call `mcp__Ref__ref_search_documentation(query="[detected_stack.query_prefix] [domain] industry standards RFC")`
+   - Example: `"C# ASP.NET Core Polly rate limiting best practices 2025"`
 
-2. **Extract from results**:
-   - **Industry standards** (RFC/spec references: OAuth 2.0, REST API, OpenAPI 3.0, WebSocket)
-   - **Common patterns** (do/don't examples, anti-patterns to avoid)
+2. **Extract from results** (NO CODE - text/tables only):
+   - **Industry standards** (RFC/spec references: OAuth 2.0, REST API, OpenAPI 3.0)
+   - **Common patterns** (do/don't descriptions, anti-patterns to avoid)
    - **Integration approaches** (middleware, dependency injection, decorators)
    - **Security considerations** (OWASP compliance, vulnerability mitigation)
-   - **Best practices URLs** (link to authoritative sources)
+   - **Official docs URLs** (link to stack-appropriate authoritative sources)
 
 3. **Store results** for Research Summary compilation
 
@@ -117,23 +148,38 @@ Phases: Identify → Ref Research → Existing Guides → Standards Research
 
 **Objective**: Compile research results into Standards Research for Story Technical Notes subsection.
 
-**Process:**
+**NO_CODE Rule:** No code snippets. Use tables + links to official docs only.
 
-Generate Standards Research in Markdown format:
+**Format Priority:**
+```
+┌─────────────────────────────────────┐
+│ 1. TABLES + ASCII-схемы  ← Priority │
+│ 2. Lists (enumerations only)        │
+│ 3. Text (last resort)               │
+└─────────────────────────────────────┘
+```
+
+**Output Format (Table-First):**
 
 ```markdown
 ## Standards Research
 
 **Standards compliance:**
-- [Standard/RFC name]: [how Story should comply - brief description]
-  - Example: "OAuth 2.0 (RFC 6749): Use authorization code flow with PKCE for public clients"
+
+| Standard | Requirement | How to Comply | Reference |
+|----------|-------------|---------------|-----------|
+| RFC 6749 | OAuth 2.0 | Use PKCE for public clients | [RFC 6749](url) |
+| RFC 6585 | Rate Limiting | Return 429 + Retry-After | [RFC 6585](url) |
 
 **Architectural patterns:**
-- [Pattern name]: [when to use, why relevant for Story domain]
-  - Example: "Middleware pattern: Intercept requests for authentication before reaching endpoints"
+
+| Pattern | When to Use | Reference |
+|---------|-------------|-----------|
+| Middleware | Request interception | [Official docs](url) |
+| Decorator | Cross-cutting concerns | [Official docs](url) |
 
 **Existing guides:**
-- [guide_path.md](guide_path.md) - [brief guide description]
+- [guide_path.md](guide_path.md) - Brief description
 ```
 
 **Return Standards Research** to calling skill (ln-220, ln-310, ln-350)
@@ -143,8 +189,8 @@ Generate Standards Research in Markdown format:
 **Important notes:**
 - Focus on STANDARDS and PATTERNS only (no library details - libraries researched at Task level)
 - Prefer official docs and RFC standards over blog posts
+- Link to stack-appropriate docs (Microsoft docs for .NET, MDN for JS, etc.)
 - If Standards Research is empty (no standards/patterns) → Return "No standards research needed"
-- Standards Research will be inserted in EVERY Story's Technical Notes (Standards Research subsection)
 
 ---
 

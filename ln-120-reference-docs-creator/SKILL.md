@@ -413,6 +413,13 @@ Guides document **patterns**, NOT implementations:
 - **INSTEAD OF CODE:** Reference source location: "See src/hooks/usePlan.ts:15-30"
 - **TEMPLATE RULE:** guide_template.md includes `<!-- NO_CODE_EXAMPLES: ... -->` tag - FOLLOW IT
 
+### Stack Adaptation Rule (MANDATORY)
+- ADRs must reference stack-appropriate alternatives (Compare React vs Vue, not React vs Django)
+- Guides must link to correct platform docs (Microsoft for .NET, MDN for JS)
+
+### Format Priority (MANDATORY)
+Tables (Do/Don't/When) > ASCII diagrams > Lists > Text
+
 ---
 
 ## Prerequisites
@@ -475,5 +482,5 @@ Before completing work, verify ALL checkpoints:
 
 ---
 
-**Version:** 8.1.0 (Added NO_CODE_EXAMPLES rule for guides. Documents describe patterns using tables, not code.)
-**Last Updated:** 2025-01-09
+**Version:** 8.2.0 (Added Stack Adaptation and Format Priority rules)
+**Last Updated:** 2025-01-12

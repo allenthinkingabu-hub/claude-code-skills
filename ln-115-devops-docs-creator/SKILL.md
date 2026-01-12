@@ -84,10 +84,26 @@ From coordinator:
 ```
 
 ## Critical Notes
+
+### Core Rules
 - **Conditional:** Skip entirely if no Docker detected
 - **Heavy auto-discovery:** Most data from docker-compose.yml, .env.example, package.json
 - **Reproducible:** Setup steps must be testable and repeatable
 - **Idempotent:** Never overwrite existing files
+
+### NO_CODE_EXAMPLES Rule (MANDATORY)
+Runbook documents **procedures**, NOT implementations:
+- **FORBIDDEN:** Full Docker configs, CI/CD pipelines (>5 lines)
+- **ALLOWED:** Command examples (1-3 lines), env var tables, step lists
+- **INSTEAD OF CODE:** "See [docker-compose.yml](../docker-compose.yml)"
+
+### Stack Adaptation Rule (MANDATORY)
+- Commands must match project stack (npm vs pip vs go)
+- Link to correct cloud provider docs (AWS/Azure/GCP)
+- Never mix stack references (no npm commands in Python project)
+
+### Format Priority (MANDATORY)
+Tables (env vars, ports, services) > Lists (setup steps) > Text
 
 ## Definition of Done
 - Condition checked (hasDocker)
@@ -101,5 +117,5 @@ From coordinator:
 - Questions: `references/questions_devops.md` (Q46-Q51)
 
 ---
-**Version:** 1.0.0
-**Last Updated:** 2025-12-19
+**Version:** 1.1.0 (Added NO_CODE, Stack Adaptation, Format Priority rules)
+**Last Updated:** 2025-01-12

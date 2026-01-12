@@ -1,7 +1,16 @@
 # {{PACKAGE_NAME}} v{{VERSION}} - Usage Manual
 
-<!-- SCOPE: API/Method reference ONLY. Contains technical descriptions, parameters, examples. -->
+<!-- SCOPE: API/Method reference ONLY. Contains technical descriptions, parameters, return types. -->
 <!-- DO NOT add: How-to instructions -> Guide, Decision rationale -> ADR -->
+
+<!-- NO_CODE_EXAMPLES: Manuals document APIs, not implementations.
+     FORBIDDEN: Code blocks, implementation snippets, code examples
+     ALLOWED: Method signatures (1 line inline), parameter tables, ASCII-схемы
+     INSTEAD OF CODE: Link to official documentation or real project file
+
+     CORRECT: "See [Official docs: CreateClient()](https://docs.example.com/CreateClient)"
+     CORRECT: "See [src/Services/RateLimiter.cs:42](src/Services/RateLimiter.cs#L42)"
+     WRONG: Full code block with usage example -->
 
 ## Package Information
 
@@ -20,13 +29,9 @@
 
 ### {{METHOD_1_NAME}}
 
-**Signature:**
-```{{LANGUAGE}}
-{{METHOD_1_SIGNATURE}}
-```
+**Signature:** `{{METHOD_1_SIGNATURE}}`
 
-**Description:**
-{{METHOD_1_DESCRIPTION}}
+**Description:** {{METHOD_1_DESCRIPTION}}
 
 **Parameters:**
 
@@ -41,18 +46,14 @@
 
 **Raises:**
 
-* `{{EXCEPTION_1}}` - When {{EXCEPTION_1_CONDITION}}
-* `{{EXCEPTION_2}}` - When {{EXCEPTION_2_CONDITION}}
+| Exception | Condition |
+|-----------|-----------|
+| `{{EXCEPTION_1}}` | {{EXCEPTION_1_CONDITION}} |
+| `{{EXCEPTION_2}}` | {{EXCEPTION_2_CONDITION}} |
 
-**Example:**
-```{{LANGUAGE}}
-{{EXAMPLE_CODE}}
-```
+**Documentation:** [Official docs: {{METHOD_1_NAME}}]({{METHOD_1_DOCS_URL}})
 
-**Output:**
-```
-{{EXAMPLE_OUTPUT}}
-```
+**Project usage:** See [{{PROJECT_FILE_PATH}}]({{PROJECT_FILE_PATH}}) (if exists)
 
 {{METHOD_1_WARNINGS}}
 
@@ -60,13 +61,9 @@
 
 ### {{METHOD_2_NAME}}
 
-**Signature:**
-```{{LANGUAGE}}
-{{METHOD_2_SIGNATURE}}
-```
+**Signature:** `{{METHOD_2_SIGNATURE}}`
 
-**Description:**
-{{METHOD_2_DESCRIPTION}}
+**Description:** {{METHOD_2_DESCRIPTION}}
 
 **Parameters:**
 
@@ -74,22 +71,21 @@
 |-----------|------|----------|---------|-------------|
 | {{PARAM_1_NAME}} | {{PARAM_1_TYPE}} | {{PARAM_1_REQUIRED}} | {{PARAM_1_DEFAULT}} | {{PARAM_1_DESCRIPTION}} |
 
-**Returns:**
-
-{{RETURN_TYPE}} - {{RETURN_DESCRIPTION}}
+**Returns:** {{RETURN_TYPE}} - {{RETURN_DESCRIPTION}}
 
 **Raises:**
 
-* `{{EXCEPTION_1}}` - When {{EXCEPTION_1_CONDITION}}
+| Exception | Condition |
+|-----------|-----------|
+| `{{EXCEPTION_1}}` | {{EXCEPTION_1_CONDITION}} |
 
-**Example:**
-```{{LANGUAGE}}
-{{EXAMPLE_CODE}}
-```
+**Documentation:** [Official docs: {{METHOD_2_NAME}}]({{METHOD_2_DOCS_URL}})
 
 ---
 
 ## Configuration
+
+<!-- TABLE-FIRST: Configuration MUST be in table format, not code -->
 
 {{CONFIGURATION_SECTION}}
 

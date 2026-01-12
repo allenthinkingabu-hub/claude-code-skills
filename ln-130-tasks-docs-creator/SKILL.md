@@ -413,6 +413,11 @@ docs/
 - **SCOPE Tags**: Include in first 3-5 lines of all documentation files
 - **Idempotent**: Can be invoked multiple times - checks file existence, preserves existing files, re-validates on each run
 
+### Documentation Standards
+- **NO_CODE Rule:** Task docs describe workflows, not implementations
+- **Stack Adaptation:** References must match project stack
+- **Format Priority:** Tables (states, transitions) > Lists > Text
+
 ---
 
 ## Prerequisites
@@ -488,5 +493,5 @@ Before completing work, verify ALL checkpoints:
 
 ---
 
-**Version:** 7.0.0
-**Last Updated:** 2025-11-18
+**Version:** 7.1.0 (Added Documentation Standards section)
+**Last Updated:** 2025-01-12
