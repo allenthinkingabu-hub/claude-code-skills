@@ -14,6 +14,21 @@ Worker that re-syncs existing tasks to the latest requirements for any task type
 - Drop NFR items; only functional scope remains
 - Update Linear issues and kanban_board.md accordingly
 
+## Task Storage Mode
+
+| Aspect | Linear Mode | File Mode |
+|--------|-------------|-----------|
+| **Load existing** | `get_issue(task_id)` per task | `Read("docs/tasks/epics/.../tasks/T{NNN}-*.md")` per task |
+| **Update task** | `update_issue(id, description)` | `Edit` task file content |
+| **Cancel task** | `update_issue(id, state: "Canceled")` | `Edit` status to Canceled |
+| **Create new** | `create_issue(parentId, state: "Backlog")` | `Write` new `T{NNN}-{slug}.md` |
+
+**File Mode replan:**
+1. Load existing task files via Glob
+2. Compare with IDEAL plan
+3. Edit/Write/Update files as needed
+4. Update `kanban_board.md` to reflect changes
+
 ## Invocation (who/when)
 - **ln-300-task-coordinator:** REPLAN mode when implementation tasks already exist.
 - **Orchestrators (other groups):** Replan refactoring or test tasks as needed.

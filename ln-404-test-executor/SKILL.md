@@ -13,11 +13,22 @@ Runs a single Story final test task (label "tests") through implementation/execu
 - Enforce risk-based constraints: Priority ≤15; E2E 2-5, Integration 0-8, Unit 0-15, total 10-28; no framework/DB/library/performance tests.
 - Update Linear/kanban for this task only: Todo -> In Progress -> To Review.
 
+## Task Storage Mode
+
+| Aspect | Linear Mode | File Mode |
+|--------|-------------|-----------|
+| **Load task** | `get_issue(task_id)` | `Read("docs/tasks/epics/.../tasks/T{NNN}-*.md")` |
+| **Load Story** | `get_issue(parent_id)` | `Read("docs/tasks/epics/.../story.md")` |
+| **Update status** | `update_issue(id, state)` | `Edit` the `**Status:**` line in file |
+| **Test results** | Linear comment | Append to task file |
+
+**File Mode transitions:** Todo → In Progress → To Review
+
 ## Workflow (concise)
-1) **Receive task:** Get task ID from orchestrator (ln-400); fetch full test task description; read linked guides/manuals/ADRs; review parent Story and manual test results if provided.
+1) **Receive task:** Get task ID from orchestrator (ln-400); fetch full test task description (Linear: get_issue; File: Read task file); read linked guides/manuals/ADRs; review parent Story and manual test results if provided.
 2) **Read runbook:** **Read `docs/project/runbook.md`** — understand test environment setup, Docker commands, test execution prerequisites. Use exact commands from runbook.
 3) **Validate plan:** Check Priority ≤15 and test count limits; ensure focus on business flows (no infra-only tests).
-4) **Start work:** Set task In Progress in Linear; move in kanban.
+4) **Start work:** Set task In Progress (Linear: update_issue; File: Edit status line); move in kanban.
 5) **Implement & run:** Author/update tests per plan; reuse existing fixtures/helpers; run tests; fix failing existing tests; update infra/doc sections as required.
 6) **Complete:** Ensure counts/priority still within limits; set task To Review; move in kanban; add comment summarizing coverage, commands run, and any deviations.
 

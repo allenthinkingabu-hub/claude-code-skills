@@ -13,6 +13,22 @@ Executes a Story end-to-end by looping through its tasks in priority order and d
 - Delegate per task type: ln-402-task-reviewer (independent context for unbiased review), ln-403-task-rework, ln-401-task-executor, ln-404-test-executor.
 - Delegate Story quality to ln-500-story-quality-gate (Pass 1/Pass 2) and loop if new tasks are created.
 
+## Task Storage Mode
+
+This skill supports dual-mode task storage:
+
+| Aspect | Linear Mode | File Mode |
+|--------|-------------|-----------|
+| **Detection** | Default (MCP Linear available) | `docs/tasks/epics/` directory exists |
+| **Load tasks** | `list_issues(parentId=Story.id)` | `Glob("docs/tasks/epics/*/stories/*/tasks/*.md")` + parse status |
+| **Source of truth** | Linear API | Task files + kanban_board.md |
+
+**Auto-detection:** Check if `docs/tasks/epics/` exists → File Mode, otherwise Linear Mode.
+
+**File Mode status parsing:** Extract `**Status:** {value}` from `## Status` section in each task file.
+
+**Status values:** Backlog, Todo, In Progress, To Review, To Rework, Done, Canceled
+
 ## When to Use
 - Story is Todo or In Progress and has implementation/refactor/test tasks to finish.
 - Need automated orchestration through To Review and quality gates.
@@ -58,7 +74,11 @@ N+1. [Quality Gate Pass 2] → Story Done
 
 ## Workflow (concise)
 - **Phase 1 Discovery:** Auto-discover Team ID/config from kanban_board.md + CLAUDE.md. Check current git branch: if not `feature/{story-id}-{story-slug}`, create/switch to it.
-- **Phase 2 Load:** Fetch Story metadata and all child task metadata via `list_issues(parentId=Story.id)` (ID/title/status/labels only). Summarize counts (e.g., "2 To Review, 1 To Rework, 3 Todo"). **NO analysis** — proceed immediately to Phase 3.
+- **Phase 2 Load:** Fetch Story metadata and all child task metadata (ID/title/status/labels only).
+  - **Linear Mode:** `list_issues(parentId=Story.id)`
+  - **File Mode:** `Glob("docs/tasks/epics/*/stories/{story-slug}/tasks/*.md")` + parse `**Status:**` from each file
+
+  Summarize counts (e.g., "2 To Review, 1 To Rework, 3 Todo"). **NO analysis** — proceed immediately to Phase 3.
 - **Phase 3 Loop (immediate delegation via Skill tool, one task at a time):**
   1) To Review → **Use Skill tool to invoke `ln-402-task-reviewer`**. Reload metadata after worker.
   2) To Rework → **Use Skill tool to invoke `ln-403-task-rework`**. After worker, verify status = To Review, then **MANDATORY: immediately use Skill tool to invoke `ln-402-task-reviewer`** on that same task. Reload metadata.
@@ -92,7 +112,7 @@ Before starting any task execution, ensure working in correct branch:
 - No pre-analysis: after Phase 2 counts, pick ONE task by priority (To Review > To Rework > Todo) and delegate immediately. Do not plan, analyze, or reason about other tasks until they become next in queue.
 - Single-task operations: each worker handles only the passed task ID; ln-400 never bulk-updates tasks.
 - **Mandatory review after every task (ZERO COMPROMISE):** After ln-401/ln-403/ln-404, task MUST go to ln-402 review IMMEDIATELY. No batching, no skipping, no "I'll review later". Execute → Review → Next. Only ln-402 may set Done. Stop and report if any worker leaves task Done or In Progress.
-- Source of truth: trust Linear metadata, not kanban_board.md, for orchestration decisions.
+- Source of truth: trust Linear metadata (Linear Mode) OR task files (File Mode) for orchestration decisions. Kanban_board.md is for navigation only.
 - Story status ownership: ln-400 moves Todo -> In Progress (first execution) and In Progress -> To Review (all tasks Done); ln-500 handles To Review -> Done.
 - Independent review context: ln-402 runs as subagent with isolated context. Orchestrator passes ONLY task ID—reviewer loads all context independently from Linear. This ensures unbiased "fresh eyes" review without executor's assumptions.
 

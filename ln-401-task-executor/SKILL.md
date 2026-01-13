@@ -14,13 +14,27 @@ Executes a single implementation (or refactor) task from Todo to To Review using
 - Run typecheck/lint; update docs/tests/config per task instructions.
 - Not for test tasks (label "tests" goes to ln-404-test-executor).
 
+## Task Storage Mode
+
+| Aspect | Linear Mode | File Mode |
+|--------|-------------|-----------|
+| **Load task** | `get_issue(task_id)` | `Read("docs/tasks/epics/.../tasks/T{NNN}-*.md")` |
+| **Update status** | `update_issue(id, state)` | `Edit` the `**Status:**` line in file |
+| **Kanban** | Updated by Linear sync | Must update `kanban_board.md` manually |
+
+**File Mode status format:**
+```markdown
+## Status
+**Status:** In Progress | **Priority:** High | **Estimate:** 4h
+```
+
 ## Workflow (concise)
-1) **Load context:** Fetch full task description; read linked guides/manuals/ADRs; auto-discover team/config if needed.
+1) **Load context:** Fetch full task description (Linear: get_issue; File: Read task file); read linked guides/manuals/ADRs; auto-discover team/config if needed.
 2) **Receive task:** Get task ID from orchestrator (ln-400); load full task description.
-3) **Start work:** Update this task to In Progress in Linear; move it in kanban (keep Epic/Story indent).
+3) **Start work:** Update this task to In Progress (Linear: update_issue; File: Edit status line); move it in kanban (keep Epic/Story indent).
 4) **Implement:** Follow checkboxes/plan; keep it simple; avoid hardcoded values; reuse existing components; add Task ID comment (`// See PROJ-123`) to new code blocks; update docs noted in Affected Components; update existing tests if impacted (no new tests here).
 5) **Quality:** Run typecheck and lint (or project equivalents); ensure instructions in Existing Code Impact are addressed.
-6) **Finish:** Mark task To Review in Linear; update kanban to To Review; add summary comment (what changed, tests run, docs touched).
+6) **Finish:** Mark task To Review (Linear: update_issue; File: Edit status line); update kanban to To Review; add summary comment (what changed, tests run, docs touched).
 
 ## Critical Rules
 - Single-task updates only; no bulk status changes.

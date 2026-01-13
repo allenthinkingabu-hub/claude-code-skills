@@ -10,10 +10,21 @@ description: Reviews completed tasks (To Review) and moves them to Done or To Re
 > **This skill is NOT optional.** Every task executed by ln-401/ln-403/ln-404 MUST be reviewed by ln-402 immediately. No exceptions, no batching, no skipping.
 
 ## Purpose & Scope
-- **Independent context loading:** Receive only task ID from orchestrator; load full task and parent Story directly from Linear. This isolation ensures unbiased review without executor's assumptions (fresh eyes pattern).
+- **Independent context loading:** Receive only task ID from orchestrator; load full task and parent Story independently (Linear: get_issue; File: Read task file). This isolation ensures unbiased review without executor's assumptions (fresh eyes pattern).
 - Check architecture, correctness, configuration hygiene, docs, and tests.
 - For test tasks, verify risk-based limits and priority (≤15) per planner template.
 - Update only this task: accept (Done) or send back (To Rework) with explicit reasons and fix suggestions tied to best practices.
+
+## Task Storage Mode
+
+| Aspect | Linear Mode | File Mode |
+|--------|-------------|-----------|
+| **Load task** | `get_issue(task_id)` | `Read("docs/tasks/epics/.../tasks/T{NNN}-*.md")` |
+| **Load Story** | `get_issue(parent_id)` | `Read("docs/tasks/epics/.../story.md")` |
+| **Update status** | `update_issue(id, state: "Done"/"To Rework")` | `Edit` the `**Status:**` line in file |
+| **Add comment** | Linear comment API | Append to task file or kanban |
+
+**File Mode status values:** Done, To Rework (only these two outcomes from review)
 
 ## Workflow (concise)
 1) **Receive task (isolated context):** Get task ID from orchestrator (ln-400)—NO other context passed. Load all information independently from Linear. Detect type (label "tests" -> test task, else implementation/refactor).

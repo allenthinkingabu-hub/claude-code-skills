@@ -14,6 +14,21 @@ Worker that generates task documents and creates Linear issues for implementatio
 - Drops NFR bullets if supplied; only functional scope becomes tasks
 - Never decides scope itself; uses orchestrator input (plans/results)
 
+## Task Storage Mode
+
+| Aspect | Linear Mode | File Mode |
+|--------|-------------|-----------|
+| **Create task** | `create_issue(parentId, state: "Backlog")` | `Write("docs/tasks/epics/.../tasks/T{NNN}-{slug}.md")` |
+| **Task ID** | Linear issue ID (e.g., PROJ-123) | File-based (e.g., T001, T002) |
+| **Status** | Linear state field | `**Status:** Backlog` in file |
+| **Kanban** | Auto-synced | Must update `kanban_board.md` manually |
+
+**File Mode task creation:**
+1. Determine next task number: count existing `T*.md` files + 1
+2. Generate filename: `T{NNN}-{slug}.md` (e.g., `T003-implement-auth-service.md`)
+3. Write task file using template
+4. Add link to `kanban_board.md` under Story in Backlog section
+
 ## Invocation (who/when)
 - **ln-300-task-coordinator:** CREATE (no tasks) or ADD (appendMode) for implementation tasks.
 - **Orchestrators (other groups):** Create refactoring or test tasks as needed.

@@ -14,6 +14,20 @@ Coordinates creation or replanning of implementation tasks for a Story. Builds t
 - Strip any Non-Functional Requirements; only functional scope becomes tasks
 - Never creates/updates Linear or kanban directly (workers do)
 
+## Task Storage Mode
+
+This orchestrator supports dual-mode task storage:
+
+| Aspect | Linear Mode | File Mode |
+|--------|-------------|-----------|
+| **Detection** | Default (MCP Linear available) | `docs/tasks/epics/` directory exists |
+| **Check existing** | `list_issues(parentId=Story.id)` | `Glob("docs/tasks/epics/*/stories/{slug}/tasks/*.md")` |
+| **Delegate to** | ln-301/ln-302 (same workers) | ln-301/ln-302 (same workers) |
+
+**Auto-detection:** Check if `docs/tasks/epics/` exists → File Mode, otherwise Linear Mode.
+
+Workers (ln-301, ln-302) handle the actual Linear/File operations based on detected mode.
+
 ## When to Use
 - Need tasks for a Story with clear AC/Technical Notes
 - Story requirements changed and existing tasks must be updated
