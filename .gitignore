@@ -66,6 +66,7 @@ private/
 
 # Claude Code Specific
 .claude/settings.local.json
+tmpclaude-*
 
 # Git-related
 *.orig
