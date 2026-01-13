@@ -5,16 +5,18 @@ description: Reviews completed tasks (To Review) and moves them to Done or To Re
 
 # Task Reviewer
 
-Reviews a single task in To Review and decides Done vs To Rework with immediate fixes or clear rework notes.
+**MANDATORY after every task execution.** Reviews a single task in To Review and decides Done vs To Rework with immediate fixes or clear rework notes.
+
+> **This skill is NOT optional.** Every task executed by ln-401/ln-403/ln-404 MUST be reviewed by ln-402 immediately. No exceptions, no batching, no skipping.
 
 ## Purpose & Scope
-- Load full task and parent Story; understand AC, context, and Technical Approach.
+- **Independent context loading:** Receive only task ID from orchestrator; load full task and parent Story directly from Linear. This isolation ensures unbiased review without executor's assumptions (fresh eyes pattern).
 - Check architecture, correctness, configuration hygiene, docs, and tests.
 - For test tasks, verify risk-based limits and priority (≤15) per planner template.
 - Update only this task: accept (Done) or send back (To Rework) with explicit reasons and fix suggestions tied to best practices.
 
 ## Workflow (concise)
-1) **Receive task:** Get task ID from orchestrator (ln-400); detect type (label "tests" -> test task, else implementation/refactor).
+1) **Receive task (isolated context):** Get task ID from orchestrator (ln-400)—NO other context passed. Load all information independently from Linear. Detect type (label "tests" -> test task, else implementation/refactor).
 2) **Read context:** Full task + parent Story; load affected components/docs; review diffs if available.
 3) **Review checks:**
    - Approach matches Technical Approach or better (documented rationale).
@@ -37,6 +39,8 @@ Reviews a single task in To Review and decides Done vs To Rework with immediate 
 - If test-task limits/priority violated -> To Rework with guidance.
 - Never leave task Done if any unresolved issue exists.
 - **Kanban Done section:** Contains Stories only, NOT Tasks. When Task → Done, remove it from kanban entirely.
+- **Independent review isolation:** This skill runs as subagent with fresh context. Do NOT rely on any data from orchestrator except task ID. Load everything from Linear to maintain objectivity. This emulates external code review by developer who wasn't involved in implementation.
+- **Mandatory invocation (ZERO COMPROMISE):** This skill MUST be invoked after EVERY task execution. No task can be marked Done without passing through ln-402 review. Orchestrator (ln-400) enforces this—if you're running standalone, enforce it yourself.
 
 ## Definition of Done
 - Task and parent Story fully read; type identified.

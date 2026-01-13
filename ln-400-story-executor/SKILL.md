@@ -10,7 +10,7 @@ Executes a Story end-to-end by looping through its tasks in priority order and d
 ## Purpose & Scope
 - Load Story + task metadata (no descriptions) and drive execution.
 - Process tasks in order: To Review -> To Rework -> Todo (foundation-first within each status).
-- Delegate per task type: ln-402-task-reviewer, ln-403-task-rework, ln-401-task-executor, ln-404-test-executor.
+- Delegate per task type: ln-402-task-reviewer (independent context for unbiased review), ln-403-task-rework, ln-401-task-executor, ln-404-test-executor.
 - Delegate Story quality to ln-500-story-quality-gate (Pass 1/Pass 2) and loop if new tasks are created.
 
 ## When to Use
@@ -61,8 +61,11 @@ N+1. [Quality Gate Pass 2] → Story Done
 - **Phase 2 Load:** Fetch Story metadata and all child task metadata via `list_issues(parentId=Story.id)` (ID/title/status/labels only). Summarize counts (e.g., "2 To Review, 1 To Rework, 3 Todo"). **NO analysis** — proceed immediately to Phase 3.
 - **Phase 3 Loop (immediate delegation via Skill tool, one task at a time):**
   1) To Review → **Use Skill tool to invoke `ln-402-task-reviewer`**. Reload metadata after worker.
-  2) To Rework → **Use Skill tool to invoke `ln-403-task-rework`**. After worker, verify status = To Review, then **immediately use Skill tool to invoke `ln-402-task-reviewer`** on that same task. Reload metadata.
-  3) Todo → pick first Todo; if label "tests" **use Skill tool to invoke `ln-404-test-executor`** else **use Skill tool to invoke `ln-401-task-executor`**. After worker, verify status = To Review (not Done/In Progress), then **immediately use Skill tool to invoke `ln-402-task-reviewer`** on that same task. Reload metadata. Repeat loop; never queue multiple tasks in To Review—review right after each execution/rework.
+  2) To Rework → **Use Skill tool to invoke `ln-403-task-rework`**. After worker, verify status = To Review, then **MANDATORY: immediately use Skill tool to invoke `ln-402-task-reviewer`** on that same task. Reload metadata.
+  3) Todo → pick first Todo; if label "tests" **use Skill tool to invoke `ln-404-test-executor`** else **use Skill tool to invoke `ln-401-task-executor`**. After worker, verify status = To Review (not Done/In Progress), then **MANDATORY: immediately use Skill tool to invoke `ln-402-task-reviewer`** on that same task. Reload metadata. Repeat loop; never queue multiple tasks in To Review—review right after each execution/rework.
+
+> **⚠️ STRICT RULE: Every task execution MUST be followed by review. NO EXCEPTIONS.**
+> Execute → Review → Next task. Never skip review. Never batch reviews. Never proceed to next task without completing review of current task.
 
 **TodoWrite format (mandatory):**
 For each task, add BOTH steps to todos before starting execution:
@@ -88,9 +91,10 @@ Before starting any task execution, ensure working in correct branch:
 - Metadata first: never load task descriptions in Phase 2; only workers load full text.
 - No pre-analysis: after Phase 2 counts, pick ONE task by priority (To Review > To Rework > Todo) and delegate immediately. Do not plan, analyze, or reason about other tasks until they become next in queue.
 - Single-task operations: each worker handles only the passed task ID; ln-400 never bulk-updates tasks.
-- Status discipline: after ln-401/ln-403/ln-404, task must be To Review; immediately invoke ln-402 on that task. Only ln-402 may set Done. Stop and report if any worker leaves task Done or In Progress.
+- **Mandatory review after every task (ZERO COMPROMISE):** After ln-401/ln-403/ln-404, task MUST go to ln-402 review IMMEDIATELY. No batching, no skipping, no "I'll review later". Execute → Review → Next. Only ln-402 may set Done. Stop and report if any worker leaves task Done or In Progress.
 - Source of truth: trust Linear metadata, not kanban_board.md, for orchestration decisions.
 - Story status ownership: ln-400 moves Todo -> In Progress (first execution) and In Progress -> To Review (all tasks Done); ln-500 handles To Review -> Done.
+- Independent review context: ln-402 runs as subagent with isolated context. Orchestrator passes ONLY task ID—reviewer loads all context independently from Linear. This ensures unbiased "fresh eyes" review without executor's assumptions.
 
 ## Worker Invocation (MANDATORY)
 
@@ -110,6 +114,9 @@ Before starting any task execution, ensure working in correct branch:
 - Marking Quality Gate as "completed" in todo without actually invoking ln-500
 - Any "self-service" execution that bypasses Skill tool invocation
 - Partial workflow: "I ran linters, skipped manual testing" — NO, invoke full ln-500
+- **Skipping review:** Executing multiple tasks before review — NO, every task gets reviewed IMMEDIATELY
+- **Batching reviews:** "I'll review all tasks at the end" — NO, review after EACH task
+- **Self-review bypass:** Marking task Done without ln-402 — NO, only ln-402 can set Done
 
 **✅ CORRECT BEHAVIOR:**
 - Use `Skill(skill: "ln-500-story-quality-gate")` — ALWAYS, NO EXCEPTIONS
@@ -118,6 +125,25 @@ Before starting any task execution, ensure working in correct branch:
 - If skill creates tasks → return to Phase 3 loop
 
 **ZERO TOLERANCE:** If you find yourself running commands (mypy, ruff, pytest) directly instead of invoking the appropriate skill, STOP immediately and use Skill tool instead.
+
+### Independent Context Pattern (Architecture Decision)
+
+Review delegation uses **isolated subagent context** for quality:
+
+| Aspect | Implementation | Benefit |
+|--------|---------------|---------|
+| **Data passed** | Task ID only | No executor bias leaked |
+| **Context loading** | ln-402 fetches from Linear | Fresh perspective |
+| **Assumptions** | Reviewer has none | Catches implicit bugs |
+| **Timing** | **IMMEDIATELY after execution** | No context drift, no forgotten issues |
+
+**Analogy:** External code reviewer who wasn't involved in implementation—sees only the result, not the "journey".
+
+**Why immediate review matters:**
+- Fresh context = accurate review (delay = context loss)
+- One task at a time = focused quality check
+- No batching = no "rubber stamp" reviews
+- Independent subagent = unbiased assessment every time
 
 ## Definition of Done
 - Working in correct feature branch `feature/{story-id}-{story-slug}` (verified in Phase 1).
