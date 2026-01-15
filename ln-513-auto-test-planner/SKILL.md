@@ -7,6 +7,13 @@ description: Plans automated tests (E2E/Integration/Unit) using Risk-Based Testi
 
 Creates Story test task with comprehensive automated test coverage (E2E/Integration/Unit) based on Risk-Based Testing methodology and REAL manual testing results.
 
+## Purpose & Scope
+- **Create** comprehensive test task for Story automation
+- **Calculate** risk-based priorities (Impact × Probability)
+- **Generate** 11-section test plan from manual test results
+- **Delegate** to ln-301-task-creator (CREATE) or ln-302-task-replanner (REPLAN)
+- **NOT** for: manual testing (ln-512), research (ln-511), orchestration (ln-510)
+
 ## When to Use This Skill
 
 This skill should be used when:
@@ -29,7 +36,7 @@ Do NOT use if:
 - Research NOT completed → Wait for ln-511
 - Implementation tasks NOT all Done → Complete impl tasks first
 
-## How It Works
+## Workflow
 
 ### Phase 1: Discovery (Automated)
 
