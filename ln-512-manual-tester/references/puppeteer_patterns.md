@@ -316,7 +316,7 @@ try {
 
 ---
 
-## Integration with ln-503-manual-tester
+## Integration with ln-512-manual-tester
 
 **When to use puppeteer (Phase 1 detection):**
 - Story type: UI

@@ -150,13 +150,13 @@ Task planning and Story validation workflows. **ln-300-task-coordinator** decomp
 
 ### 5. Quality (5XX)
 
-**ln-500-story-quality-gate** (Coordinator) validates Story quality with Pass 1 (code quality, regression, manual AC) and Pass 2 (automated tests). **ln-510-test-planner** creates comprehensive test tasks after manual testing passes.
+**ln-500-story-quality-gate** (Coordinator) validates Story quality with Pass 1 (code quality, regression) and Pass 2 (automated tests). **ln-510-test-planner** (Orchestrator) coordinates test planning pipeline: research → manual → auto tests.
 
 **Quality Gate (Coordinator):**
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-500-story-quality-gate](ln-500-story-quality-gate/)** | **Coordinator** for Story quality. Pass 1 delegates code analysis to `ln-501-code-quality-checker`, regression to `ln-502-regression-checker`, manual AC verification to `ln-503-manual-tester` (Format v1.0) with FAIL-FAST exit at each gate; auto-creates refactor/bug tasks when any gate fails. When all gates pass, automatically runs `ln-510-test-planner` (`autoApprove: true`) to create Story Finalizer test task. Pass 2 verifies automated tests (Priority >=15, limits 10-28) and moves Story to Done. | 3.0.0 | ✅ |
+| **[ln-500-story-quality-gate](ln-500-story-quality-gate/)** | **Coordinator** for Story quality. Pass 1 delegates code analysis to `ln-501-code-quality-checker`, regression to `ln-502-regression-checker`, then invokes `ln-510-test-planner` (orchestrates full test pipeline). FAIL-FAST exit at each gate; auto-creates refactor/bug tasks when any gate fails. Pass 2 verifies automated tests (Priority >=15, limits 10-28) and moves Story to Done. | 4.0.0 | ✅ |
 
 **Workers (Pass 1 Validation):**
 
@@ -164,13 +164,15 @@ Task planning and Story validation workflows. **ln-300-task-coordinator** decomp
 |:------|:--------|:-------:|:--------:|
 | **[ln-501-code-quality-checker](ln-501-code-quality-checker/)** | Analyze code quality for DRY/KISS/YAGNI/Architecture violations and guide compliance. Checks git diffs of Done implementation tasks. Reports structured issues by severity (HIGH/MEDIUM/LOW). Fail Fast principle - runs FIRST in Phase 4. | 3.0.0 | ✅ |
 | **[ln-502-regression-checker](ln-502-regression-checker/)** | Run existing test suite to verify no regressions. Auto-detects framework (pytest/jest/vitest/go test). Returns JSON verdict + Linear comment. Atomic worker - does NOT create tasks or change statuses. | 3.0.0 | ✅ |
-| **[ln-503-manual-tester](ln-503-manual-tester/)** | Perform manual functional testing of Story AC using curl (API) or puppeteer (UI). Tests main scenarios + edge cases + error handling + integration. Creates reusable temp script `scripts/tmp_[story_id].sh`. Documents results in Linear (Format v1.0). | 3.0.0 | ✅ |
 
-**Test Planning:**
+**Test Planning Pipeline (510-513):**
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-510-test-planner](ln-510-test-planner/)** | **Coordinator** that creates test task for Story after manual testing passes. Analyzes Story, generates comprehensive test task with 11 sections. **Delegates to ln-301-task-creator (CREATE) or ln-302-task-replanner (REPLAN)** with `taskType: "test"`. Supports existing test task updates. Uses 3XX workers for task creation/replanning. | 3.0.0 | ✅ |
+| **[ln-510-test-planner](ln-510-test-planner/)** | **Orchestrator** for test planning pipeline. Coordinates: ln-511 (research) → ln-512 (manual testing) → ln-513 (auto test planning). Sequential execution with skip detection. Invoked by ln-500-story-quality-gate after regression passes. | 4.0.0 | ✅ |
+| **[ln-511-test-researcher](ln-511-test-researcher/)** | Research real-world problems, competitor solutions, and customer complaints before test planning. Posts findings as Linear comment "## Test Research: {Feature}" for ln-512 and ln-513 to use. | 1.0.0 | ✅ |
+| **[ln-512-manual-tester](ln-512-manual-tester/)** | Perform manual functional testing of Story AC using curl (API) or puppeteer (UI). Tests main scenarios + edge cases + error handling + integration. Creates reusable temp script `tests/manual/`. Documents results in Linear (Format v1.0). | 1.0.0 | ✅ |
+| **[ln-513-auto-test-planner](ln-513-auto-test-planner/)** | Plan automated tests (E2E/Integration/Unit) using Risk-Based Testing (Priority = Impact × Probability). Generates 11-section test task. Delegates to ln-301-task-creator (CREATE) or ln-302-task-replanner (REPLAN). | 1.0.0 | ✅ |
 
 ---
 

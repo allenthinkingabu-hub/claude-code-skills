@@ -246,7 +246,7 @@ Single hierarchical view: **Status → Epic → User Story → Tasks**
 | **Quality** | ln-500-story-quality-gate | Two-pass review (Code Quality → Regression → Manual Testing) |
 | | ln-501-code-quality-checker | Analyze code for DRY/KISS/YAGNI violations |
 | | ln-502-regression-checker | Run existing test suite |
-| | ln-503-manual-tester | Perform manual testing via curl/puppeteer |
+| | ln-512-manual-tester | Perform manual testing via curl/puppeteer |
 | **Documentation** | ln-111-project-docs-creator | Create project docs (requirements, architecture, specs) |
 | | ln-002-best-practices-researcher | Create ADRs, guides, manuals (doc_type parameter) |
 

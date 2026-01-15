@@ -80,7 +80,7 @@ cd tests/manual
 ./NN-feature/test-*.sh          # Run specific test suite
 ```
 
-**See:** ln-503-manual-tester for full documentation of Test Design Principles.
+**See:** ln-512-manual-tester for full documentation of Test Design Principles.
 
 ---
 

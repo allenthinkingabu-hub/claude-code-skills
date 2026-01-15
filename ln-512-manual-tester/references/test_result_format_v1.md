@@ -20,7 +20,7 @@ This document specifies the structured format for manual testing results in Line
 **Verdict:** ✅ PASS | ❌ FAIL
 **Story Type:** API | UI
 **Tested:** 2025-11-13 14:30 UTC
-**Tester:** ln-503-manual-tester v1.0.0
+**Tester:** ln-512-manual-tester v1.0.0
 ```
 
 **Fields:**
@@ -166,7 +166,7 @@ chmod +x scripts/tmp_US001.sh
 **Verdict:** ❌ FAIL
 **Story Type:** API
 **Tested:** 2025-11-13 14:30 UTC
-**Tester:** ln-503-manual-tester v1.0.0
+**Tester:** ln-512-manual-tester v1.0.0
 
 ### Main Scenarios (Acceptance Criteria)
 

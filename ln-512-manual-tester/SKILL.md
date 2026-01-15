@@ -1,6 +1,6 @@
 ---
-name: ln-503-manual-tester
-description: Performs manual testing of Story AC via executable bash scripts saved to tests/manual/. Creates reusable test suites per Story. Worker only.
+name: ln-512-manual-tester
+description: Performs manual testing of Story AC via executable bash scripts saved to tests/manual/. Creates reusable test suites per Story. Worker for ln-510.
 ---
 
 # Manual Tester
@@ -68,6 +68,7 @@ To create expected files:
 
 ### Phase 2: Create Story test script
 1) Fetch Story, parse AC into Given/When/Then list (3-5 expected)
+   - **Check for research comment** (from ln-511-test-researcher) — incorporate findings into test cases
 2) Detect API vs UI (API → curl, UI → puppeteer)
 3) Create test folder structure:
    - `tests/manual/{NN}-{story-slug}/samples/` — input files (if needed)
@@ -624,8 +625,9 @@ print_status "FAIL" "$FAILED test(s) failed" && exit 1
 ## Reference Files
 - Script format reference: prompsit-api `tests/manual/` (production example)
 - AC format: `shared/templates/test_task_template.md` (or local `docs/templates/` in target project)
-- Risk-based context: `ln-510-test-planner/references/risk_based_testing_guide.md`
+- Risk-based context: `ln-513-auto-test-planner/references/risk_based_testing_guide.md`
+- Research findings: ln-511-test-researcher creates "## Test Research" comment on Story
 
 ---
-**Version:** 4.0.0 (Added Test Design Principles, 2 templates with diff-based validation, results/ structure)
+**Version:** 1.0.0 (Renamed from ln-503, Phase 0 Research moved to ln-511-test-researcher)
 **Last Updated:** 2026-01-15

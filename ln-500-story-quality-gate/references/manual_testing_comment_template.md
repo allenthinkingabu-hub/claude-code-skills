@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This template defines the standardized format for Linear comments created by ln-503-manual-tester (invoked by ln-500-story-quality-gate Pass 1). The structured format ensures reliable parsing by ln-510-test-planner for E2E-first test design.
+This template defines the standardized format for Linear comments created by ln-512-manual-tester (invoked by ln-500-story-quality-gate Pass 1). The structured format ensures reliable parsing by ln-510-test-planner for E2E-first test design.
 
 ## Format Version
 
@@ -16,7 +16,7 @@ This template defines the standardized format for Linear comments created by ln-
 
 **Format Version:** 1.0
 **Story ID:** [Story identifier, e.g., US042]
-**Tested By:** ln-503-manual-tester
+**Tested By:** ln-512-manual-tester
 **Date:** [YYYY-MM-DD]
 **Status:** [✅ PASSED (X/Y AC) | ❌ FAILED (X/Y AC)]
 
@@ -142,7 +142,7 @@ This template defines the standardized format for Linear comments created by ln-
 
 ## Usage Instructions
 
-### For ln-503-manual-tester (Phase 5 Step 1)
+### For ln-512-manual-tester (Phase 5 Step 1)
 
 1. **Copy template structure** (do NOT include this instruction section)
 2. **Fill required fields:**
@@ -205,7 +205,7 @@ This template defines the standardized format for Linear comments created by ln-
 
 **Format Version:** 1.0
 **Story ID:** US042
-**Tested By:** ln-503-manual-tester
+**Tested By:** ln-512-manual-tester
 **Date:** 2025-10-31
 **Status:** ✅ PASSED (3/3 AC)
 
@@ -332,7 +332,7 @@ This template defines the standardized format for Linear comments created by ln-
 
 **Format Version:** 1.0
 **Story ID:** US045
-**Tested By:** ln-503-manual-tester
+**Tested By:** ln-512-manual-tester
 **Date:** 2025-10-31
 **Status:** ✅ PASSED (2/2 AC)
 
