@@ -522,6 +522,28 @@ test('Payment creates order with correct total', async () => {
 ✅ **"Story has 5 tests, all test OUR business logic, all Priority ≥15"** → Justified and minimal
 ✅ **"Skipped 8 scenarios - all were framework/library behavior"** → Good filtering!
 
+## Test Strictness Rules
+
+### Assertion Hierarchy (Strictest First)
+
+| Priority | Type | When to Use |
+|----------|------|-------------|
+| 1 | Exact equality | Default - known expected value |
+| 2 | Snapshot/golden file | Complex deterministic output |
+| 3 | Partial match | Only when justified (dynamic data) |
+
+### Golden Rule
+
+> "If you know the expected value, assert the exact value."
+
+### Forbidden Patterns
+
+❌ **NEVER** use loose assertions to "make test pass":
+- Truthy check when exact value is known
+- Substring match instead of exact string
+- "Contains element" instead of exact array comparison
+- Partial object match when full structure is deterministic
+
 ## When New Tests Fail
 
 **Principle:** Test = specification. If test fails, first assume **CODE IS WRONG**.
@@ -571,6 +593,7 @@ ref_search_documentation(query="[domain] [operation] expected return type best p
 |---------|------|---------|
 | 1.0 | 2025-10-31 | Initial Risk-Based Testing framework to replace Test Pyramid (10-28 tests per Story) |
 | 2.0.0 | 2025-11-11 | Minimum Viable Testing philosophy: Start with 2 E2E baseline, realistic goal 2-7 tests. Critical justification required for each test beyond baseline. New anti-patterns (5-7) for framework/library/database testing. Updated examples (Login 6→3, Search 7→2, Payment 13→5) |
+| 2.1.0 | 2026-01-15 | Added Test Strictness Rules: Assertion Hierarchy, Golden Rule, Forbidden Patterns |
 
-**Version:** 2.0.0
-**Last Updated:** 2025-11-11
+**Version:** 2.1.0
+**Last Updated:** 2026-01-15

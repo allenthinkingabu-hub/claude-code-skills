@@ -306,7 +306,9 @@ Skill(skill: "ln-510-test-planner", storyId: "US001")
 
 **Auto-Trim:** If test plan exceeds 7 tests → auto-trim to 7 by Priority. Keep 2 baseline E2E always, trim lowest Priority tests. Document trimmed scenarios: "Covered by manual testing".
 
+**Expected-Based Testing:** For deterministic tests, compare actual results against expected reference files using `diff`, not heuristics. See [ln-503-manual-tester Test Design Principles](../ln-503-manual-tester/SKILL.md#test-design-principles) for strict testing approach: Fail-Fast, Expected-Based validation, Results Storage.
+
 ---
 
-**Version:** 3.0.0
-**Last Updated:** 2025-12-23
+**Version:** 3.1.0 (Added reference to expected-based testing from ln-503)
+**Last Updated:** 2026-01-15

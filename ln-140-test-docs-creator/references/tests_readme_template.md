@@ -43,11 +43,44 @@ tests/
 │   ├── api/
 │   ├── database/
 │   └── services/
-└── unit/                       # Unit tests (5-15 per Story)
-    ├── components/
-    ├── utils/
-    └── services/
+├── unit/                       # Unit tests (5-15 per Story)
+│   ├── components/
+│   ├── utils/
+│   └── services/
+└── manual/                     # Manual test scripts (bash/curl)
+    ├── config.sh               # Shared configuration
+    ├── README.md               # Manual tests documentation
+    ├── test-all.sh             # Run all test suites
+    ├── results/                # Test outputs (in .gitignore)
+    └── NN-feature/             # Test suites by Story
+        ├── samples/            # Input files
+        ├── expected/           # Expected outputs (REQUIRED)
+        └── test-*.sh           # Test scripts
 ```
+
+---
+
+## Manual Testing
+
+Manual test scripts in `tests/manual/` follow strict testing principles:
+
+**Design Principles:**
+1. **Fail-Fast** - Tests return 1 immediately on failure (no soft warnings)
+2. **Expected-Based** - Compare actual vs expected files (`diff`), not heuristics
+3. **Results Stored** - All outputs in `results/` for debugging
+
+**Templates (2 types):**
+- `TEMPLATE-api-endpoint.sh` - For direct API calls (no async jobs)
+- `TEMPLATE-document-format.sh` - For document processing (upload → poll → download)
+
+**Run manual tests:**
+```bash
+cd tests/manual
+./test-all.sh                   # Run ALL manual test suites
+./NN-feature/test-*.sh          # Run specific test suite
+```
+
+**See:** ln-503-manual-tester for full documentation of Test Design Principles.
 
 ---
 
@@ -107,7 +140,8 @@ npm run test:watch
 - When modifying Story-Level Test Task Pattern workflow
 
 **Verification**:
-- All test directories exist (e2e/, integration/, unit/)
+- All test directories exist (e2e/, integration/, unit/, manual/)
+- `tests/manual/results/` is in `.gitignore`
 - Test execution commands work correctly
 - SCOPE tags correctly define test documentation boundaries
 
