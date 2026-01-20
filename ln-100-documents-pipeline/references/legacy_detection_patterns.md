@@ -1,5 +1,8 @@
 # Legacy Documentation Detection Patterns
 
+<!-- SCOPE: Glob patterns for detecting legacy docs before standardization ONLY. Contains file patterns, content patterns, confidence levels. -->
+<!-- DO NOT add here: pipeline logic → ln-100-documents-pipeline SKILL.md, document templates → templates/ -->
+
 **Purpose:** Define patterns for detecting existing documentation in non-standard formats/locations before ln-100-documents-pipeline creates standardized documentation.
 
 ---

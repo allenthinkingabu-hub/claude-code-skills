@@ -1,5 +1,8 @@
 # Concise Terms Dictionary
 
+<!-- SCOPE: Verbose-to-concise phrase dictionary ONLY. Contains 57 replacements for token optimization in SKILL.md files. -->
+<!-- DO NOT add here: writing guidelines → SKILL_ARCHITECTURE_GUIDE.md, documentation standards → DOCUMENTATION_STANDARDS.md -->
+
 **Quick reference for optimizing SKILL.md files**
 
 Use these replacements to reduce tokens by 30-40% in descriptive text.

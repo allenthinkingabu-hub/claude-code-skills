@@ -1,5 +1,8 @@
 # Linear Integration Guide
 
+<!-- SCOPE: Linear API discovery and usage patterns ONLY. Contains Team ID discovery, Epic/Story creation, status workflow. -->
+<!-- DO NOT add here: task tracking rules → tasks/README.md, kanban navigation → kanban_board.md -->
+
 Discovery and API reference for creating Linear Projects (Epics) and User Stories.
 
 ---

@@ -1,5 +1,8 @@
 ﻿# CLAUDE.md
 
+<!-- SCOPE: Repository rules and AI agent instructions ONLY. Contains skill overview, key concepts, versioning workflow, code comments rules. -->
+<!-- DO NOT add here: public documentation → README.md, architecture patterns → docs/SKILL_ARCHITECTURE_GUIDE.md, skill workflows → individual SKILL.md files -->
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Repository

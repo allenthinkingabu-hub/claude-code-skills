@@ -2,6 +2,9 @@
 
 **Industry Best Practices for Claude Code Skills (2024-2025)**
 
+<!-- SCOPE: Skill architecture patterns and best practices ONLY. Contains Orchestrator-Worker Pattern, SRP, Token Efficiency, Task Decomposition, Red Flags. -->
+<!-- DO NOT add here: skill-specific workflows → individual SKILL.md files, project documentation → templates/, versioning → CLAUDE.md -->
+
 This document captures industry standards and best practices for designing Claude Code skills, based on research from Claude Skills Guidelines, Multi-Agent Orchestration patterns, and Agile methodologies.
 
 ---
@@ -411,7 +414,7 @@ Phase 4: Output/Save
 **Examples:**
 - `ln-111-docs-creator` - generates documentation sequentially
 - `ln-112-html-builder` - builds HTML presentation
-- `ln-321-best-practices-researcher` - creates guides/manuals/ADRs
+- `ln-002-best-practices-researcher` - creates guides/manuals/ADRs/research
 
 **Diagram Type:** `graph TD` (top-down linear)
 

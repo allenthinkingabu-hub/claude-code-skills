@@ -1,5 +1,6 @@
 {
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
       "mcp__Ref",
       "mcp__context7",

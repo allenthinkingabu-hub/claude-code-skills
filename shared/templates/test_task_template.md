@@ -3,6 +3,9 @@
 **User Story:** [{{TEAM_ID}}XXX Story Name](link) *(parent task - this is the FINAL task of Story)*
 **Epic:** [Epic N - Epic Name](link)
 
+<!-- SCOPE: Test task structure ONLY. Contains Story context, test plan (E2E/Integration/Unit), coverage requirements. -->
+<!-- DO NOT add here: test code → test files, Story implementation → task docs, testing strategy → testing_strategy.md -->
+
 ---
 
 ## Context

@@ -6,6 +6,8 @@ labels: enhancement
 assignees: ''
 ---
 
+<!-- SCOPE: Feature request template ONLY. Contains category selection, problem description, proposed solution, alternatives. -->
+
 **Category**
 - [ ] 0XX - Shared/Research
 - [ ] 1XX - Documentation

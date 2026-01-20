@@ -1,5 +1,8 @@
 # Changelog
 
+<!-- SCOPE: Release history and version changes ONLY. Contains dated release notes, one paragraph per release. -->
+<!-- DO NOT add here: detailed feature specs → individual SKILL.md files, version numbers in skills → SKILL.md footer -->
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

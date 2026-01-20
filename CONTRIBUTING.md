@@ -1,5 +1,8 @@
 # Contributing to Claude Code Skills
 
+<!-- SCOPE: Contribution guidelines and PR process ONLY. Contains fork/clone instructions, skill creation guide, PR checklist, code style rules. -->
+<!-- DO NOT add here: skill implementations → individual SKILL.md files, architecture patterns → docs/SKILL_ARCHITECTURE_GUIDE.md -->
+
 **We warmly welcome contributions from the community!** 🎉
 
 Whether you're fixing bugs, improving documentation, adding new features, or creating new skills - your contributions help make this project better for everyone.

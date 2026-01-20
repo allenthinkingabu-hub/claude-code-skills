@@ -1,5 +1,8 @@
 # Manual Testing Results Comment Template
 
+<!-- SCOPE: Linear comment format for manual testing results ONLY. Contains template structure, sections, parsing rules. -->
+<!-- DO NOT add here: testing logic → ln-512-manual-tester SKILL.md, test planning → ln-510-test-planner SKILL.md -->
+
 ## Purpose
 
 This template defines the standardized format for Linear comments created by ln-512-manual-tester (invoked by ln-500-story-quality-gate Pass 1). The structured format ensures reliable parsing by ln-510-test-planner for E2E-first test design.

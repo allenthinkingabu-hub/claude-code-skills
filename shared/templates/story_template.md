@@ -3,6 +3,9 @@
 **Epic:** [Epic N - Epic Name](link-to-epic)
 **Priority:** High | Medium | Low
 
+<!-- SCOPE: User Story document structure ONLY. Contains story statement, context, acceptance criteria, technical notes, tasks list. -->
+<!-- DO NOT add here: task implementation → task docs, architecture decisions → ADRs, testing details → test docs -->
+
 ---
 
 ## Story

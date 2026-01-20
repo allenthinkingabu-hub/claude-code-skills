@@ -5,6 +5,9 @@ allowed-tools: Read, Edit
 
 # Context Refresh (claude-code-skills)
 
+<!-- SCOPE: Context refresh procedure ONLY. Contains minimal anchor files, deep dive sections, output format. -->
+<!-- DO NOT add here: skill details → individual SKILL.md files, architecture → docs/SKILL_ARCHITECTURE_GUIDE.md -->
+
 ## Project Profile Constants
 | Variable | Description | Value |
 |-----------|--------------|--------|
@@ -61,7 +64,7 @@ allowed-tools: Read, Edit
 
 **When working with 0XX Shared/Research:**
 - [ ] Read `ln-001-standards-researcher/SKILL.md` - standards via MCP Ref
-- [ ] Read `ln-002-best-practices-researcher/SKILL.md` - guides/manuals/ADRs
+- [ ] Read `ln-002-best-practices-researcher/SKILL.md` - guides/manuals/ADRs/research
 
 **When working with 1XX Documentation Pipeline:**
 - [ ] Read `ln-100-documents-pipeline/SKILL.md` - L1 orchestrator

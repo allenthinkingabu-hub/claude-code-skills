@@ -6,6 +6,8 @@ labels: bug
 assignees: ''
 ---
 
+<!-- SCOPE: Bug report template ONLY. Contains skill info, environment, reproduction steps, expected vs actual behavior. -->
+
 **Skill**
 Name: [e.g., ln-220-story-coordinator]
 Version: [e.g., 3.0.0]

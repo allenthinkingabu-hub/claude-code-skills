@@ -4,6 +4,9 @@
 
 ![Version](https://img.shields.io/badge/version-3.0.0-blue) ![Skills](https://img.shields.io/badge/skills-84-green) ![Updated](https://img.shields.io/badge/updated-Jan%202026-orange) ![License](https://img.shields.io/badge/license-MIT-green) [![GitHub stars](https://img.shields.io/github/stars/levnikolaevich/claude-code-skills?style=social)](https://github.com/levnikolaevich/claude-code-skills)
 
+<!-- SCOPE: Public repository documentation ONLY. Contains features overview, installation, usage examples, contributing guidelines. -->
+<!-- DO NOT add here: AI agent rules → CLAUDE.md, architecture patterns → docs/SKILL_ARCHITECTURE_GUIDE.md, skill implementations → individual SKILL.md files -->
+
 ---
 
 ## 📖 About
@@ -34,7 +37,7 @@ Universal research workers for standards, best practices, and architectural patt
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
 | **[ln-001-standards-researcher](ln-001-standards-researcher/)** | Research industry standards, RFCs, and architectural patterns via MCP Context7 + MCP Ref. Generates Standards Research (Markdown format) for insertion in Story Technical Notes → Library Research subsection. Reusable worker (called by ln-220 Phase 2). Libraries researched at Task level by ln-300. Time-boxed: 15-20 minutes. | 3.0.0 | ✅ |
-| **[ln-002-best-practices-researcher](ln-002-best-practices-researcher/)** | Research best practices via MCP Ref/Context7 and create documentation (guide/manual/ADR). Single research, multiple output types. Reusable worker (called by ln-310, ln-620). | 3.0.0 | ✅ |
+| **[ln-002-best-practices-researcher](ln-002-best-practices-researcher/)** | Research best practices via MCP Ref/Context7/WebSearch and create documentation (guide/manual/ADR/research). Single research, multiple output types. Reusable worker (called by ln-310, ln-620). | 3.0.0 | ✅ |
 
 ---
 
@@ -68,7 +71,7 @@ Universal research workers for standards, best practices, and architectural patt
 
 | Skill | Purpose | Version | Diagrams |
 |:------|:--------|:-------:|:--------:|
-| **[ln-120-reference-docs-creator](ln-120-reference-docs-creator/)** | Create reference documentation structure: docs/reference/README.md + adrs/, guides/, manuals/ directories. **Idempotent**: Checks 4 items. | 3.0.0 | ✅ |
+| **[ln-120-reference-docs-creator](ln-120-reference-docs-creator/)** | Create reference documentation structure: docs/reference/README.md + adrs/, guides/, manuals/, research/ directories. **Idempotent**: Checks 5 items. | 3.0.0 | ✅ |
 | **[ln-130-tasks-docs-creator](ln-130-tasks-docs-creator/)** | Create task management documentation: docs/tasks/README.md (task system rules) + kanban_board.md (Linear integration). **Idempotent**: Critical kanban_board.md protection. | 3.0.0 | ✅ |
 | **[ln-140-test-docs-creator](ln-140-test-docs-creator/)** | Create test documentation: testing-strategy.md (universal testing philosophy) + tests/README.md (organization with Story-Level Pattern). Optional. **Idempotent**: Checks 4 items. | 3.0.0 | ✅ |
 | **[ln-150-presentation-creator](ln-150-presentation-creator/)** | Build interactive HTML presentation from project documentation with 6 tabs (Overview, Requirements+ADRs, Architecture, Technical Spec, Roadmap, Guides). **Idempotent**: User confirmation for rebuild. | 3.0.0 | ✅ |

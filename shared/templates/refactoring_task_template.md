@@ -4,6 +4,9 @@
 **User Story:** [{{TEAM_ID}}XXX Story Name](link) *(parent task - this task will have parentId={{TEAM_ID}}XXX)*
 **Related:** {{TEAM_ID}}-XX, {{TEAM_ID}}-YY
 
+<!-- SCOPE: Refactoring task structure ONLY. Contains context, problems found, refactoring goals, implementation plan. -->
+<!-- DO NOT add here: implementation code → codebase, test details → test task, Story content → Story doc -->
+
 ---
 
 ## Context
