@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Master Plan DAG Schema",
+  "description": "Schema for machine-readable Master Plan task dependency graph",
+  "type": "object",
+  "required": ["projectId", "projectName", "version", "generatedAt", "phases", "nodes", "edges", "metadata"],
+  
+  "properties": {
+    "projectId": {
+      "type": "string",
+      "description": "Unique project identifier",
+      "pattern": "^PRJ-\\d{4}-\\d{3}$",
+      "example": "PRJ-2024-001"
+    },
+    
+    "projectName": {
+      "type": "string",
+      "description": "Human-readable project name"
+    },
+    
+    "version": {
+      "type": "string",
+      "description": "Master Plan version",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when plan was generated"
+    },
+    
+    "generatedBy": {
+      "type": "string",
+      "default": "ln-000-sprint0-masterplan-generator",
+      "description": "Skill that generated this plan"
+    },
+    
+    "phases": {
+      "type": "array",
+      "description": "List of project phases",
+      "items": {
+        "type": "object",
+        "required": ["phaseId", "phaseName", "phaseType"],
+        "properties": {
+          "phaseId": {
+            "type": "string",
+            "pattern": "^PH\\d{3}$"
+          },
+          "phaseName": {
+            "type": "string"
+          },
+          "phaseType": {
+            "type": "string",
+            "enum": [
+              "SPRINT_0_PLAN",
+              "SPRINT_0_ANALYZE",
+              "SPRINT_N",
+              "SIT",
+              "UAT",
+              "DATA_MIGRATION",
+              "GO_LIVE",
+              "OPERATE"
+            ]
+          },
+          "estimatedDuration": {
+            "type": "string",
+            "description": "Duration estimate (e.g., '2w' for 2 weeks)"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "in_progress", "paused", "blocked", "complete"],
+            "default": "pending"
+          }
+        }
+      }
+    },
+    
+    "nodes": {
+      "type": "array",
+      "description": "List of task nodes",
+      "items": {
+        "type": "object",
+        "required": ["nodeId", "nodeName", "phaseId", "skillCallEndpoint", "dependencies", "dodCriteria"],
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "description": "Unique task identifier (e.g., T001, S0-P-001)"
+          },
+          "nodeName": {
+            "type": "string",
+            "description": "Human-readable task name"
+          },
+          "nodeDescription": {
+            "type": "string",
+            "description": "Detailed task description"
+          },
+          "phaseId": {
+            "type": "string",
+            "description": "Reference to parent phase"
+          },
+          "skillCallEndpoint": {
+            "type": "string",
+            "description": "AI Agent Skill to execute this task",
+            "examples": ["ln-110-project-docs-coordinator", "ln-400-story-executor", "manual"]
+          },
+          "dependencies": {
+            "type": "array",
+            "description": "List of nodeIds that must complete before this task",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dodCriteria": {
+            "type": "array",
+            "description": "Definition of Done criteria for this task",
+            "items": {
+              "type": "string"
+            }
+          },
+          "estimatedDuration": {
+            "type": "string",
+            "description": "Duration estimate (e.g., '2d' for 2 days)"
+          },
+          "outputs": {
+            "type": "array",
+            "description": "Expected output artifacts",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": { "type": "string" },
+                "type": { 
+                  "type": "string",
+                  "enum": ["document", "code", "diagram", "scripts", "design", "config", "spreadsheet"]
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "ready", "in_progress", "pending_review", "rework", "complete", "blocked", "skipped"],
+            "default": "pending"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"],
+            "default": "medium"
+          },
+          "assignee": {
+            "type": "string",
+            "description": "Assigned resource or team"
+          },
+          "reviewAttempts": {
+            "type": "integer",
+            "default": 0
+          }
+        }
+      }
+    },
+    
+    "edges": {
+      "type": "array",
+      "description": "Dependency edges between nodes",
+      "items": {
+        "type": "object",
+        "required": ["from", "to"],
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Source nodeId (predecessor)"
+          },
+          "to": {
+            "type": "string",
+            "description": "Target nodeId (successor)"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["finish_to_start", "start_to_start", "finish_to_finish"],
+            "default": "finish_to_start"
+          }
+        }
+      }
+    },
+    
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "totalNodes": {
+          "type": "integer"
+        },
+        "totalPhases": {
+          "type": "integer"
+        },
+        "criticalPath": {
+          "type": "array",
+          "description": "List of nodeIds on the critical path",
+          "items": { "type": "string" }
+        },
+        "estimatedTotalDuration": {
+          "type": "string"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "targetEndDate": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    
+    "qualityGates": {
+      "type": "array",
+      "description": "Phase-level quality gates",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gateId": { "type": "string" },
+          "phaseid": { "type": "string" },
+          "criteria": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "passed", "failed"]
+          }
+        }
+      }
+    }
+  }
+}
