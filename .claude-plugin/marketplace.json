@@ -1,12 +1,10 @@
 {
   "name": "levnikolaevich-skills-marketplace",
-
   "owner": {
     "name": "Lev Nikolaevich",
     "email": "levnikolaevich.com@gmail.com",
     "url": "https://github.com/levnikolaevich"
   },
-
   "metadata": {
     "description": "Official marketplace for Agile Linear Workflow plugin - complete end-to-end automation for software development teams using Linear. Includes 7XX Project Bootstrap series for technology-agnostic project migration.",
     "version": "3.0.0"
@@ -18,6 +16,7 @@
       "source": "./",
       "strict": false,
       "skills": [
+        "./ln-000-sprint0-masterplan-generator",
         "./ln-001-standards-researcher",
         "./ln-002-best-practices-researcher",
         "./ln-100-documents-pipeline",
